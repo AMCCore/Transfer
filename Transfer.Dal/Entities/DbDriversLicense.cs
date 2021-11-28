@@ -22,35 +22,35 @@ namespace Transfer.Dal.Entities
         /// Серия документа
         /// </summary>
         [MaxLength(1000)]
-        public string? DocumentSeries { get; set; }
+        public string DocumentSeries { get; set; }
 
         /// <summary>
         /// Номер документа
         /// </summary>
         [MaxLength(1000)]
-        public string? DocumentNumber { get; set; }
+        public string DocumentNumber { get; set; }
 
         /// <summary>
         /// Дата выдачи документа
         /// </summary>
-        public DateTime? DocumentDateOfIssue { get; set; }
+        public DateTime DocumentDateOfIssue { get; set; }
 
         /// <summary>
         /// Дата выдачи документа
         /// </summary>
-        public DateTime? DocumentEndDateOfIssue { get; set; }
+        public DateTime DocumentEndDateOfIssue { get; set; }
 
         /// <summary>
         /// Орган выдавший документ
         /// </summary>
         [MaxLength(1000)]
-        public string? DocumentIssurer { get; set; }
+        public string DocumentIssurer { get; set; }
 
         /// <summary>
         /// Категории транспортных средств (через запятую)
         /// </summary>
         [MaxLength(1000)]
-        public string? DocumentCatigories { get; set; }
+        public string DocumentCatigories { get; set; }
 
         public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
     }
