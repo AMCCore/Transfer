@@ -26,7 +26,7 @@ namespace Transfer.Dal.Entities
         /// <summary>
         ///     Право пользователя
         /// </summary>
-        public virtual DbRight Right { get; set; }
+        public virtual DbRight? Right { get; set; }
 
         /// <summary>
         ///     УЗ пользователя
@@ -37,7 +37,7 @@ namespace Transfer.Dal.Entities
         /// <summary>
         ///     УЗ пользователя
         /// </summary>
-        public virtual DbAccount Account { get; set; }
+        public virtual DbAccount? Account { get; set; }
 
         /// <summary>
         ///     Организация

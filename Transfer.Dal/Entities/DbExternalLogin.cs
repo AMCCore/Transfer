@@ -21,7 +21,8 @@ namespace Transfer.Dal.Entities
         public bool IsDeleted { get; set; }
 
         [ForeignKey(nameof(Account))]
-        public Guid? AccountId { get; set; }
+        [Required]
+        public Guid AccountId { get; set; }
 
         public virtual DbAccount Account { get; set; }
 
@@ -31,6 +32,6 @@ namespace Transfer.Dal.Entities
         public string Value { get; set; }
 
         [MaxLength(1000)]
-        public string SubValue { get; set; }
+        public string? SubValue { get; set; }
     }
 }

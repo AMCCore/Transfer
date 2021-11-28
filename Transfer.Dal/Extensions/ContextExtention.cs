@@ -18,5 +18,20 @@ namespace Transfer.Dal.Extensions
             foreach (var fk in cascadeFKs)
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
         }
+
+        internal static void SetMaxLengthOfTextColumn(this ModelBuilder modelBuilder)
+        {
+            //todo создать универсальный механизм без 
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entity.GetProperties())
+                {
+                    var columnType = property.GetColumnType();
+
+                    //property.SetColumnType
+                    //property.SetColumnName(SnakeCase(Cleanup(property.Name)));
+                }
+            }
+        }
     }
 }

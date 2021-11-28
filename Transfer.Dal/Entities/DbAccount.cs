@@ -29,10 +29,15 @@ namespace Transfer.Dal.Entities
         [ForeignKey(nameof(PersonData))]
         public Guid? PersonDataId { get; set; }
 
-        public virtual DbPersonData PersonData { get; set; }
+        public virtual DbPersonData? PersonData { get; set; }
 
         public virtual ICollection<DbAccountRight> AccountRights { get; set; } = new List<DbAccountRight>();
 
         public virtual ICollection<DbExternalLogin> ExternalLogins { get; set; } = new List<DbExternalLogin>();
+
+        [ForeignKey(nameof(Organisation))]
+        public virtual Guid? OrganisationId { get; set; }
+
+        public virtual DbOrganisation? Organisation { get; set; }
     }
 }

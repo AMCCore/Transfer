@@ -10,7 +10,7 @@ using Transfer.Common;
 namespace Transfer.Dal.Entities
 {
     [Table("Regions")]
-    public class DdRegion : IEntityBase
+    public class DbRegion : IEntityBase
     {
         [Key]
         public Guid Id { get; set; }
@@ -20,6 +20,8 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         public string Name { get; set; }
 
-        public virtual ICollection<DbAddress> DbAddresses { get; set; } = new List<DbAddress>();
+        public virtual ICollection<DbOrganisation> Organisations { get; set; } = new List<DbOrganisation>();
+
+        public virtual ICollection<DbOrganisationWorkingArea> WorkingArea { get; set; } = new List<DbOrganisationWorkingArea>();
     }
 }

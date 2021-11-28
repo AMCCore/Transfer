@@ -12,10 +12,13 @@ namespace Transfer.Dal.Context
     {
         public virtual DbSet<DbAccount> DbAccount { get; set; }
         public virtual DbSet<DbAccountRight> DbAccountRight { get; set; }
-        public virtual DbSet<DbAddress> DbAddress { get; set; }
         public virtual DbSet<DbPersonData> DbPersonData { get; set; }
         public virtual DbSet<DbRight> DbRight { get; set; }
-        public virtual DbSet<DdRegion> DdRegion { get; set; }
+        public virtual DbSet<DbRegion> DdRegion { get; set; }
         public virtual DbSet<DbExternalLogin> DbExternalLogin { get; set; }
+        public virtual DbSet<DbOrganisation> DbOrganisation { get; set; }
+        public virtual DbSet<DbOrganisationWorkingArea> DbOrganisationWorkingArea { get; set; }
+        public virtual DbSet<DbDriver> DbDriver { get; set; }
+        public virtual DbSet<DbDriversLicense> DbDriversLicense { get; set; }
     }
 }

@@ -21,12 +21,14 @@ namespace Transfer.Dal.Entities
         /// Имя
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string FirstName { get; set; }
 
         /// <summary>
         /// Фамилия
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string LastName { get; set; }
 
         /// <summary>
@@ -46,48 +48,51 @@ namespace Transfer.Dal.Entities
         /// Место рождения
         /// </summary>
         [MaxLength(1000)] 
-        public string PlaceOfBirth { get; set; }
+        public string? PlaceOfBirth { get; set; }
 
         /// <summary>
         /// Серия документа
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string DocumentSeries { get; set; }
 
         /// <summary>
         /// Номер документа
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string DocumentNumber { get; set; }
 
         /// <summary>
         /// Код подразделения
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string DocumentSubDivisionCode { get; set; }
 
         /// <summary>
         /// Орган выдавший документ
         /// </summary>
         [MaxLength(1000)]
+        [Required]
         public string DocumentIssurer { get; set; }
 
         /// <summary>
         /// Дата выдачи документа
         /// </summary>
-        public DateTime? DocumentDateOfIssue { get; set; }
+        [Required]
+        public DateTime DocumentDateOfIssue { get; set; }
 
         public virtual ICollection<DbAccount> Accounts { get; set; } = new List<DbAccount>();
 
-        [ForeignKey(nameof(RegistrationAddress))]
-        public Guid? RegistrationAddressId { get; set; }
+        [MaxLength(1000)]
+        [Required]
+        public string RegistrationAddress { get; set; }
 
-        public virtual DbAddress RegistrationAddress { get; set; }
+        [MaxLength(1000)]
+        public string? RealAddress { get; set; }
 
-        [ForeignKey(nameof(RealAddress))]
-        public Guid? RealAddressId { get; set; }
-
-        public virtual DbAddress RealAddress { get; set; }
-
+        public virtual ICollection<DbDriver> DriversData { get; set; } = new List<DbDriver>();
     }
 }
