@@ -7,11 +7,18 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.13" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.5.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transfer.Bl\Transfer.Bl.csproj" />
+    <ProjectReference Include="..\Transfer.Common\Transfer.Common.csproj" />
+    <ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
   </ItemGroup>
 
 </Project>
