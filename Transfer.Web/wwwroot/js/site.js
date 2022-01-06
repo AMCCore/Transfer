@@ -1,4 +1,18 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+function TSButton() {
+    var name = "Fred";
+    document.getElementById("ts-example").innerHTML = greeter(user);
+}
+var Student = /** @class */ (function () {
+    function Student(firstName, middleInitial, lastName) {
+        this.firstName = firstName;
+        this.middleInitial = middleInitial;
+        this.lastName = lastName;
+        this.fullName = firstName + " z " + middleInitial + " " + lastName;
+    }
+    return Student;
+}());
+function greeter(person) {
+    return "Hello, " + person.firstName + " " + person.lastName;
+}
+var user = new Student("Fred", "M.", "Smith");
+//# sourceMappingURL=site.js.map
