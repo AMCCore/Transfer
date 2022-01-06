@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Transfer.Bl.Dto;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
@@ -17,8 +19,8 @@ namespace Transfer.Web.Controllers
         //private readonly ILogger<HomeController> _logger;
         //private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(IUnitOfWork unitOfWork, IOptions<TransferSettings> settings, ILogger<HomeController> logger)
-            : base(settings, unitOfWork, logger)
+        public HomeController(IUnitOfWork unitOfWork, IOptions<TransferSettings> settings, ILogger<HomeController> logger, IMapper mapper)
+            : base(settings, unitOfWork, logger, mapper)
         {
         }
 
@@ -27,7 +29,11 @@ namespace Transfer.Web.Controllers
             Logger?.LogInformation("Index called");
 
             //var accounts = UnitOfWork.GetSet<DbAccount>().Count();
-            var btc = TransferSettings.TGBotToken;
+            //var btc = TransferSettings.TGBotToken;
+
+            //var foo = new Foo { Id = 1, Name = "zzz" };
+            //var bar = Mapper.Map<Bar>(foo);
+
 
             return View();
         }
