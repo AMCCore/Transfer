@@ -218,11 +218,6 @@ namespace Transfer.Common
 
         private void ProcessEntityOnSave()
         {
-            if (NotChangeLastUpdateTick)
-            {
-                return;
-            }
-
             var states = new EntityState[] { EntityState.Added, EntityState.Modified };
 
             var entitystoDelete = Context.ChangeTracker.Entries<ISoftDeleteEntity>()
@@ -234,6 +229,11 @@ namespace Transfer.Common
             {
                 entity.IsDeleted = true;
                 Context.Entry(entity).State = EntityState.Modified;
+            }
+
+            if (NotChangeLastUpdateTick)
+            {
+                return;
             }
 
             // получение измененных

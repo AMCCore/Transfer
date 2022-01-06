@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Common
 {
-    public sealed class TransferSettings
+    public class TransferSettings
     {
         public string TGBotToken { get; set; }
     }

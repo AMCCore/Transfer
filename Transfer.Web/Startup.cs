@@ -30,12 +30,15 @@ namespace Transfer.Web
             });
 
             //параметры приложения
-            var settings = Configuration.GetSection("appSettings").Get<TransferSettings>();
+            //var settings = Configuration.GetSection("appSettings").Get<TransferSettings>();
+            services.Configure<TransferSettings>(Configuration.GetSection("appSettings"));
 
 
             //подключение к БД
             services.AddDbContext<TransferContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("TransferDb")));
+
+            services.AddTransient<IUnitOfWork, Dal.UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

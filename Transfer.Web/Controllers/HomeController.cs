@@ -1,25 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Transfer.Common;
+using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 
 namespace Transfer.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
+        //private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IUnitOfWork unitOfWork, IOptions<TransferSettings> settings, ILogger<HomeController> logger)
+            : base(settings, unitOfWork, logger)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
         {
+            Logger?.LogInformation("Index called");
+
+            //var accounts = UnitOfWork.GetSet<DbAccount>().Count();
+            var btc = TransferSettings.TGBotToken;
+
             return View();
         }
 
