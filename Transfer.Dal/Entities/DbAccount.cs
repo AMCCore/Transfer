@@ -39,5 +39,7 @@ namespace Transfer.Dal.Entities
         public virtual Guid? OrganisationId { get; set; }
 
         public virtual DbOrganisation? Organisation { get; set; }
+
+        public DateTime? DateCreated { get; set; }
     }
 }
