@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\dist\" />
-    <Folder Include="wwwroot\js\home\" />
   </ItemGroup>
 
 </Project>

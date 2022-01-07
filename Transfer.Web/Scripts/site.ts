@@ -1,6 +1,8 @@
 ﻿import 'jquery';
 import 'bootstrap';
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
+import '../Styles/site.css'
+
 let w;
 w = window;
 

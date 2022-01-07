@@ -10,8 +10,8 @@ function _path(p) {
 }
 
 let config = {
-    entry: glob.sync('./Scripts/**/*.ts', {
-        ignore: ['./Scripts/*.ts']
+    entry: glob.sync('./Scripts/**/*', {
+        ignore: ['./Scripts/*']
     }).reduce(function (obj, el) {
         let p = path.parse(el).dir.split('/').pop();
         (obj[p] = obj[p] || []).push(el);
