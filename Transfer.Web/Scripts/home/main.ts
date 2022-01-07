@@ -1,4 +1,6 @@
-﻿function SomeButton() {
-    let name: string = "Fred";
+﻿import "../site.ts"
+
+function SomeButton() {
+    let name = "Fred";
     alert(name);
 }

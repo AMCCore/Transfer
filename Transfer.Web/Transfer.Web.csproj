@@ -31,4 +31,9 @@
     <ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\dist\" />
+    <Folder Include="wwwroot\js\home\" />
+  </ItemGroup>
+
 </Project>
