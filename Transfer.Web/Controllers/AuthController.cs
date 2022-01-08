@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Transfer.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace Transfer.Web.Controllers
 {
@@ -22,11 +23,27 @@ namespace Transfer.Web.Controllers
 
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login(string ReturnUrl = "/")
+        {
+            LoginModel objLoginModel = new LoginModel();
+            objLoginModel.ReturnUrl = ReturnUrl;
+            return View(objLoginModel);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel objLoginModel)
         {
+            //todo загрузка пользователя и проверка его прав
+            var accountInfo = new { Roles = new List<Guid>(), Id = Guid.NewGuid(), OrganisationId = Guid.NewGuid() };
+
             var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(accountInfo.Roles)));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, accountInfo.Id.ToString()));
+            claims.Add(new Claim(ClaimTypes.Locality, accountInfo.OrganisationId.ToString()));
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties()

@@ -22,7 +22,6 @@ namespace Transfer.Web.Controllers
         ///     миграция БД
         /// </summary>
         [HttpGet]
-        [AllowAnonymous]
         public IActionResult MigrateDatabase()
         {
             using var uw = new UnitOfWork(_settings.GetConnectionString("TransferDb"));
