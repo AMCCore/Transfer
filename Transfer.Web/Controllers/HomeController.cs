@@ -16,9 +16,6 @@ namespace Transfer.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        //private readonly ILogger<HomeController> _logger;
-        //private readonly IUnitOfWork _unitOfWork;
-
         public HomeController(IUnitOfWork unitOfWork, IOptions<TransferSettings> settings, ILogger<HomeController> logger, IMapper mapper)
             : base(settings, unitOfWork, logger, mapper)
         {
@@ -28,6 +25,7 @@ namespace Transfer.Web.Controllers
         {
             Logger?.LogInformation("Index called");
 
+            //testing
             //var accounts = UnitOfWork.GetSet<DbAccount>().Count();
             //var btc = TransferSettings.TGBotToken;
 
@@ -35,6 +33,11 @@ namespace Transfer.Web.Controllers
             //var bar = Mapper.Map<Bar>(foo);
 
 
+            return View();
+        }
+
+        public IActionResult Index2()
+        {
             return View();
         }
 

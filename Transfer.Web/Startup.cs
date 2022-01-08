@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +44,9 @@ namespace Transfer.Web
             services.AddTransient<IUnitOfWork, Dal.UnitOfWork>();
 
             services.TransferBlConfigue();
+
+            //автлоризация через Cookie (Claims)
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,12 +75,23 @@ namespace Transfer.Web
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapSwagger();
+
+                //todo возможно придётся включить при тестировании авторизации
+                //endpoints.MapControllers();
+                //endpoints.MapRazorPages();
             });
 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("v1/swagger.json", "Transfer API V1");
             });
+
+            var cookiePolicyOptions = new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            };
+
+            app.UseCookiePolicy(cookiePolicyOptions);
         }
     }
 }

@@ -10,13 +10,16 @@ function _path(p) {
 }
 
 let config = {
-    entry: glob.sync('./Scripts/**/*', {
-        ignore: ['./Scripts/*']
-    }).reduce(function (obj, el) {
-        let p = path.parse(el).dir.split('/').pop();
-        (obj[p] = obj[p] || []).push(el);
-        return obj
-    }, {}),
+    //entry: glob.sync('./Scripts/**/*', {
+    //    ignore: ['./Scripts/*']
+    //}).reduce(function (obj, el) {
+    //    let p = path.parse(el).dir.split('/').pop();
+    //    (obj[p] = obj[p] || []).push(el);
+    //    return obj
+    //}, {}),
+    entry: {
+        home: './Scripts/Home/main.ts',
+    },
     output: {
         path: path.resolve(__dirname, 'wwwroot/dist'),
         filename: '[name].js'
@@ -41,8 +44,8 @@ let config = {
                 test: /\.css?$/,
                 use: ['style-loader', 'css-loader']
             },
-            { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' },
-            { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
+            //{ test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000000000' },
+            //{ test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
             {
                 test: /\.(ts|js)$/, exclude: /node_modules/, use: {
                     loader: 'babel-loader', options: { presets: ['@babel/preset-env'] }
