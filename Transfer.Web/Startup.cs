@@ -48,10 +48,11 @@ namespace Transfer.Web
 
             //автлоризация через Cookie (Claims)
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(x => {
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, x =>
+                {
+                    x.Cookie.HttpOnly = false;
                     x.LoginPath = "/";
                     x.SlidingExpiration = true;
-                    x.AccessDeniedPath = "/403";
                     x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
                 });
         }
@@ -71,6 +72,7 @@ namespace Transfer.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseSwagger();
@@ -95,7 +97,9 @@ namespace Transfer.Web
 
             var cookiePolicyOptions = new CookiePolicyOptions
             {
-                MinimumSameSitePolicy = SameSiteMode.Strict,
+                CheckConsentNeeded = context => false,
+                //MinimumSameSitePolicy = SameSiteMode.None,
+                //MinimumSameSitePolicy = SameSiteMode.Strict,
             };
 
             app.UseCookiePolicy(cookiePolicyOptions);
