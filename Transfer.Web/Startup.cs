@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 using Transfer.Bl;
 using Transfer.Common;
 using Transfer.Dal.Context;
@@ -47,7 +48,12 @@ namespace Transfer.Web
 
             //автлоризация через Cookie (Claims)
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(x => x.LoginPath = "/");
+                .AddCookie(x => {
+                    x.LoginPath = "/";
+                    x.SlidingExpiration = true;
+                    x.AccessDeniedPath = "/403";
+                    x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
