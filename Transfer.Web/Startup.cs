@@ -46,7 +46,8 @@ namespace Transfer.Web
             services.TransferBlConfigue();
 
             //автлоризация через Cookie (Claims)
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(x => x.LoginPath = "/");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
