@@ -17,16 +17,5 @@ namespace Transfer.Common.Extensions
         {
             return g == Guid.Empty;
         }
-
-        public static bool IsNotNullOrEmpty(this Guid g)
-        {
-            return g != Guid.Empty;
-        }
-
-        public static bool IsNotNullOrEmpty(this Guid? g)
-        {
-            return g.HasValue && IsNotNullOrEmpty(g.Value);
-        }
-
     }
 }

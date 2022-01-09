@@ -3,6 +3,11 @@
     public interface ISecurityService
     {
         /// <summary>
+        /// Признак авторизованности текущего аккаунта
+        /// </summary>
+        bool IsAuthenticated { get; }
+
+        /// <summary>
         /// Идентификатор текущего аккаунта
         /// </summary>
         Guid CurrentAccountId { get; }

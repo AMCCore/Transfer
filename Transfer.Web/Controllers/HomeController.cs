@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto;
 using Transfer.Common;
+using Transfer.Common.Security;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 

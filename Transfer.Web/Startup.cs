@@ -10,7 +10,9 @@ using Microsoft.OpenApi.Models;
 using System;
 using Transfer.Bl;
 using Transfer.Common;
+using Transfer.Common.Security;
 using Transfer.Dal.Context;
+using Transfer.Web.Models;
 
 namespace Transfer.Web
 {
@@ -43,6 +45,9 @@ namespace Transfer.Web
                 options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("TransferDb")));
 
             services.AddTransient<IUnitOfWork, Dal.UnitOfWork>();
+
+            services.AddHttpContextAccessor();
+            services.AddTransient<ISecurityService, SecurityService>();
 
             services.TransferBlConfigue();
 
@@ -103,6 +108,8 @@ namespace Transfer.Web
             };
 
             app.UseCookiePolicy(cookiePolicyOptions);
+
+            Security.Configure(app.ApplicationServices.GetRequiredService<ISecurityService>());
         }
     }
 }

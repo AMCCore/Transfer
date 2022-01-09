@@ -59,6 +59,8 @@ namespace Transfer.Common.Security
             }
         }
 
+        public bool IsAuthenticated => !CurrentAccountId.IsNullOrEmpty();
+
         public bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null)
         {
             var rights = GetRights();

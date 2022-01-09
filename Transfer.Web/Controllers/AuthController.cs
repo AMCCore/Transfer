@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Transfer.Common;
+using Newtonsoft.Json;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+using System.Threading.Tasks;
+using Transfer.Common;
 using Transfer.Web.Models;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json;
 
 namespace Transfer.Web.Controllers
 {
