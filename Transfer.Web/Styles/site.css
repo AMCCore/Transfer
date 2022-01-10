@@ -4,8 +4,18 @@
 }
 
 .blank-row {
-    line-height: 9px;
-    height: 9px;
+    line-height: 18px;
+    height: 18px;
+}
+
+.main-logo {
+    min-height: 32px;
+    width: auto;
+}
+
+.t-col {
+    line-height: 32px;
+    min-height: 32px;
 }
 
 .header {
@@ -13,21 +23,13 @@
     color: #fff;
     background-size: cover;
 }
-
     .header .main-header {
-        margin-top: 54px;
-        height: 36px;
-        line-height: 36px;
+        line-height: 32px;
+        min-height: 32px;
     }
-
-        .header .main-header .main-logo {
-            height: 36px;
-            width: auto;
-        }
-
         .header .main-header .social a {
             color: #0f4c71;
-            margin: 0 2px 0 2px;
+            margin: 0 5px 0 5px;
         }
 
             .header .main-header .social a:hover {
@@ -42,7 +44,7 @@
             .header .main-header .top-button-a .top-button {
                 background-color: #fff;
                 border-radius: 18px;
-                line-height: 36px;
+                line-height: 32px;
                 width: 100%;
             }
 
@@ -61,7 +63,7 @@
 
             .header .main-header .top-button-reg-a .top-button {
                 border-radius: 18px;
-                line-height: 36px;
+                line-height: 30px;
                 width: 100%;
                 border: 1px solid #0f4c71;
             }
@@ -91,8 +93,9 @@
 
 .main-menu {
     background-color: #1b0e21;
-    line-height: 36px;
+    line-height: 30px;
     border-radius: 5px;
+    border: 1px solid #1b0e21;
 }
 
     .main-menu a {
@@ -104,9 +107,15 @@
             color: #ecbf54;
             text-decoration: none;
             border-bottom: 1px solid #fff;
-            height: 35px;
-            line-height: 35px;
+            min-height: 30px;
+            line-height: 30px;
         }
+
+.events {
+    line-height: 32px;
+    min-height: 32px;
+    color: #ecbf54;
+}
 
 .bottom {
     background: url("/images/768.png") left top no-repeat;
@@ -115,9 +124,6 @@
 }
 
     .bottom .social {
-        margin-top: 27px;
-        line-height: 36px;
-        margin-bottom: 27px;
     }
 
         .bottom .social a {
@@ -132,7 +138,6 @@
 
     .bottom .links,
     .bottom .contacts {
-        padding-top: 8px;
     }
 
         .bottom .links a {
