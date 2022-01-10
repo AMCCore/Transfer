@@ -37,8 +37,7 @@ namespace Transfer.Web.Controllers
             //var bar = Mapper.Map<Bar>(foo);
             var isauth = HttpContext.User.Identity.IsAuthenticated;
 
-
-            return View();
+            return RedirectToAction(nameof(Index2));
         }
 
         [AllowAnonymous]
