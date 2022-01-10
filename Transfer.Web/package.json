@@ -15,7 +15,8 @@
     "jquery-ajax-unobtrusive": "3.2.6",
     "jquery-validation": "1.19.3",
     "jquery-validation-unobtrusive": "3.2.12",
-    "moment": "2.29.1"
+    "moment": "2.29.1",
+    "font-awesome": "4.7.0"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.11",

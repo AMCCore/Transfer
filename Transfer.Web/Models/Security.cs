@@ -27,5 +27,8 @@ namespace Transfer.Web.Models
         public static bool IsAuthenticated => _securityService.IsAuthenticated;
 
         public static Guid CurrentAccountId => _securityService.CurrentAccountId;
+
+        public static int ReviewEvents => 15;
+
     }
 }

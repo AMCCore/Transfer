@@ -49,11 +49,20 @@ namespace Transfer.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [Route("Login")]
         public IActionResult Login(string ReturnUrl = "/")
         {
             LoginModel objLoginModel = new LoginModel();
             objLoginModel.ReturnUrl = ReturnUrl;
             return View(objLoginModel);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("Reg")]
+        public IActionResult Registration()
+        {
+            return View();
         }
 
         public IActionResult Privacy()

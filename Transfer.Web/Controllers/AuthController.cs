@@ -50,6 +50,7 @@ namespace Transfer.Web.Controllers
         }
         
         [HttpGet]
+        [Route("Logout")]
         public async Task<IActionResult> LogOut()
         {
             //SignOutAsync is Extension method for SignOut

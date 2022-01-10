@@ -1,15 +1,156 @@
-﻿html, body
-{
+﻿html, body {
     height: 100%;
     width: 100%;
 }
+
+.blank-row {
+    line-height: 9px;
+    height: 9px;
+}
+
 .header {
     background: url("/images/243.png") left top no-repeat;
     color: #fff;
     background-size: cover;
 }
+
     .header .main-header {
         margin-top: 54px;
         height: 36px;
         line-height: 36px;
     }
+
+        .header .main-header .main-logo {
+            height: 36px;
+            width: auto;
+        }
+
+        .header .main-header .social a {
+            color: #0f4c71;
+            margin: 0 2px 0 2px;
+        }
+
+            .header .main-header .social a:hover {
+                color: #ecbf54;
+            }
+
+        .header .main-header .top-button-a {
+            color: #000;
+            text-decoration: none;
+        }
+
+            .header .main-header .top-button-a .top-button {
+                background-color: #fff;
+                border-radius: 18px;
+                line-height: 36px;
+                width: 100%;
+            }
+
+                .header .main-header .top-button-a .top-button:hover {
+                    background-color: #ecbf54;
+                }
+
+        .header .main-header .top-button-reg-a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+            .header .main-header .top-button-reg-a:hover {
+                color: #000;
+            }
+
+            .header .main-header .top-button-reg-a .top-button {
+                border-radius: 18px;
+                line-height: 36px;
+                width: 100%;
+                border: 1px solid #0f4c71;
+            }
+
+                .header .main-header .top-button-reg-a .top-button:hover {
+                    background-color: #ecbf54;
+                    border: none;
+                }
+
+        .header .main-header a.location {
+            color: #0f4c71;
+            text-decoration: none;
+        }
+
+            .header .main-header a.location:hover {
+                color: #ecbf54;
+            }
+
+            .header .main-header a.location .city {
+                text-decoration: underline;
+                text-decoration-style: dashed;
+            }
+
+            .header .main-header a.location:hover .city {
+                text-decoration: none;
+            }
+
+.main-menu {
+    background-color: #1b0e21;
+    line-height: 36px;
+    border-radius: 5px;
+}
+
+    .main-menu a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+        .main-menu a:hover {
+            color: #ecbf54;
+            text-decoration: none;
+            border-bottom: 1px solid #fff;
+            height: 35px;
+            line-height: 35px;
+        }
+
+.bottom {
+    background: url("/images/768.png") left top no-repeat;
+    color: #fff;
+    background-size: cover;
+}
+
+    .bottom .social {
+        margin-top: 27px;
+        line-height: 36px;
+        margin-bottom: 27px;
+    }
+
+        .bottom .social a {
+            color: #0f4c71;
+            display: inline-block;
+            margin: 0 18px 0 18px;
+        }
+
+            .bottom .social a:hover {
+                color: #ecbf54;
+            }
+
+    .bottom .links,
+    .bottom .contacts {
+        padding-top: 8px;
+    }
+
+        .bottom .links a {
+            color: #0f4c71;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+        }
+
+            .bottom .links a:hover {
+                color: #ecbf54;
+                text-decoration: none;
+            }
+
+        .bottom .contacts .d {
+            color: #0f4c71;
+        }
+
+            .bottom .contacts .d span {
+                text-decoration: underline;
+                text-decoration-style: dashed;
+            }
