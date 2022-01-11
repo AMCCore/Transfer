@@ -7,7 +7,7 @@ function SomeButton() {
 }
 
 $(() => {
-    $('#someButton1111').on('click', () => {
-        alert(121);
-    });
+    function ZZZ() {
+        alert(2222);
+    }
 });

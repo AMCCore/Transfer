@@ -28,32 +28,39 @@ namespace Transfer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
         {
-            //todo загрузка пользователя и проверка его прав
-            var accountInfo = new { Roles = new List<Guid>(), Id = Guid.NewGuid(), OrganisationId = Guid.NewGuid() };
+            if(string.Equals("admin", objLoginModel.Password, StringComparison.OrdinalIgnoreCase) 
+                && string.Equals("admin", objLoginModel.UserName, StringComparison.OrdinalIgnoreCase))
+            {
+                //todo загрузка пользователя и проверка его прав
+                var accountInfo = new { Roles = new List<Guid>(), Id = Guid.NewGuid(), OrganisationId = Guid.NewGuid() };
 
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(accountInfo.Roles)));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, accountInfo.Id.ToString()));
-            claims.Add(new Claim(ClaimTypes.Locality, accountInfo.OrganisationId.ToString()));
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(accountInfo.Roles)));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, accountInfo.Id.ToString()));
+                claims.Add(new Claim(ClaimTypes.Locality, accountInfo.OrganisationId.ToString()));
 
-            var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(userIdentity),
-                new AuthenticationProperties
-                {
-                    ExpiresUtc = DateTime.UtcNow.AddHours(10),
-                    IsPersistent = objLoginModel.RememberLogin,
-                    AllowRefresh = true
-                });
+                var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(userIdentity),
+                    new AuthenticationProperties
+                    {
+                        ExpiresUtc = DateTime.UtcNow.AddHours(10),
+                        IsPersistent = objLoginModel.RememberLogin,
+                        AllowRefresh = true
+                    });
 
-            return LocalRedirect(string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl);
+                return Ok(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+            }
+
+            ViewBag.LoginErrorMessage = "Неверный логин или пароль";
+            objLoginModel.Password = null;
+            return PartialView(objLoginModel);
         }
         
         [HttpGet]
         [Route("Logout")]
         public async Task<IActionResult> LogOut()
         {
-            //SignOutAsync is Extension method for SignOut
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
         }
