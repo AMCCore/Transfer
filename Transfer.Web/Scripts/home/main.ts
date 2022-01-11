@@ -5,3 +5,9 @@ function SomeButton() {
     let name = "Fred";
     alert(name);
 }
+
+$(() => {
+    $('#someButton1111').on('click', () => {
+        alert(121);
+    });
+});
