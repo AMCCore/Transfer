@@ -3,19 +3,27 @@
     width: 100%;
 }
 
+img {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+}
+
 .blank-row {
     line-height: 18px;
     height: 18px;
 }
 
 .main-logo {
-    min-height: 32px;
+    height: 32px;
     width: auto;
 }
 
 .t-col {
-    line-height: 32px;
-    min-height: 32px;
+    line-height: 36px;
+    min-height: 36px;
 }
 
 .header {
@@ -23,97 +31,104 @@
     color: #fff;
     background-size: cover;
 }
-    .header .main-header {
-        line-height: 32px;
-        min-height: 32px;
-    }
-        .header .main-header .social a {
-            color: #0f4c71;
-            margin: 0 5px 0 5px;
-        }
 
-            .header .main-header .social a:hover {
-                color: #ecbf54;
-            }
+.header .main-header {
+    line-height: 36px;
+    min-height: 36px;
+}
 
-        .header .main-header .top-button-a {
-            color: #000;
-            text-decoration: none;
-        }
+.header .main-header .social {
+    text-align: justify;
+    line-height: 36px;
+}
 
-            .header .main-header .top-button-a .top-button {
-                background-color: #fff;
-                border-radius: 18px;
-                line-height: 32px;
-                width: 100%;
-            }
+.header .main-header .social a {
+    color: #0f4c71;
+    margin: 0 10px;
+}
 
-                .header .main-header .top-button-a .top-button:hover {
-                    background-color: #ecbf54;
-                }
+.header .main-header .social a:hover {
+    color: #ecbf54;
+}
 
-        .header .main-header .top-button-reg-a {
-            color: #fff;
-            text-decoration: none;
-        }
+.header .main-header .top-button-a {
+    color: #000;
+    text-decoration: none;
+}
 
-            .header .main-header .top-button-reg-a:hover {
-                color: #000;
-            }
+.header .main-header .top-button-a .top-button {
+    background-color: #fff;
+    border-radius: 18px;
+    line-height: 36px;
+    width: 100%;
+}
 
-            .header .main-header .top-button-reg-a .top-button {
-                border-radius: 18px;
-                line-height: 30px;
-                width: 100%;
-                border: 1px solid #0f4c71;
-            }
+.header .main-header .top-button-a .top-button:hover {
+    background-color: #ecbf54;
+}
 
-                .header .main-header .top-button-reg-a .top-button:hover {
-                    background-color: #ecbf54;
-                    border: none;
-                }
+.header .main-header .top-button-reg-a {
+    color: #fff;
+    text-decoration: none;
+}
 
-        .header .main-header a.location {
-            color: #0f4c71;
-            text-decoration: none;
-        }
+.header .main-header .top-button-reg-a:hover {
+    color: #000;
+}
 
-            .header .main-header a.location:hover {
-                color: #ecbf54;
-            }
+.header .main-header .top-button-reg-a .top-button {
+    border-radius: 18px;
+    line-height: 34px;
+    width: 100%;
+    border: 1px solid #0f4c71;
+}
 
-            .header .main-header a.location .city {
-                text-decoration: underline;
-                text-decoration-style: dashed;
-            }
+.header .main-header .top-button-reg-a .top-button:hover {
+    background-color: #ecbf54;
+    border: none;
+}
 
-            .header .main-header a.location:hover .city {
-                text-decoration: none;
-            }
+.header .main-header a.location {
+    color: #0f4c71;
+    text-decoration: none;
+}
+
+.header .main-header a.location:hover {
+    color: #ecbf54;
+}
+
+.header .main-header a.location .city {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
+
+.header .main-header a.location:hover .city {
+    text-decoration: none;
+}
 
 .main-menu {
     background-color: #1b0e21;
-    line-height: 30px;
+    line-height: 34px;
     border-radius: 5px;
     border: 1px solid #1b0e21;
 }
 
-    .main-menu a {
-        color: #fff;
-        text-decoration: none;
-    }
+.main-menu a {
+    color: #fff;
+    text-decoration: none;
+}
 
-        .main-menu a:hover {
-            color: #ecbf54;
-            text-decoration: none;
-            border-bottom: 1px solid #fff;
-            min-height: 29px;
-            line-height: 29px;
-        }
+.main-menu a:hover {
+    color: #ecbf54;
+    text-decoration: none;
+    border-bottom: 1px solid #fff;
+    min-height: 33px;
+    line-height: 33px;
+}
 
 .events {
-    line-height: 32px;
-    min-height: 32px;
+    line-height: 36px;
+    min-height: 36px;
     color: #ecbf54;
 }
 
@@ -123,39 +138,39 @@
     background-size: cover;
 }
 
-    .bottom .social {
-    }
+.bottom .social {
+}
 
-        .bottom .social a {
-            color: #0f4c71;
-            display: inline-block;
-            margin: 0 18px 0 18px;
-        }
+.bottom .social a {
+    color: #0f4c71;
+    display: inline-block;
+    margin: 0 18px 0 18px;
+}
 
-            .bottom .social a:hover {
-                color: #ecbf54;
-            }
+.bottom .social a:hover {
+    color: #ecbf54;
+}
 
-    .bottom .links,
-    .bottom .contacts {
-    }
+.bottom .links,
+.bottom .contacts {
+}
 
-        .bottom .links a {
-            color: #0f4c71;
-            text-decoration: underline;
-            text-decoration-style: dashed;
-        }
+.bottom .links a {
+    color: #0f4c71;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
 
-            .bottom .links a:hover {
-                color: #ecbf54;
-                text-decoration: none;
-            }
+.bottom .links a:hover {
+    color: #ecbf54;
+    text-decoration: none;
+}
 
-        .bottom .contacts .d {
-            color: #0f4c71;
-        }
+.bottom .contacts .d {
+    color: #0f4c71;
+}
 
-            .bottom .contacts .d span {
-                text-decoration: underline;
-                text-decoration-style: dashed;
-            }
+.bottom .contacts .d span {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}

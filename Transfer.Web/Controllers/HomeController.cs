@@ -61,7 +61,7 @@ namespace Transfer.Web.Controllers
         [Route("Reg")]
         public IActionResult Registration()
         {
-            return View();
+            throw new NotImplementedException();
         }
 
         public IActionResult Privacy()

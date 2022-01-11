@@ -9,16 +9,6 @@ import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
 
-
-//import '../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css'
-//import '../node_modules/@fortawesome/fontawesome-free/css/brands.css'
-//import '../node_modules/@fortawesome/fontawesome-free/css/solid.css'
-
-//import '../node_modules/@fortawesome/fontawesome-free/js/fontawesome.js'
-//import '../node_modules/@fortawesome/fontawesome-free/js/brands.js'
-//import '../node_modules/@fortawesome/fontawesome-free/js/solid.js'
-
-
 let w;
 w = window;
 
