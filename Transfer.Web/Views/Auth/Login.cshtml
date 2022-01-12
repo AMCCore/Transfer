@@ -2,7 +2,7 @@
 @{
 }
 
-<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-success="LoginRefirect" data-ajax="true" data-ajax-method="POST" data-ajax-update="#LoginPopUp">
+<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#LoginPopUp">
     @if (!string.IsNullOrEmpty(ViewBag.LoginErrorMessage))
     {
         <div class="row">
@@ -24,6 +24,13 @@
         </div>
         <div class="col-2 t-col text-end login-q">
             <i class="far fa-question-circle fa-lg"></i>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col-half col-12 chk-label form-group">
+            <input id="RememberLogin" asp-for="RememberLogin" class="form-check-input" />
+            <label class="form-check-label" for="RememberLogin">Запомнить меня</label>
         </div>
     </div>
     <div class="row blank-row"></div>

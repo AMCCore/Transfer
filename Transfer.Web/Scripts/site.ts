@@ -1,7 +1,4 @@
-﻿import 'jquery';
-import 'bootstrap';
-
-let w;
+﻿let w;
 w = window;
 
 w.jQuery = $;
@@ -26,7 +23,14 @@ function greeter(person) {
 let user = new Student("Fred", "M.", "Smith");
 
 function SomeButtonZero() {
+    let v: any = jQuery.fn.jquery.toString();
     let name = "Zusul";
     
-    alert(name);
+    alert(name + ' Version:' + v);
+}
+
+function LoginSuccessRefresh(e) {
+    if (e.redirect) {
+        window.location.href = e.redirect;
+    }
 }

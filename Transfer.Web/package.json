@@ -2,35 +2,9 @@
   "version": "1.0.0",
   "name": "transfer.web",
   "private": true,
-  "scripts": {
-    "start": "webpack --config webpack.config.js --watch --progress --profile",
-    "build": "webpack --mode development --config webpack.config.js --progress",
-    "prod": "webpack --mode production --config webpack.config.js --progress"
-  },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "5.15.4",
-    "bootstrap": "5.1.3",
-    "bootstrap-datetime-picker": "2.4.4",
-    "font-awesome": "4.7.0",
-    "jquery": "3.6.0",
-    "jquery-ajax-unobtrusive": "3.2.6",
-    "jquery-validation": "1.19.3",
-    "jquery-validation-unobtrusive": "3.2.12",
-    "moment": "2.29.1"
   },
   "devDependencies": {
-    "@babel/preset-env": "7.16.7",
-    "@types/jquery": "^3.5.11",
-    "babel-loader": "8.2.3",
-    "clean-webpack-plugin": "4.0.0",
-    "css-loader": "6.5.1",
-    "file-loader": "6.2.0",
-    "glob": "7.2.0",
-    "mini-css-extract-plugin": "2.4.6",
-    "style-loader": "3.3.1",
-    "terser-webpack-plugin": "5.3.0",
-    "url-loader": "4.1.1",
-    "webpack": "5.65.0",
-    "webpack-cli": "4.9.1"
+    "@types/jquery": "^3.5.11"
   }
 }

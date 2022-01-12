@@ -26,6 +26,11 @@ img {
     min-height: 36px;
 }
 
+.t-col-half {
+    line-height: 18px;
+    min-height: 18px;
+}
+
 .header {
     background: url("/images/243.png") left top no-repeat;
     color: #fff;
@@ -45,6 +50,7 @@ img {
             .header .main-header .social a {
                 color: #0f4c71;
                 margin: 0 10px;
+                text-decoration: none;
             }
 
                 .header .main-header .social a:hover {
@@ -204,3 +210,9 @@ img {
         background-color: #ecbf54;
         border: solid 1px #ecbf54;
     }
+
+.chk-label input[type=checkbox] {
+    border: solid 1px #007896;
+    border-radius: 0.5em;
+    margin-top: 0;
+}

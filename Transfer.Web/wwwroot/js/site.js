@@ -1,7 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-require("jquery");
-require("bootstrap");
 var w;
 w = window;
 w.jQuery = $;
@@ -21,7 +17,13 @@ function greeter(person) {
 }
 var user = new Student("Fred", "M.", "Smith");
 function SomeButtonZero() {
+    var v = jQuery.fn.jquery.toString();
     var name = "Zusul";
-    alert(name);
+    alert(name + ' Version:' + v);
+}
+function LoginSuccessRefresh(e) {
+    if (e.redirect) {
+        window.location.href = e.redirect;
+    }
 }
 //# sourceMappingURL=site.js.map

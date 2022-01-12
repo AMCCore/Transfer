@@ -1,215 +1,218 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Transfer.Webz</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="~/css/main.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/main.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-<div class="container-fluid header">
-    <div class="container">
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row main-header">
-            <div class="col-lg-3 col-md-12">
-                <a href="/">
-                    <img src="/images/trsite_logo.png" class="main-logo"/>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-12 social">
-                <a href="/">
-                    <i class="fab fa-vk fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-instagram-square fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-facebook-square fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-telegram fa-lg"></i>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-12 text-center">
-                <a href="#" class="location">
-                    <div>
-                        <i class="fas fa-location-arrow"></i>
-                        <span class="city">Александровск-Сахалинский</span>
-                    </div>
-                </a>
-            </div>
-            @if (Transfer.Web.Models.Security.IsAuthenticated)
-            {
-                <div class="col-lg-2 offset-lg-2 text-center">
-                    <a class="top-button-a" asp-controller="Auth" asp-action="LogOut">
-                        <div class="top-button">Выход</div>
+    <div class="container-fluid header">
+        <div class="container">
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row main-header">
+                <div class="col-lg-3 col-md-12">
+                    <a href="/">
+                        <img src="/images/trsite_logo.png" class="main-logo" />
                     </a>
                 </div>
-            }
-            else
-            {
-                <div class="col-lg-2 col-md-6 text-center">
-                    <a class="top-button-reg-a" asp-controller="Home" asp-action="Registration">
-                        <div class="top-button">Регистрация</div>
+                <div class="col-lg-2 col-md-12 social">
+                    <a href="/">
+                        <i class="fab fa-vk fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-instagram-square fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-facebook-square fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-telegram fa-lg"></i>
                     </a>
                 </div>
-                <div class="col-lg-2 col-md-6 text-center">
-                    <a href="#" class="top-button-a" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <div class="top-button">Вход</div>
+                <div class="col-lg-3 col-md-12 text-center">
+                    <a href="#" class="location">
+                        <div>
+                            <i class="fas fa-location-arrow"></i>
+                            <span class="city">Александровск-Сахалинский</span>
+                        </div>
                     </a>
                 </div>
-            }
-        </div>
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row">
-            @if (Transfer.Web.Models.Security.IsAuthenticated)
-            {
-                <div class="main-menu row">
-                    <a class="col-md-2 text-center" asp-controller="Trip" asp-action="Index">Поездки</a>
-                    <a class="col-md-3 text-center" asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
-                    <a class="col-md-3 text-center" asp-controller="Transport" asp-action="Search">Поиск ТС</a>
-                    <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
-                    <a class="col-md-2 text-center" asp-controller="Account" asp-action="Index">Личный кабинет</a>
-                </div>
-                @if (Transfer.Web.Models.Security.ReviewEvents > 0)
+                @if (Transfer.Web.Models.Security.IsAuthenticated)
                 {
-                    <div class="row">
-                        <div class="col-md-2 offset-md-8 text-center events">@Transfer.Web.Models.Security.ReviewEvents новых</div>
+                    <div class="col-lg-2 offset-lg-2 text-center">
+                        <a class="top-button-a" asp-controller="Auth" asp-action="LogOut">
+                            <div class="top-button">Выход</div>
+                        </a>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="main-menu row">
-                    <a class="col-md-2 text-center" asp-controller="Info" asp-action="About">О компании</a>
-                    <a class="col-md-2 text-center" asp-controller="Transport" asp-action="Index">Транспорт</a>
-                    <a class="col-md-2 text-center" asp-controller="Trip" asp-action="Index">Поездки</a>
-                    <a class="col-md-2 text-center" asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
-                    <a class="col-md-2 text-center" asp-controller="Info" asp-action="Specials">Спецпредложения</a>
-                    <a class="col-md-2 text-center" asp-controller="Info" asp-action="Contacts">Контакты</a>
+                else
+                {
+                    <div class="col-lg-2 col-md-6 text-center">
+                        <a class="top-button-reg-a" asp-controller="Home" asp-action="Registration">
+                            <div class="top-button">Регистрация</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-6 text-center">
+                        <a href="#" class="top-button-a" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <div class="top-button">Вход</div>
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row">
+                @if (Transfer.Web.Models.Security.IsAuthenticated)
+                {
+                    <div class="main-menu row">
+                        <a class="col-md-2 text-center" asp-controller="Trip" asp-action="Index">Поездки</a>
+                        <a class="col-md-3 text-center" asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                        <a class="col-md-3 text-center" asp-controller="Transport" asp-action="Search">Поиск ТС</a>
+                        <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
+                        <a class="col-md-2 text-center" asp-controller="Account" asp-action="Index">Личный кабинет</a>
+                    </div>
+                    @if (Transfer.Web.Models.Security.ReviewEvents > 0)
+                    {
+                        <div class="row">
+                            <div class="col-md-2 offset-md-8 text-center events">@Transfer.Web.Models.Security.ReviewEvents новых</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="main-menu row">
+                        <a class="col-md-2 text-center" asp-controller="Info" asp-action="About">О компании</a>
+                        <a class="col-md-2 text-center" asp-controller="Transport" asp-action="Index">Транспорт</a>
+                        <a class="col-md-2 text-center" asp-controller="Trip" asp-action="Index">Поездки</a>
+                        <a class="col-md-2 text-center" asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
+                        <a class="col-md-2 text-center" asp-controller="Info" asp-action="Specials">Спецпредложения</a>
+                        <a class="col-md-2 text-center" asp-controller="Info" asp-action="Contacts">Контакты</a>
+                    </div>
+                }
+                <div class="row blank-row"></div>
+                <div class="row blank-row"></div>
+                <div class="row blank-row"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid central">
+        @RenderBody()
+    </div>
+    <div class="container-fluid bottom">
+        <div class="container">
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
+            <div class="row d-flex flex-wrap align-items-center">
+                <div class="col-md-3 t-col">
+                    <a href="/">
+                        <img alt="" src="/images/trsite_logo.png" class="main-logo" />
+                    </a><br />
                 </div>
-            }
-            <div class="row blank-row"></div>
-            <div class="row blank-row"></div>
+                <div class="col-md-2 offset-1 t-col links">
+                    <a asp-controller="Info" asp-action="About">О компании</a>
+                </div>
+                <div class="col-md-2 t-col links">
+                    <a asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
+                </div>
+                <div class="col-md-3 offset-1 t-col contacts">
+                    <span class="d">
+                        <i class="fas fa-phone-alt"></i> <span>8-800-100-67-91</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 offset-4 t-col links">
+                    <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                </div>
+                <div class="col-md-2 t-col links">
+                    <a asp-controller="Info" asp-action="Specials">Спецпредложения</a>
+                </div>
+                <div class="col-md-3 offset-1 t-col contacts">
+                    <span class="d">
+                        <i class="far fa-envelope"></i> <span>info@tktransfer.com</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 t-col social">
+                    <a href="/">
+                        <i class="fab fa-vk fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-instagram-square fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-facebook-square fa-lg"></i>
+                    </a>
+                    <a href="/">
+                        <i class="fab fa-telegram fa-lg"></i>
+                    </a>
+                </div>
+                <div class="col-md-2 offset-1 t-col links">
+                    <a asp-controller="Trip" asp-action="Index">Поездки</a>
+                </div>
+                <div class="col-md-2 t-col links">
+                    <a asp-controller="Info" asp-action="Contacts">Контакты</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 offset-4 t-col links">
+                    <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                </div>
+                <div class="col-md-2 t-col links">
+                    <a asp-controller="Info" asp-action="Vacancy">Вакансии</a>
+                </div>
+                <div class="col-md-3 offset-1 t-col contacts">
+                    <span class="d">
+                        <i class="far fa-calendar-alt"></i> <span>Пн-Пт: с 09:00 до 18:00<br />Сб,Вс: выходной</span>
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    ©2016-@(DateTime.Now.Year). Все права защищены.
+                </div>
+            </div>
             <div class="row blank-row"></div>
         </div>
     </div>
-</div>
-<div class="container-fluid central">
-    @RenderBody()
-</div>
-<div class="container-fluid bottom">
-    <div class="container">
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
-        <div class="row d-flex flex-wrap align-items-center">
-            <div class="col-md-3 t-col">
-                <a href="/">
-                    <img alt="" src="/images/trsite_logo.png" class="main-logo"/>
-                </a><br/>
-            </div>
-            <div class="col-md-2 offset-1 t-col links">
-                <a asp-controller="Info" asp-action="About">О компании</a>
-            </div>
-            <div class="col-md-2 t-col links">
-                <a asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
-            </div>
-            <div class="col-md-3 offset-1 t-col contacts">
-                <span class="d">
-                    <i class="fas fa-phone-alt"></i> <span>8-800-100-67-91</span>
-                </span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 offset-4 t-col links">
-                <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
-            </div>
-            <div class="col-md-2 t-col links">
-                <a asp-controller="Info" asp-action="Specials">Спецпредложения</a>
-            </div>
-            <div class="col-md-3 offset-1 t-col contacts">
-                <span class="d">
-                    <i class="far fa-envelope"></i> <span>info@tktransfer.com</span>
-                </span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 t-col social">
-                <a href="/">
-                    <i class="fab fa-vk fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-instagram-square fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-facebook-square fa-lg"></i>
-                </a>
-                <a href="/">
-                    <i class="fab fa-telegram fa-lg"></i>
-                </a>
-            </div>
-            <div class="col-md-2 offset-1 t-col links">
-                <a asp-controller="Trip" asp-action="Index">Поездки</a>
-            </div>
-            <div class="col-md-2 t-col links">
-                <a asp-controller="Info" asp-action="Contacts">Контакты</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 offset-4 t-col links">
-                <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
-            </div>
-            <div class="col-md-2 t-col links">
-                <a asp-controller="Info" asp-action="Vacancy">Вакансии</a>
-            </div>
-            <div class="col-md-3 offset-1 t-col contacts">
-                <span class="d">
-                    <i class="far fa-calendar-alt"></i> <span>Пн-Пт: с 09:00 до 18:00<br/>Сб,Вс: выходной</span>
-                </span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                ©2016-@(DateTime.Now.Year). Все права защищены.
-            </div>
-        </div>
-        <div class="row blank-row"></div>
-    </div>
-</div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                ...11112222...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="container">
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        <div class="col-10 t-col">Авторизация</div>
+                        <div class="col-2 t-col text-end">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <div class="row blank-row"></div>
+                </div>
+                <div class="container">
+                    @await Html.PartialAsync("~/Views/Auth/Login.cshtml")
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" integrity="sha512-o6XqxgrUsKmchwy9G5VRNWSSxTS4Urr4loO6/0hYdpWmFUfHqGzawGxeQGMDqYzxjY9sbktPbNlkIQJWagVZQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js" integrity="sha512-37T7leoNS06R80c8Ulq7cdCDU5MNQBwlYoy1TX/WUsLFC2eYNqtKlV0QjH7r8JpG/S0GUMZwebnVFLPd6SU5yg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" integrity="sha512-o6XqxgrUsKmchwy9G5VRNWSSxTS4Urr4loO6/0hYdpWmFUfHqGzawGxeQGMDqYzxjY9sbktPbNlkIQJWagVZQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="~/js/site.js" crossorigin="anonymous"></script>
 
-@await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
