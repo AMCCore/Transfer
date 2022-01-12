@@ -35,4 +35,11 @@
 		<Folder Include="wwwroot\dist\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Include="wwwroot\css\main.css" />
+	  <None Include="wwwroot\images\243.png" />
+	  <None Include="wwwroot\images\452.png" />
+	  <None Include="wwwroot\images\768.png" />
+	</ItemGroup>
+
 </Project>

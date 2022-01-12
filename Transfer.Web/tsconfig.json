@@ -1,18 +1,14 @@
 {
-  "compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
-    "module": "es6",
     "target": "es5",
-    "noEmit": true,
-    "allowJs": true,
-    "lib": [ "es2015", "es2017", "dom" ]
+    "outDir": "wwwroot/js"
   },
-  "exclude": [
-    "node_modules",
-    "wwwroot"
+  "include": [
+    "scripts/**/*"
   ]
 }

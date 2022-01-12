@@ -1,14 +1,5 @@
 ﻿import 'jquery';
 import 'bootstrap';
-import 'jquery-ajax-unobtrusive';
-
-import '../node_modules/bootstrap/dist/css/bootstrap.css';
-import '../Styles/site.css';
-
-import '@fortawesome/fontawesome-free/js/fontawesome';
-import '@fortawesome/fontawesome-free/js/solid';
-import '@fortawesome/fontawesome-free/js/regular';
-import '@fortawesome/fontawesome-free/js/brands';
 
 let w;
 w = window;
@@ -38,12 +29,4 @@ function SomeButtonZero() {
     let name = "Zusul";
     
     alert(name);
-}
-
-function LoginRefirect(r) {
-    var e = r.responseJSON;
-    if (e.redirect) {
-        //window.location.href = e.redirect;
-        alert(e.redirect);
-    }
 }
