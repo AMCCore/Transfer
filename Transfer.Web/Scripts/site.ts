@@ -1,14 +1,6 @@
 ﻿import 'jquery';
 import 'bootstrap';
 
-import '../node_modules/bootstrap/dist/css/bootstrap.css'
-import '../Styles/site.css'
-
-import '@fortawesome/fontawesome-free/js/fontawesome'
-import '@fortawesome/fontawesome-free/js/solid'
-import '@fortawesome/fontawesome-free/js/regular'
-import '@fortawesome/fontawesome-free/js/brands'
-
 let w;
 w = window;
 
