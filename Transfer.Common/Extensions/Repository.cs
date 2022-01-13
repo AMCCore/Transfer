@@ -29,12 +29,25 @@ namespace Transfer.Common.Extensions
             uw.SaveChanges();
         }
 
+        public static void AddIfNotExists<T>(this IUnitOfWork uw, ICollection<T> data) where T : class, IEntityBase
+        {
+            var entitys = uw.GetSet<T>().Select(x => x.Id).ToArray();
+            foreach (var r in data)
+            {
+                if (entitys.All(x => x != r.Id))
+                {
+                    uw.AddEntity(r, false);
+                }
+            }
+            uw.SaveChanges();
+        }
+
         /// <summary>
         ///     полуить по
         /// </summary>
         public static T GetById<T>(this IQueryable<T> query, Guid id) where T : class, IEntityBase
         {
-            if (id.IsNullOrEmpty()) return null; 
+            if (id.IsNullOrEmpty()) return null;
             return query.FirstOrDefault(a => a.Id == id);
         }
 
