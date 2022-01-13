@@ -22,7 +22,7 @@ namespace Transfer.Dal.Entities
 
         [ForeignKey(nameof(Account))]
         [Required]
-        public Guid? AccountId { get; set; }
+        public Guid AccountId { get; set; }
 
         public virtual DbAccount Account { get; set; }
 

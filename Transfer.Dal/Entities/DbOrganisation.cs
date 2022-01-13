@@ -63,7 +63,7 @@ namespace Transfer.Dal.Entities
         /// <summary>
         ///     Регион
         /// </summary>
-        public virtual DbRegion Region { get; set; }
+        public virtual DbRegion? Region { get; set; }
 
         /// <summary>
         ///     Город

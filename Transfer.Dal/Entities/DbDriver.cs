@@ -19,18 +19,14 @@ namespace Transfer.Dal.Entities
         public long LastUpdateTick { get; set; }
 
         public bool IsDeleted { get; set; }
-
-        [ForeignKey(nameof(DriversLicense))]
-        public Guid? DbDriversLicenseId { get; set; }
-
-        public virtual DbDriversLicense DriversLicense { get; set; }
+        
+        public virtual DbOrganisation? Organisation { get; set; }
+        
+        [ForeignKey(nameof(Organisation))]
+        public Guid? OrganisationId { get; set; }
 
         public string? TelegramId { get; set; }
         
-        [ForeignKey(nameof(Organisation))]
-        [Required]
-        public Guid? OrganisationId { get; set; }
-
-        public virtual DbOrganisation Organisation { get; set; }
+        public virtual ICollection<DbDriversLicense> DbDriversLicenses { get; set; } = new List<DbDriversLicense>();
     }
 }

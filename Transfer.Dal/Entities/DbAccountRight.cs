@@ -32,7 +32,8 @@ namespace Transfer.Dal.Entities
         ///     УЗ пользователя
         /// </summary>
         [ForeignKey(nameof(Account))]
-        public Guid? AccountId { get; set; }
+        [Required]
+        public Guid AccountId { get; set; }
 
         /// <summary>
         ///     УЗ пользователя
@@ -48,7 +49,7 @@ namespace Transfer.Dal.Entities
         /// <summary>
         ///     УЗ пользователя
         /// </summary>
-        public virtual DbOrganisation Organisation { get; set; }
+        public virtual DbOrganisation? Organisation { get; set; }
 
     }
 }

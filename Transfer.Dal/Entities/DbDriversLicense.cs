@@ -51,7 +51,10 @@ namespace Transfer.Dal.Entities
         /// </summary>
         [MaxLength(1000)]
         public string DocumentCatigories { get; set; }
-
-        public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
+        
+        public virtual DbDriver? Driver { get; set; }
+        
+        [ForeignKey(nameof(Driver))]
+        public Guid? DriverId { get; set; }
     }
 }
