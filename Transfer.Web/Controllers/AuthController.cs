@@ -8,9 +8,13 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Transfer.Common;
+using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 
 namespace Transfer.Web.Controllers
@@ -28,28 +32,31 @@ namespace Transfer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
         {
-            if(string.Equals("admin", objLoginModel.Password, StringComparison.OrdinalIgnoreCase) 
-                && string.Equals("admin", objLoginModel.UserName, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(objLoginModel.UserName) && string.IsNullOrWhiteSpace(objLoginModel.Password))
             {
-                //todo загрузка пользователя и проверка его прав
-                var accountInfo = new { Roles = new List<Guid>(), Id = Guid.NewGuid(), OrganisationId = Guid.NewGuid() };
+                var account = await UnitOfWork.GetSet<DbAccount>()
+                    .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
+                    .FirstOrDefaultAsync(CancellationToken.None);
 
-                var claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(accountInfo.Roles)));
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, accountInfo.Id.ToString()));
-                claims.Add(new Claim(ClaimTypes.Locality, accountInfo.OrganisationId.ToString()));
+                if (BCrypt.Net.BCrypt.Verify(objLoginModel.Password, account.Password))
+                {
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(GetAccountRoles(account.AccountRights))));
+                    claims.Add(new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()));
+                    //claims.Add(new Claim(ClaimTypes.Locality, account.OrganisationId.ToString()));
 
-                var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(userIdentity),
-                    new AuthenticationProperties
-                    {
-                        ExpiresUtc = DateTime.UtcNow.AddHours(10),
-                        IsPersistent = objLoginModel.RememberLogin,
-                        AllowRefresh = true
-                    });
+                    var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(userIdentity),
+                        new AuthenticationProperties
+                        {
+                            ExpiresUtc = DateTime.UtcNow.AddHours(10),
+                            IsPersistent = objLoginModel.RememberLogin,
+                            AllowRefresh = true
+                        });
 
-                return Ok(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+                    return Ok(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+                }
             }
 
             ViewBag.LoginErrorMessage = "Неверный логин или пароль";
@@ -63,6 +70,23 @@ namespace Transfer.Web.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
+        }
+        
+        /// <summary>
+        /// Группируем права из БД по организациям
+        /// </summary>
+        private static Dictionary<Guid, List<Guid>> GetAccountRoles(IEnumerable<DbAccountRight> roles)
+        {
+            if (roles == null || !roles.Any())
+            {
+                return new Dictionary<Guid, List<Guid>>();
+            }
+
+            var res = roles.GroupBy(sr => sr.OrganisationId ?? Guid.Empty)
+                .ToDictionary(g => g.Key,
+                    g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId.Value).ToList());
+
+            return res;
         }
     }
 }

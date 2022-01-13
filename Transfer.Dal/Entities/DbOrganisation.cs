@@ -83,8 +83,14 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         public string? DirectorPosition { get; set; }
 
-        public virtual ICollection<DbAccount> Accounts { get; set; } = new List<DbAccount>();
+        public virtual ICollection<DbOrganisationAccount> Accounts { get; set; } = new List<DbOrganisationAccount>();
 
         public virtual ICollection<DbOrganisationWorkingArea> WorkingArea { get; set; } = new List<DbOrganisationWorkingArea>();
+        
+        public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
+
+        public double Rating { get; set; } = 0;
+        
+        public bool Checked { get; set; }
     }
 }

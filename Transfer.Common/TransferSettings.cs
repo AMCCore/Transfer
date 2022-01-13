@@ -9,5 +9,7 @@ namespace Transfer.Common
     public class TransferSettings
     {
         public string TGBotToken { get; set; }
+
+        public int TablePageSize { get; set; } = 25;
     }
 }

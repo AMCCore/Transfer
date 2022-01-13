@@ -28,6 +28,7 @@ namespace Transfer.Dal.Context
             
             modelBuilder.Entity<DbAccountRight>().HasIndex(a => new { a.AccountId, a.RightId, a.OrganisationId }).IsUnique();
             modelBuilder.Entity<DbExternalLogin>().Property(d => d.LoginType).HasConversion(new GuidEnumConverter<ExternalLoginEnum>());
+            modelBuilder.Entity<DbOrganisationAccount>().Property(d => d.AccountType).HasConversion(new GuidEnumConverter<OrganisationAccountType>());
 
             modelBuilder.DisableCascadeDeleteConvention();
 
