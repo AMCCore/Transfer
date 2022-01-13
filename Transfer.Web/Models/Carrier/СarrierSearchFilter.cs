@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
+using Transfer.Bl.Dto.Carrier;
 
 namespace Transfer.Web.Models.Carrier
 {
     public class СarrierSearchFilter : BaseFilterModel<СarrierSearchResultItem>
     {
-        public СarrierSearchFilter() : base()
-        {
-        }
-
         public СarrierSearchFilter(IEnumerable<СarrierSearchResultItem> list, int pageSize) : base(list, pageSize)
         {
         }

@@ -73,7 +73,7 @@
                 {
                     <div class="main-menu row">
                         <a class="col-md-2 text-center" asp-controller="Trip" asp-action="Index">Поездки</a>
-                        <a class="col-md-3 text-center" asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                        <a class="col-md-3 text-center" asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
                         <a class="col-md-3 text-center" asp-controller="Transport" asp-action="Search">Поиск ТС</a>
                         <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
                         <a class="col-md-2 text-center" asp-controller="Account" asp-action="Index">Личный кабинет</a>
@@ -130,7 +130,7 @@
             </div>
             <div class="row">
                 <div class="col-md-2 offset-4 t-col links">
-                    <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                    <a asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
                 </div>
                 <div class="col-md-2 t-col links">
                     <a asp-controller="Info" asp-action="Specials">Спецпредложения</a>
@@ -165,7 +165,7 @@
             </div>
             <div class="row">
                 <div class="col-md-2 offset-4 t-col links">
-                    <a asp-controller="Сarrier" asp-action="Index">Перевозчики</a>
+                    <a asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
                 </div>
                 <div class="col-md-2 t-col links">
                     <a asp-controller="Info" asp-action="Vacancy">Вакансии</a>
@@ -199,7 +199,7 @@
                     <div class="row blank-row"></div>
                 </div>
                 <div class="container">
-                    @await Html.PartialAsync("~/Views/Auth/Login.cshtml")
+                    @await Html.PartialAsync("~/Views/Auth/Login.cshtml", new LoginModel())
                 </div>
             </div>
         </div>

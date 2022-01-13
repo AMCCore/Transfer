@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Transfer.Web.Models.Carrier
+namespace Transfer.Bl.Dto.Carrier
 {
     public class СarrierSearchResultItem
     {

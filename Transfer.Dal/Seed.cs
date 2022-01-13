@@ -31,19 +31,26 @@ namespace Transfer.Dal
                     Email = "admin",
                     Password = BCrypt.Net.BCrypt.HashString("admin"),
                     LastUpdateTick = DateTime.Now.Ticks,
-                    DateCreated = DateTime.Now,
-                    AccountRights = new List<DbAccountRight>()
-                    {
-                        new DbAccountRight
-                        {
-                            Id = Guid.NewGuid(),
-                            RightId = AdminAccessRights.IsAdmin.GetEnumGuid()
-                        }
-                    }
+                    DateCreated = DateTime.Now
                 }
             };
 
-            uw.AddOrUpdate(accounts, (source, destination) => { destination.Email = source.Email; });
+            uw.AddOrUpdate(accounts, (source, destination) => { destination.Email = source.Email;
+                destination.Password = source.Password;
+            });
+
+            var accr = new List<DbAccountRight>
+            {
+                new DbAccountRight
+                {
+                    Id = Guid.Parse("5164F65D-AD28-454A-99A5-B630996C1474"),
+                    AccountId = adminId,
+                    RightId = AdminAccessRights.IsAdmin.GetEnumGuid(),
+                    LastUpdateTick = DateTime.Now.Ticks,
+                    OrganisationId = null
+                }
+            };
+            uw.AddIfNotExists(accr);
         }
 
         private static void SetRights(this IUnitOfWork uw)
@@ -69,6 +76,8 @@ namespace Transfer.Dal
                     IsDeleted = false,
                     Rating = 99.5,
                     City = "Геленджик",
+                    INN = "5390730577",
+                    OGRN = "2052931098361",
                     LastUpdateTick = DateTime.Now.Ticks
                 },
                 new DbOrganisation
@@ -83,6 +92,8 @@ namespace Transfer.Dal
                     IsDeleted = false,
                     Rating = 99.5,
                     City = "Геленджик",
+                    INN = "8799526752",
+                    OGRN = "7073663895199",
                     LastUpdateTick = DateTime.Now.Ticks
                 }
 

@@ -32,9 +32,9 @@ namespace Transfer.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
         {
-            if (string.IsNullOrWhiteSpace(objLoginModel.UserName) && string.IsNullOrWhiteSpace(objLoginModel.Password))
+            if (!string.IsNullOrWhiteSpace(objLoginModel.UserName) && !string.IsNullOrWhiteSpace(objLoginModel.Password))
             {
-                var account = await UnitOfWork.GetSet<DbAccount>()
+                var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)
                     .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
                     .FirstOrDefaultAsync(CancellationToken.None);
 
