@@ -28,5 +28,7 @@ namespace Transfer.Dal.Entities
         public string? TelegramId { get; set; }
         
         public virtual ICollection<DbDriversLicense> DbDriversLicenses { get; set; } = new List<DbDriversLicense>();
+        
+        public virtual ICollection<DbPersonData> DbPersonData { get; set; } = new List<DbPersonData>();
     }
 }

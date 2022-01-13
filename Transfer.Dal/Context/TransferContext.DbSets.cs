@@ -20,5 +20,6 @@ namespace Transfer.Dal.Context
         public virtual DbSet<DbDriver> DbDriver { get; set; }
         public virtual DbSet<DbDriversLicense> DbDriversLicense { get; set; }
         public virtual DbSet<DbOrganisationAccount> DbOrganisationAccount { get; set; }
+        public virtual DbSet<DbPersonData> DbPersonData { get; set; }
     }
 }

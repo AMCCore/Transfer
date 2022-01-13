@@ -33,5 +33,7 @@ namespace Transfer.Dal.Entities
         public virtual ICollection<DbOrganisationAccount> Organisations { get; set; } = new List<DbOrganisationAccount>();
 
         public DateTime? DateCreated { get; set; }
+        
+        public virtual ICollection<DbPersonData> DbPersonDatas { get; set; } = new List<DbPersonData>();
     }
 }

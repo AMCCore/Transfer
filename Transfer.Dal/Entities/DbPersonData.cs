@@ -9,7 +9,7 @@ using Transfer.Common;
 
 namespace Transfer.Dal.Entities
 {
-    /*[Table("PersonDatas")]
+    [Table("PersonDatas")]
     public class DbPersonData : IEntityBase
     {
         [Key]
@@ -84,15 +84,21 @@ namespace Transfer.Dal.Entities
         [Required]
         public DateTime DocumentDateOfIssue { get; set; }
 
-        public virtual ICollection<DbAccount> Accounts { get; set; } = new List<DbAccount>();
-
         [MaxLength(1000)]
         [Required]
         public string RegistrationAddress { get; set; }
 
         [MaxLength(1000)]
         public string? RealAddress { get; set; }
+        
+        public virtual DbDriver? Driver { get; set; }
+        
+        [ForeignKey(nameof(Driver))]
+        public Guid? DriverId { get; set; }
 
-        public virtual ICollection<DbDriver> DriversData { get; set; } = new List<DbDriver>();*/
-    //}
+        public virtual DbAccount? Account { get; set; }
+        
+        [ForeignKey(nameof(Account))]
+        public Guid? AccountId { get; set; }
+    }
 }
