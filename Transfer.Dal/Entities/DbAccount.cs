@@ -26,11 +26,6 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         public string Password { get; set; }
 
-        [ForeignKey(nameof(PersonData))]
-        public Guid? PersonDataId { get; set; }
-
-        public virtual DbPersonData? PersonData { get; set; }
-
         public virtual ICollection<DbAccountRight> AccountRights { get; set; } = new List<DbAccountRight>();
 
         public virtual ICollection<DbExternalLogin> ExternalLogins { get; set; } = new List<DbExternalLogin>();

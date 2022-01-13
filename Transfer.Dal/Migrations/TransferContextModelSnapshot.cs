@@ -41,6 +41,9 @@ namespace Transfer.Dal.Migrations
                     b.Property<long>("LastUpdateTick")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("OrganisationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -50,6 +53,8 @@ namespace Transfer.Dal.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganisationId");
 
                     b.HasIndex("PersonDataId");
 
@@ -100,9 +105,6 @@ namespace Transfer.Dal.Migrations
                     b.Property<long>("LastUpdateTick")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("PersonDataId")
                         .HasColumnType("uniqueidentifier");
 
@@ -112,8 +114,6 @@ namespace Transfer.Dal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DbDriversLicenseId");
-
-                    b.HasIndex("OrganisationId");
 
                     b.HasIndex("PersonDataId");
 
@@ -205,9 +205,6 @@ namespace Transfer.Dal.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<bool>("Checked")
-                        .HasColumnType("bit");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -248,9 +245,6 @@ namespace Transfer.Dal.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
-
                     b.Property<Guid?>("RegionId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
@@ -260,33 +254,6 @@ namespace Transfer.Dal.Migrations
                     b.HasIndex("RegionId");
 
                     b.ToTable("Organisations");
-                });
-
-            modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationAccount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AccountType")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("LastUpdateTick")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.ToTable("OrganisationAccounts");
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationWorkingArea", b =>
@@ -427,9 +394,15 @@ namespace Transfer.Dal.Migrations
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbAccount", b =>
                 {
+                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Organisation")
+                        .WithMany("Accounts")
+                        .HasForeignKey("OrganisationId");
+
                     b.HasOne("Transfer.Dal.Entities.DbPersonData", "PersonData")
                         .WithMany("Accounts")
                         .HasForeignKey("PersonDataId");
+
+                    b.Navigation("Organisation");
 
                     b.Navigation("PersonData");
                 });
@@ -455,19 +428,11 @@ namespace Transfer.Dal.Migrations
                         .WithMany("Drivers")
                         .HasForeignKey("DbDriversLicenseId");
 
-                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Organisation")
-                        .WithMany("Drivers")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Transfer.Dal.Entities.DbPersonData", "PersonData")
                         .WithMany("DriversData")
                         .HasForeignKey("PersonDataId");
 
                     b.Navigation("DriversLicense");
-
-                    b.Navigation("Organisation");
 
                     b.Navigation("PersonData");
                 });
@@ -494,25 +459,6 @@ namespace Transfer.Dal.Migrations
                     b.Navigation("Region");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationAccount", b =>
-                {
-                    b.HasOne("Transfer.Dal.Entities.DbAccount", "Account")
-                        .WithMany("Organisations")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Organisation")
-                        .WithMany("Accounts")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Organisation");
-                });
-
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationWorkingArea", b =>
                 {
                     b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Organisation")
@@ -537,8 +483,6 @@ namespace Transfer.Dal.Migrations
                     b.Navigation("AccountRights");
 
                     b.Navigation("ExternalLogins");
-
-                    b.Navigation("Organisations");
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbDriversLicense", b =>
@@ -549,8 +493,6 @@ namespace Transfer.Dal.Migrations
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisation", b =>
                 {
                     b.Navigation("Accounts");
-
-                    b.Navigation("Drivers");
 
                     b.Navigation("WorkingArea");
                 });

@@ -9,7 +9,7 @@ using Transfer.Common;
 
 namespace Transfer.Dal.Entities
 {
-    [Table("PersonDatas")]
+    /*[Table("PersonDatas")]
     public class DbPersonData : IEntityBase
     {
         [Key]
@@ -93,6 +93,6 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         public string? RealAddress { get; set; }
 
-        public virtual ICollection<DbDriver> DriversData { get; set; } = new List<DbDriver>();
-    }
+        public virtual ICollection<DbDriver> DriversData { get; set; } = new List<DbDriver>();*/
+    //}
 }

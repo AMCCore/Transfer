@@ -20,21 +20,16 @@ namespace Transfer.Dal.Entities
 
         public bool IsDeleted { get; set; }
 
-        [ForeignKey(nameof(PersonData))]
-        public Guid? PersonDataId { get; set; }
-
-        public virtual DbPersonData? PersonData { get; set; }
-
         [ForeignKey(nameof(DriversLicense))]
         public Guid? DbDriversLicenseId { get; set; }
 
-        public virtual DbDriversLicense? DriversLicense { get; set; }
+        public virtual DbDriversLicense DriversLicense { get; set; }
 
         public string? TelegramId { get; set; }
         
         [ForeignKey(nameof(Organisation))]
         [Required]
-        public Guid OrganisationId { get; set; }
+        public Guid? OrganisationId { get; set; }
 
         public virtual DbOrganisation Organisation { get; set; }
     }

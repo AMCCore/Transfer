@@ -37,11 +37,18 @@ namespace Transfer.Dal.Entities
         /// <summary>
         ///     УЗ пользователя
         /// </summary>
-        public virtual DbAccount? Account { get; set; }
+        public virtual DbAccount Account { get; set; }
 
         /// <summary>
         ///     Организация
         /// </summary>
+        [ForeignKey(nameof(Organisation))]
         public Guid? OrganisationId { get; set; }
+        
+        /// <summary>
+        ///     УЗ пользователя
+        /// </summary>
+        public virtual DbOrganisation Organisation { get; set; }
+
     }
 }
