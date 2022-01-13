@@ -31,5 +31,11 @@ namespace Transfer.Dal.Entities
         public virtual DbDriversLicense? DriversLicense { get; set; }
 
         public string? TelegramId { get; set; }
+        
+        [ForeignKey(nameof(Organisation))]
+        [Required]
+        public Guid OrganisationId { get; set; }
+
+        public virtual DbOrganisation Organisation { get; set; }
     }
 }
