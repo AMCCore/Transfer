@@ -34,3 +34,15 @@ function LoginSuccessRefresh(e) {
         window.location.href = e.redirect;
     }
 }
+
+function DisableCheckboxes(e) {
+    let elem = $(e);
+    if (elem.is(':checked')) {
+        $('.ordering input:checkbox').removeAttr('checked');
+        elem.attr('checked', 'checked');
+        elem.closest('form').submit();
+    }
+}
+
+$(() => {
+});

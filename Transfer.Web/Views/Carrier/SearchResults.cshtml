@@ -46,19 +46,19 @@
         Параметры сортировки запросов:
     </div>
     <div class="t-col col-6">
-        @Html.CheckBoxFor(x => x.OrderByName, new { @class="btn-check", autocomplete="off" })
+        @Html.CheckBoxFor(x => x.OrderByName, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
         <label class="btn btn-sm" for="OrderByName">
             <i class="fas fa-caret-down"></i>
             <i class="fas fa-sort-alpha-down"></i>
         </label>
         &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByRating, new { @class="btn-check", autocomplete="off" })
+        @Html.CheckBoxFor(x => x.OrderByRating, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
         <label class="btn btn-sm" for="OrderByRating">
             <i class="fas fa-caret-down"></i>
             <i class="fas fa-star"></i>
         </label>
         &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByChecked, new { @class="btn-check", autocomplete="off" })
+        @Html.CheckBoxFor(x => x.OrderByChecked, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
         <label class="btn btn-sm" for="OrderByChecked">
             <i class="fas fa-caret-down"></i>
             <i class="fas fa-lock-open"></i>
