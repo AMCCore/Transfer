@@ -3,9 +3,14 @@ using Transfer.Bl.Dto.Carrier;
 
 namespace Transfer.Web.Models.Carrier
 {
-    public class СarrierSearchFilter : BaseFilterModel<СarrierSearchResultItem>
+    public class CarrierSearchFilter : BaseFilterModel<CarrierSearchResultItem>
     {
-        public СarrierSearchFilter(IEnumerable<СarrierSearchResultItem> list, int pageSize) : base(list, pageSize)
+        public CarrierSearchFilter()
+        {
+
+        }
+
+        public CarrierSearchFilter(IEnumerable<CarrierSearchResultItem> list, int pageSize) : base(list, pageSize)
         {
         }
 

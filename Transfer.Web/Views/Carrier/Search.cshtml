@@ -1,0 +1,37 @@
+﻿@model Transfer.Web.Models.Carrier.CarrierSearchFilter
+
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common
+
+@section Styles {
+<link rel="stylesheet" href="~/css/Carrier/Search.css" />
+}
+
+<div class="container">
+    <div class="row blank-row"></div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">Ваши перевозчики</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form id="CarrierSearch" asp-controller="Carrier" asp-action="SearchCarrier" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierSearch">
+        @await Html.PartialAsync("~/Views/Carrier/SearchResults.cshtml", Model)
+    </form>
+</div>

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Transfer.Bl.Dto.Carrier;
 using Transfer.Common;
@@ -19,17 +18,17 @@ using Transfer.Web.Models.Carrier;
 namespace Transfer.Web.Controllers
 {
     [Authorize]
-    public class СarrierController : BaseController
+    public class CarrierController : BaseController
     {
-        public СarrierController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork,
-            ILogger<СarrierController> logger, IMapper mapper)
+        public CarrierController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork,
+            ILogger<CarrierController> logger, IMapper mapper)
             : base(transferSettings, unitOfWork, logger, mapper)
         {
         }
 
-        private async Task<СarrierSearchFilter> GetDataFromDb(СarrierSearchFilter filter = null)
+        private async Task<CarrierSearchFilter> GetDataFromDb(CarrierSearchFilter filter = null)
         {
-            filter ??= new СarrierSearchFilter(new List<СarrierSearchResultItem>(), TransferSettings.TablePageSize);
+            filter ??= new CarrierSearchFilter(new List<CarrierSearchResultItem>(), TransferSettings.TablePageSize);
             var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted).AsQueryable();
             if (!string.IsNullOrWhiteSpace(filter.Name))
             {
@@ -61,14 +60,15 @@ namespace Transfer.Web.Controllers
             var entity = await query.Skip(filter.StartRecord)
                 .Take(filter.PageSize).ToListAsync(CancellationToken.None);
 
-            filter.Results = new CommonPagedList<СarrierSearchResultItem>(
-                entity.Select(ss => Mapper.Map<СarrierSearchResultItem>(ss)).ToList(),
+            filter.Results = new CommonPagedList<CarrierSearchResultItem>(
+                entity.Select(ss => Mapper.Map<CarrierSearchResultItem>(ss)).ToList(),
                 filter.PageNumber, filter.PageSize, totalCount);
 
             return filter;
         }
 
         [HttpGet]
+        [Route("Carrier/Search")]
         public async Task<IActionResult> Search()
         {
             var result = await GetDataFromDb();
@@ -77,11 +77,26 @@ namespace Transfer.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Search([FromForm] СarrierSearchFilter filter)
+        [Route("Carrier/Search")]
+        public async Task<IActionResult> SearchCarrier([FromForm] CarrierSearchFilter filter)
         {
             var result = await GetDataFromDb(filter);
 
-            return View(result);
+            return PartialView("SearchResults", result);
+        }
+
+        [HttpGet]
+        [Route("Carrier/New")]
+        public IActionResult NewCarrier()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("Carrier/{carrierId}")]
+        public IActionResult CarrierItem(Guid carrierId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

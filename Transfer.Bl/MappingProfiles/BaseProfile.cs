@@ -14,7 +14,7 @@ namespace Transfer.Bl.MappingProfiles
     {
         public BaseProfile()
         {
-            CreateMap<DbOrganisation, СarrierSearchResultItem>()
+            CreateMap<DbOrganisation, CarrierSearchResultItem>()
                 .ForMember(x => x.Name, opt => opt.MapFrom(o => string.IsNullOrEmpty(o.Name) ? o.FullName : o.Name))
                 .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => "Евгений"))
                 .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => "evgen6654@mail.ru"))

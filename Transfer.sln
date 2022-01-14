@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Dal", "Transfer.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Bl", "Transfer.Bl\Transfer.Bl.csproj", "{03E99563-8FA6-48BD-885A-02C27C4958EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfer.Web", "Transfer.Web\Transfer.Web.csproj", "{C396697E-6306-4A6C-A75D-1BD58C17E86A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Web", "Transfer.Web\Transfer.Web.csproj", "{C396697E-6306-4A6C-A75D-1BD58C17E86A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

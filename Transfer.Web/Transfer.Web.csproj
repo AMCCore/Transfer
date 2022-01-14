@@ -33,6 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Models\Zusul\" />
+		<Folder Include="Scripts\Zusul\" />
+		<Folder Include="wwwroot\css\Zusul\" />
 		<Folder Include="wwwroot\dist\" />
 	</ItemGroup>
 

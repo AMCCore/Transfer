@@ -2,7 +2,7 @@
 
 namespace Transfer.Bl.Dto.Carrier
 {
-    public class СarrierSearchResultItem
+    public class CarrierSearchResultItem
     {
         public Guid Id { get; set; }
         

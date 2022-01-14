@@ -1,0 +1,55 @@
+﻿.carrier-filter {
+}
+
+.new-carrier-link {
+    height: 72px;
+    width: 72px;
+    margin: auto;
+    line-height: 72px;
+    background-color: #ecbf54;
+    color: #007896;
+    border-radius: 18px;
+    border: solid 1px #ecbf54;
+}
+
+    .new-carrier-link:hover {
+        background-color: #fff;
+        border: solid 1px #007896;
+    }
+
+.carrier {
+    color: #0f4c71;
+    padding-left: 36px;
+}
+
+    .carrier .contacts a {
+        color: #007896;
+        text-decoration: none;
+        border-bottom: dashed 1px #007896;
+    }
+
+        .carrier .contacts a:hover {
+            color: #ecbf54;
+            border-bottom: none;
+        }
+
+    .carrier .go {
+        padding-right: 36px;
+    }
+    .carrier .go a {
+        line-height: 36px;
+        border: solid 1px #007896;
+        color: #000;
+        display: flex;
+        border-radius: 18px;
+    }
+
+        .carrier .go a:hover {
+            border: solid 1px #ecbf54;
+            background-color: #ecbf54;
+            color: #000;
+        }
+
+        .carrier .go a span {
+            margin: auto;
+        }
