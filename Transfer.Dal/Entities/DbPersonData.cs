@@ -91,14 +91,8 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         public string? RealAddress { get; set; }
         
-        public virtual DbDriver? Driver { get; set; }
-        
-        [ForeignKey(nameof(Driver))]
-        public Guid? DriverId { get; set; }
+        public virtual ICollection<DbAccount> Accounts { get; set; } = new List<DbAccount>();
 
-        public virtual DbAccount? Account { get; set; }
-        
-        [ForeignKey(nameof(Account))]
-        public Guid? AccountId { get; set; }
+        public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
     }
 }

@@ -36,5 +36,13 @@ namespace Transfer.Common.Cache
             MemoryCache.Default.Remove(cacheKey);
             MemoryCache.Default.Add(cacheKey, data, DateTime.Now.AddMinutes(interval));
         }
+
+        /// <summary>
+        /// Принудительно удалить из кэша
+        /// </summary>
+        public void Remove(string cacheKey)
+        {
+            MemoryCache.Default.Remove(cacheKey);
+        }
     }
 }

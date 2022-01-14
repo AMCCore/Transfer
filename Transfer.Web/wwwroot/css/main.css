@@ -11,6 +11,16 @@ img {
     height: auto;
 }
 
+.input-group-icon .input-group-text {
+    background-color: #fff;
+    padding-top: .6rem;
+    padding-bottom: 0;
+}
+
+.input-group-icon input {
+    border-left: solid 1px #fff;
+}
+
 .blank-row {
     line-height: 18px;
     height: 18px;
@@ -111,6 +121,23 @@ img {
             .header .main-header a.location:hover .city {
                 text-decoration: none;
             }
+
+        .header .main-header .avatar a {
+            color: #0f4c71;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+        }
+
+            .header .main-header .avatar a:hover {
+                text-decoration: none;
+                color: #ecbf54;
+            }
+
+        .header .main-header .avatar img {
+            height: 36px;
+            width: auto;
+            border: 0;
+        }
 
 .main-menu {
     background-color: #1b0e21;
@@ -216,3 +243,87 @@ img {
     border-radius: 0.5em;
     margin-top: 0;
 }
+
+.crumbs {
+    color: #007896;
+}
+
+    .crumbs a {
+        color: #007896;
+        text-decoration: underline;
+        text-decoration-style: dashed;
+    }
+
+        .crumbs a:hover {
+            text-decoration: none;
+            color: #ecbf54;
+        }
+
+.crb-avatar {
+    color: #0f4c71;
+}
+
+.crb-location {
+    color: #007896;
+}
+
+    .crb-location .city {
+        text-decoration: underline;
+        text-decoration-style: dashed;
+    }
+
+        .crb-location .city:hover {
+            cursor: pointer;
+            text-decoration: none;
+            color: #ecbf54;
+        }
+
+.search-filter {
+    background: url("/images/452.png") left top no-repeat;
+    color: #007896;
+    background-size: cover;
+    border-radius: 18px;
+}
+
+    .search-filter .form-group {
+        padding-left: calc(var(--bs-gutter-x) * 1.0);
+    }
+
+.search-filter .input-group-text {
+    color: #007896;
+}
+
+    .search-filter .fa-question-circle {
+        cursor: pointer;
+    }
+
+        .search-filter .fa-question-circle:hover {
+            color: #ecbf54;
+        }
+    .search-filter .button-one {
+        border-radius: 18px;
+        line-height: 34px;
+        width: 100%;
+        border: 1px solid #0f4c71;
+        background-color: #ecbf54;
+    }
+
+    .ordering {
+        color: #0f4c71;
+    }
+
+        .ordering .btn {
+            color: #0f4c71;
+            border: solid 1px #007896;
+            margin-top: -4px;
+        }
+
+        .ordering .form-select {
+            color: #0f4c71;
+            border: solid 1px #007896;
+        }
+
+
+        .ordering .btn:hover .fa-caret-down {
+            color: #ecbf54;
+        }

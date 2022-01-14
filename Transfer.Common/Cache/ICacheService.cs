@@ -14,5 +14,7 @@
         /// положить в кэш
         /// </summary>
         void Set<T>(string cacheKey, T data) where T : class;
+
+        void Remove(string cacheKey);
     }
 }

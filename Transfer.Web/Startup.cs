@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using Transfer.Bl;
 using Transfer.Common;
+using Transfer.Common.Cache;
 using Transfer.Common.Security;
 using Transfer.Dal.Context;
 using Transfer.Web.Models;
@@ -45,6 +46,8 @@ namespace Transfer.Web
                 options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("TransferDb")));
 
             services.AddTransient<IUnitOfWork, Dal.UnitOfWork>();
+
+            services.AddTransient<ICacheService, InMemoryCache>();
 
             services.AddHttpContextAccessor();
             services.AddTransient<ISecurityService, SecurityService>();
@@ -109,7 +112,9 @@ namespace Transfer.Web
 
             app.UseCookiePolicy(cookiePolicyOptions);
 
-            Security.Configure(app.ApplicationServices.GetRequiredService<ISecurityService>());
+            Security.Configure(app.ApplicationServices.GetRequiredService<ISecurityService>(),
+                app.ApplicationServices.GetRequiredService<ICacheService>(),
+                app.ApplicationServices.GetRequiredService<IConfiguration>());
         }
     }
 }

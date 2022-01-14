@@ -35,16 +35,11 @@
                         <i class="fab fa-telegram fa-lg"></i>
                     </a>
                 </div>
-                <div class="col-lg-3 col-md-12 text-center">
-                    <a href="#" class="location">
-                        <div>
-                            <i class="fas fa-location-arrow"></i>
-                            <span class="city">Александровск-Сахалинский</span>
-                        </div>
-                    </a>
-                </div>
                 @if (Transfer.Web.Models.Security.IsAuthenticated)
                 {
+                    <div class="col-lg-3 col-md-12 text-center t-col avatar">
+                        <img src="~/images/Girl_operator.png" alt=""/>&nbsp;&nbsp;&nbsp;<a asp-controller="Account" asp-action="Index">@Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName</a>
+                    </div>
                     <div class="col-lg-2 offset-lg-2 text-center">
                         <a class="top-button-a" asp-controller="Auth" asp-action="LogOut">
                             <div class="top-button">Выход</div>
@@ -53,6 +48,14 @@
                 }
                 else
                 {
+                    <div class="col-lg-3 col-md-12 text-center">
+                        <a href="#" class="location">
+                            <div>
+                                <i class="fas fa-location-arrow"></i>
+                                <span class="city">Александровск-Сахалинский</span>
+                            </div>
+                        </a>
+                    </div>
                     <div class="col-lg-2 col-md-6 text-center">
                         <a class="top-button-reg-a" asp-controller="Home" asp-action="Registration">
                             <div class="top-button">Регистрация</div>
@@ -185,7 +188,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="exampleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="container">

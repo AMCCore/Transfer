@@ -27,14 +27,7 @@ namespace Transfer.Web.Controllers
         {
         }
 
-        [HttpGet]
-        public IActionResult Search()
-        {
-            return View(new СarrierSearchFilter(new List<СarrierSearchResultItem>(), TransferSettings.TablePageSize));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Search([FromForm] СarrierSearchFilter filter)
+        private async Task<СarrierSearchFilter> GetDataFromDb(СarrierSearchFilter filter = null)
         {
             filter ??= new СarrierSearchFilter(new List<СarrierSearchResultItem>(), TransferSettings.TablePageSize);
             var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted).AsQueryable();
@@ -43,25 +36,27 @@ namespace Transfer.Web.Controllers
                 query = query.Where(x => x.Name.ToLower().Contains(filter.Name.ToLower()));
             }
 
-            if (filter.OrderByName.HasValue)
+            if (!string.IsNullOrWhiteSpace(filter.City))
             {
-                query = filter.OrderByName.Value ? query.OrderBy(x => x.Name) : query.OrderByDescending(x => x.Name);
+                query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()));
             }
 
-            if (filter.OrderByRating.HasValue)
+
+            if (filter.OrderByName)
             {
-                query = filter.OrderByRating.Value
-                    ? query.OrderBy(x => x.Rating).ThenBy(x => x.Name)
-                    : query.OrderByDescending(x => x.Rating).ThenBy(x => x.Name);
+                query = query.OrderBy(x => x.Name);
             }
 
-            if (filter.OrderByChecked.HasValue)
+            if (filter.OrderByRating)
             {
-                query = filter.OrderByChecked.Value
-                    ? query.OrderBy(x => x.Checked).ThenBy(x => x.Name)
-                    : query.OrderByDescending(x => x.Checked).ThenBy(x => x.Name);
+                query = query.OrderBy(x => x.Rating).ThenBy(x => x.Name);
             }
-            
+
+            if (filter.OrderByChecked)
+            {
+                query = query.OrderBy(x => x.Checked).ThenBy(x => x.Name);
+            }
+
             var totalCount = await query.CountAsync(CancellationToken.None);
             var entity = await query.Skip(filter.StartRecord)
                 .Take(filter.PageSize).ToListAsync(CancellationToken.None);
@@ -70,7 +65,23 @@ namespace Transfer.Web.Controllers
                 entity.Select(ss => Mapper.Map<СarrierSearchResultItem>(ss)).ToList(),
                 filter.PageNumber, filter.PageSize, totalCount);
 
-            return View(filter);
+            return filter;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search()
+        {
+            var result = await GetDataFromDb();
+
+            return View(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search([FromForm] СarrierSearchFilter filter)
+        {
+            var result = await GetDataFromDb(filter);
+
+            return View(result);
         }
     }
 }

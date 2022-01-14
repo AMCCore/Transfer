@@ -11,7 +11,7 @@ using Transfer.Common;
 namespace Transfer.Dal.Entities
 {
     [Table("DriverLicenses")]
-    public class DbDriversLicense : IEntityBase
+    public class DbDriversLicense : IEntityBase, ISoftDeleteEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -56,5 +56,7 @@ namespace Transfer.Dal.Entities
         
         [ForeignKey(nameof(Driver))]
         public Guid? DriverId { get; set; }
+        
+        public bool IsDeleted { get; set; }
     }
 }

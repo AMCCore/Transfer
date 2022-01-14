@@ -25,9 +25,10 @@ namespace Transfer.Web.Controllers
         }
 
         [AllowAnonymous]
+        [Route("/")]
         public IActionResult Index()
         {
-            Logger?.LogInformation("Index called");
+            //Logger?.LogInformation("Index called");
 
             //testing
             //var accounts = UnitOfWork.GetSet<DbAccount>().Count();
@@ -35,15 +36,9 @@ namespace Transfer.Web.Controllers
 
             //var foo = new Foo { Id = 1, Name = "zzz" };
             //var bar = Mapper.Map<Bar>(foo);
-            var isauth = HttpContext.User.Identity.IsAuthenticated;
+            //var isauth = HttpContext.User.Identity.IsAuthenticated;
 
-            return RedirectToAction(nameof(Index2));
-        }
-
-        [AllowAnonymous]
-        public IActionResult Index2()
-        {
-            return View();
+            return View("Index2");
         }
 
         [HttpGet]

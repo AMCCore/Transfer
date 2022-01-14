@@ -25,18 +25,38 @@ namespace Transfer.Dal
 
         private static void SetAccounts(this IUnitOfWork uw)
         {
+            var pd = new List<DbPersonData> {
+            new DbPersonData {
+                Id = Guid.Parse("3EE8A706-3DBD-49A2-8C70-5CD9C2AD5202"),
+                FirstName = "Виктор",
+                LastName = "Иванов",
+                MiddleName = "Онотольевич",
+                BirthDate = new DateTime(1900, 3, 6),
+                IsMale = true,
+                DocumentSeries = string.Empty,
+                DocumentNumber = string.Empty,
+                DocumentSubDivisionCode = string.Empty,
+                DocumentIssurer = string.Empty,
+                DocumentDateOfIssue = DateTime.MinValue,
+                RegistrationAddress = string.Empty
+            }};
+            uw.AddIfNotExists(pd);
+
+
             var accounts = new List<DbAccount> {
                 new DbAccount {
                     Id = adminId,
                     Email = "admin",
                     Password = BCrypt.Net.BCrypt.HashString("admin"),
                     LastUpdateTick = DateTime.Now.Ticks,
-                    DateCreated = DateTime.Now
+                    DateCreated = DateTime.Now,
+                    PersonDataId = Guid.Parse("3EE8A706-3DBD-49A2-8C70-5CD9C2AD5202")
                 }
             };
 
             uw.AddOrUpdate(accounts, (source, destination) => { destination.Email = source.Email;
                 destination.Password = source.Password;
+                destination.PersonDataId = source.PersonDataId;
             });
 
             var accr = new List<DbAccountRight>
@@ -51,6 +71,7 @@ namespace Transfer.Dal
                 }
             };
             uw.AddIfNotExists(accr);
+
         }
 
         private static void SetRights(this IUnitOfWork uw)

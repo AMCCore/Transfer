@@ -33,7 +33,10 @@ namespace Transfer.Dal.Entities
         public virtual ICollection<DbOrganisationAccount> Organisations { get; set; } = new List<DbOrganisationAccount>();
 
         public DateTime? DateCreated { get; set; }
-        
-        public virtual ICollection<DbPersonData> DbPersonDatas { get; set; } = new List<DbPersonData>();
+
+        public virtual DbPersonData? PersonData { get; set; }
+
+        [ForeignKey(nameof(PersonData))]
+        public Guid? PersonDataId { get; set; }
     }
 }

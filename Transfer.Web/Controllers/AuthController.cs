@@ -68,6 +68,7 @@ namespace Transfer.Web.Controllers
         [Route("Logout")]
         public async Task<IActionResult> LogOut()
         {
+            Security.CurrentUserClearCache();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
         }
