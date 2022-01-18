@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Enums;
 using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
@@ -19,6 +20,8 @@ namespace Transfer.Dal
             uw.NotChangeLastUpdateTick = true;
             uw.SetRights();
             uw.SetAccounts();
+            
+            uw.SetTripOptions();
 
             uw.SetTestOrganisations();
         }
@@ -121,5 +124,14 @@ namespace Transfer.Dal
             };
             uw.AddIfNotExists(prgs);
         }
+
+        private static void SetTripOptions(this IUnitOfWork uw)
+        {
+            var rights = new List<DbRight>();
+            rights.AddRange(Enum.GetValues(typeof(TripOptions)).Cast<TripOptions>().Select(r => DbRight.CreateForSeed(r)));
+            uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
+            
+        }
+            
     }
 }
