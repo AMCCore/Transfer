@@ -21,5 +21,8 @@ namespace Transfer.Dal.Context
         public virtual DbSet<DbDriversLicense> DbDriversLicense { get; set; }
         public virtual DbSet<DbOrganisationAccount> DbOrganisationAccount { get; set; }
         public virtual DbSet<DbPersonData> DbPersonData { get; set; }
+        public virtual DbSet<DbTripOption> DbTripOption { get; set; }
+        public virtual DbSet<DbTripRequest> DbTripRequest { get; set; }
+        public virtual DbSet<DbTripRequestOption> DbTripRequestOption { get; set; }
     }
 }

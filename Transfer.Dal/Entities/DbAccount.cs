@@ -10,7 +10,7 @@ using Transfer.Common;
 namespace Transfer.Dal.Entities
 {
     [Table("Accounts")]
-    public class DbAccount : IEntityBase, ISoftDeleteEntity
+    public class DbAccount : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
     {
         [Key]
         public Guid Id { get; set; }
@@ -32,7 +32,7 @@ namespace Transfer.Dal.Entities
         
         public virtual ICollection<DbOrganisationAccount> Organisations { get; set; } = new List<DbOrganisationAccount>();
 
-        public DateTime? DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public virtual DbPersonData? PersonData { get; set; }
 

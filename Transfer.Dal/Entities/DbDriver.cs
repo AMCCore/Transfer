@@ -25,6 +25,7 @@ namespace Transfer.Dal.Entities
         [ForeignKey(nameof(Organisation))]
         public Guid? OrganisationId { get; set; }
 
+        [MaxLength(100)]
         public string? TelegramId { get; set; }
         
         public virtual ICollection<DbDriversLicense> DbDriversLicenses { get; set; } = new List<DbDriversLicense>();

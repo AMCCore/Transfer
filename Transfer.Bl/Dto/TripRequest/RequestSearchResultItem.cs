@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using Transfer.Common.Enums;
 
-namespace Transfer.Bl.Dto.Request
+namespace Transfer.Bl.Dto.TripRequest
 {
-    public class RequestSearchResultItem
+    public class TripRequestSearchResultItem
     {
         public Guid Id { get; set; }
-        
+
         public string Name { get; set; }
         
         public string AddressFrom { get; set; }
@@ -22,5 +24,6 @@ namespace Transfer.Bl.Dto.Request
         
         public int Passengers { get; set; }
 
+        public ICollection<TripOption> TripOptions { get; set; }
     }
 }

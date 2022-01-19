@@ -118,6 +118,11 @@ namespace Transfer.Common
 
         public T AddEntity<T>(T entity, bool saveChanges = true) where T : class, IEntityBase
         {
+            if (entity.Id == Guid.Empty)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
             Context.Set<T>().Add(entity);
 
             if (saveChanges)
@@ -231,6 +236,17 @@ namespace Transfer.Common
                 Context.Entry(entity).State = EntityState.Modified;
             }
 
+            var entitystoCreate = Context.ChangeTracker.Entries<IEntityWithDateCreated>()
+            .Where(c => c.State == EntityState.Added)
+            .Select(c => c.Entity)
+            .ToList();
+
+            foreach (var entity in entitystoCreate)
+            {
+                entity.DateCreated = DateTime.Now;
+            }
+
+
             if (NotChangeLastUpdateTick)
             {
                 return;
@@ -253,7 +269,7 @@ namespace Transfer.Common
 
         public IQueryable<T> Query<T>(bool withDeleted = false) where T : class, IEntityBase
         {
-            if(typeof(T) is ISoftDeleteEntity && withDeleted)
+            if (typeof(T) is ISoftDeleteEntity && withDeleted)
             {
                 return GetSet<T>().IgnoreQueryFilters();
             }
