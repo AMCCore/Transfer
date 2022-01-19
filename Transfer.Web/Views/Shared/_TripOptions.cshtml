@@ -1,0 +1,27 @@
+﻿@model System.Collections.Generic.IEnumerable<Transfer.Bl.Dto.TripOption>
+@using Transfer.Common.Enums;
+@using Transfer.Common.Extensions;
+
+@foreach(var to in Model)
+{
+    if(to.Id == TripOptions.TripGuide.GetEnumGuid())
+    {
+        <span><i class="fas fa-headphones-alt"></i> @to.Name</span><br />
+    }
+    else if(to.Id == TripOptions.ChildTrip.GetEnumGuid())
+    {
+        <span><i class="fas fa-child"></i> @to.Name</span><br />
+    }
+    else if(to.Id == TripOptions.CardPayment.GetEnumGuid())
+    {
+        <span><i class="fas fa-credit-card"></i> @to.Name</span><br />
+    }
+    else if(to.Id == TripOptions.CashPayment.GetEnumGuid())
+    {
+        <span><i class="fas fa-money-bill-wave"></i> @to.Name</span><br />
+    }
+    else if(to.Id == TripOptions.IdleTrip.GetEnumGuid())
+    {
+        <span><i class="fas fa-directions"></i> @to.Name</span><br />
+    }
+}

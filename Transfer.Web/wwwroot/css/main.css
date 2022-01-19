@@ -124,13 +124,14 @@ img {
 
         .header .main-header .avatar a {
             color: #0f4c71;
-            text-decoration: underline;
-            text-decoration-style: dashed;
+            text-decoration: none;
+            border-bottom: dashed 1px #0f4c71;
         }
 
             .header .main-header .avatar a:hover {
                 text-decoration: none;
                 color: #ecbf54;
+                border-bottom: dashed 0px #0f4c71;
             }
 
         .header .main-header .avatar img {
@@ -250,13 +251,14 @@ img {
 
     .crumbs a {
         color: #007896;
-        text-decoration: underline;
-        text-decoration-style: dashed;
+        text-decoration: none;
+        border-bottom: dashed 1px #007896;
     }
 
         .crumbs a:hover {
             text-decoration: none;
             color: #ecbf54;
+            border-bottom: dashed 1px #fff;
         }
 
 .crb-avatar {
@@ -268,14 +270,14 @@ img {
 }
 
     .crb-location .city {
-        text-decoration: underline;
-        text-decoration-style: dashed;
+        border-bottom: dashed 1px #007896;
     }
 
         .crb-location .city:hover {
             cursor: pointer;
             text-decoration: none;
             color: #ecbf54;
+            border-bottom: dashed 1px #fff;
         }
 
 .search-filter {

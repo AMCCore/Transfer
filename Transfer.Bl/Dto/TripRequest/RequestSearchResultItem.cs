@@ -24,7 +24,7 @@ namespace Transfer.Bl.Dto.TripRequest
         
         public int Passengers { get; set; }
 
-        public ICollection<TripOption> TripOptions { get; set; }
+        public IList<TripOption> TripOptions { get; set; }
 
         public bool Checked { get; set; }
     }

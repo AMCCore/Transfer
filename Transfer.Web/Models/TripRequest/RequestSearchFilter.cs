@@ -18,6 +18,8 @@ namespace Transfer.Web.Models.TripRequest
 
         public bool OrderByRating { get; set; }
 
+        public bool OrderByChecked { get; set; }
+
         public bool OrderByChild { get; set; }
     }
 }

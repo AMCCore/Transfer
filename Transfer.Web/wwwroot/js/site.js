@@ -33,6 +33,9 @@ function DisableCheckboxes(e) {
         elem.attr('checked', 'checked');
         elem.closest('form').submit();
     }
+    else {
+        elem.closest('form').submit();
+    }
 }
 $(function () {
 });

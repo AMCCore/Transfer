@@ -1,1 +1,37 @@
-﻿
+﻿.trip-request {
+    border-radius: 18px;
+    background-color: #f8fafb;
+}
+
+    .trip-request .go {
+        padding-right: 36px;
+        padding-left: 36px;
+    }
+
+        .trip-request .go a {
+            line-height: 36px;
+            border: solid 1px #007896;
+            color: #000;
+            display: flex;
+            border-radius: 18px;
+        }
+
+            .trip-request .go a:hover {
+                border: solid 1px #ecbf54;
+                background-color: #ecbf54;
+                color: #000;
+            }
+
+            .trip-request .go a span {
+                margin: auto;
+            }
+
+.trip-request .r-logo img {
+    height: 140px;
+    width: auto;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+

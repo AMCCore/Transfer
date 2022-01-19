@@ -29,7 +29,7 @@ public class TripRequestController : BaseController
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
-        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
+        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
 
         if (filter.OrderByName)
         {
@@ -41,9 +41,14 @@ public class TripRequestController : BaseController
             //query = query.OrderBy(x => x.Rating).ThenBy(x => x.Name);
         }
 
+        if (filter.OrderByChecked)
+        {
+            //query = query.OrderBy(x => x.Rating).ThenBy(x => x.Name);
+        }
+
         if (filter.OrderByChild)
         {
-            query = query.OrderBy(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())).ThenBy(x => x.Name);
+            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())).ThenBy(x => x.Name);
         }
 
 
@@ -73,5 +78,12 @@ public class TripRequestController : BaseController
         var result = await GetDataFromDb(filter);
 
         return PartialView("SearchResults", result);
+    }
+
+    [HttpGet]
+    [Route("TripRequest/{requestId}")]
+    public IActionResult TripRequest(Guid requestId)
+    {
+        throw new NotImplementedException();
     }
 }

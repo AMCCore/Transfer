@@ -2,9 +2,10 @@
 
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
+@using Transfer.Bl.Dto;
 
 <div class="row blank-row"></div>
-        @Html.HiddenFor(x => x.PageNumber)
+@Html.HiddenFor(x => x.PageNumber)
 <div class="row blank-row"></div>
 <div class="row ordering">
     <div class="t-col col-3">
@@ -24,61 +25,89 @@
             <i class="fas fa-star"></i>
         </label>
         &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByChild, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
+        @Html.CheckBoxFor(x => x.OrderByChecked, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
         <label class="btn btn-sm" for="OrderByChecked">
             <i class="fas fa-caret-down"></i>
             <i class="fas fa-lock-open"></i>
+        </label>
+        &nbsp;&nbsp;&nbsp;
+        @Html.CheckBoxFor(x => x.OrderByChild, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
+        <label class="btn btn-sm" for="OrderByChild">
+            <i class="fas fa-caret-down"></i>
+            <i class="fas fa-child"></i>
         </label>
     </div>
     <div class="t-col col-2 text-end form-group">
         Выводить по:
     </div>
     <div class="t-col col-1 text-end form-group">
-        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm" })
+        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("1", "1"), new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
 </div>
 <hr style="color: #007896; border: dashed 1px #007896;">
-<div class="row">
-    <div class="t-col col-12 text-center">
-        <a asp-action="NewCarrier" asp-controller="Сarrier"><div class="new-carrier-link"><i class="fas fa-plus-circle"></i></div></a>
-    </div>
-</div>
-        @foreach (var c in Model.Results)
+@{
+    int counter = 0;
+}
+@foreach (var c in Model.Results)
 {
-    <hr style="color: #fff; border: dashed 1px #007896;">
+    if (counter > 0)
+    {
+        <hr style="color: #fff; border: dashed 1px #007896;">
+    }
+    counter++;
+
     <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-12">
-            @if (c.Checked)
-            {
-                <i class="fas fa-lock-open"></i>
-            }
-            else
-            {
-                <i class="fas fa-lock"></i>
-            }
-            <span style="font-size: 1.2rem;">@c.Name</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i>
-        </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-12">
-            <i class="fas fa-map-marked"></i> <span style="color: #000;">@c.AddressFrom</span>
-        </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-md-10 col-12 contacts">
-            <i class="far fa-user-circle"></i> @c.ContactFio, <a href="#">@c.ContactPhone</a>, <a href="#">@c.ContactEmail</a>
-        </div>
-        <div class="t-col col-md-2 col-12 contacts go text-center">
-            <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.Id"><span>перейти</span></a>
+    <div class="row">
+        <div class="col-12">
+            <div class="container trip-request">
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="row">
+                            <div class="t-col col-12"><span style="font-size: 1.2rem;">@c.Name</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="col-12 r-logo text-center"><img alt="" src="~/images/20000968.png" style="margin: 18px 0;" /></div>
+                                    <div class="col-12 t-col text-center go"><a asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@c.Id"><span>перейти</span></a></div>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="row">
+                                    <div class="t-col col-12"><i class="fas fa-shuttle-van"></i> Название класса транспортного средства</div>
+                                    <div class="t-col col-12"><i class="fas fa-map-marked"></i> @c.AddressFrom</div>
+                                    <div class="t-col col-12"><i class="fas fa-map-marked-alt"></i> @c.AddressTo</div>
+                                    <div class="t-col col-12"><i class="far fa-user-circle"></i> @c.ContactFio, <a href="#">@c.ContactPhone</a>, <a href="#">@c.ContactEmail</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <div class="t-col col-12">Дата: @($"{c.TripDate:dd.MM.yyyy HH:mm}")</div>
+                        </div>
+                        <div class="row">
+                            <div class="t-col col-12">Пссажиры: @c.Passengers</div>
+                        </div>
+                        @if (c.TripOptions?.Any() ?? false)
+                        {
+                            <div class="row">
+                                <div class="t-col col-12">
+                                    <h6>Особенности поездки:</h6>
+                                    @await Html.PartialAsync("~/Views/Shared/_TripOptions.cshtml", c.TripOptions)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row blank-row"></div>
+            </div>
         </div>
     </div>
     <div class="row blank-row"></div>
 }
 <hr style="color: #007896; border: dashed 1px #007896;">
-<div class="row blank-row"></div>
 <div class="row">
     <div class="t-col col-12">
         @Html.PagedListPager(Model.Results, page =>
