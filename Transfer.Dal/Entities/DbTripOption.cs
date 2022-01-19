@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Transfer.Common;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Dal.Entities
 {
@@ -20,5 +21,15 @@ namespace Transfer.Dal.Entities
         public string Name { get; set; }
 
         public virtual ICollection<DbTripRequestOption> TripRequests { get; set; }
+
+        internal static DbTripOption CreateForSeed(Enum right, bool isDeleted = false)
+        {
+            return new DbTripOption
+            {
+                Id = right.GetEnumGuid(),
+                Name = right.GetEnumDescription(),
+                IsDeleted = isDeleted
+            };
+        }
     }
 }

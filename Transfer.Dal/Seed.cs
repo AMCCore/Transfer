@@ -13,17 +13,18 @@ namespace Transfer.Dal
 {
     public static partial class Seed
     {
-        private static Guid adminId = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76"); 
-        
+        private static Guid adminId = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76");
+
         public static void SeedData(this IUnitOfWork uw, bool createDefaultUser = false)
         {
             uw.NotChangeLastUpdateTick = true;
             uw.SetRights();
             uw.SetAccounts();
-            
             uw.SetTripOptions();
 
+
             uw.SetTestOrganisations();
+            uw.SetTestRequestTrips();
         }
 
         private static void SetAccounts(this IUnitOfWork uw)
@@ -57,7 +58,9 @@ namespace Transfer.Dal
                 }
             };
 
-            uw.AddOrUpdate(accounts, (source, destination) => { destination.Email = source.Email;
+            uw.AddOrUpdate(accounts, (source, destination) =>
+            {
+                destination.Email = source.Email;
                 destination.Password = source.Password;
                 destination.PersonDataId = source.PersonDataId;
             });
@@ -84,6 +87,13 @@ namespace Transfer.Dal
             uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
         }
 
+        private static void SetTripOptions(this IUnitOfWork uw)
+        {
+            var rights = new List<DbTripOption>();
+            rights.AddRange(Enum.GetValues(typeof(TripOptions)).Cast<TripOptions>().Select(r => DbTripOption.CreateForSeed(r)));
+            uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
+        }
+
         private static void SetTestOrganisations(this IUnitOfWork uw)
         {
             var prgs = new List<DbOrganisation>
@@ -96,7 +106,7 @@ namespace Transfer.Dal
                     Checked = true,
                     DirectorFio = "DirectorFio",
                     DirectorPosition = "DirectorPosition",
-                    Address = "Россия, Краснодарскийкрай, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
+                    Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
                     IsDeleted = false,
                     Rating = 99.5,
                     City = "Геленджик",
@@ -112,7 +122,7 @@ namespace Transfer.Dal
                     Checked = true,
                     DirectorFio = "DirectorFio",
                     DirectorPosition = "DirectorPosition",
-                    Address = "Россия, Краснодарскийкрай, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
+                    Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
                     IsDeleted = false,
                     Rating = 99.5,
                     City = "Геленджик",
@@ -125,13 +135,98 @@ namespace Transfer.Dal
             uw.AddIfNotExists(prgs);
         }
 
-        private static void SetTripOptions(this IUnitOfWork uw)
+        private static void SetTestRequestTrips(this IUnitOfWork uw)
         {
-            var rights = new List<DbRight>();
-            rights.AddRange(Enum.GetValues(typeof(TripOptions)).Cast<TripOptions>().Select(r => DbRight.CreateForSeed(r)));
-            uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
-            
+            var tr = new List<DbTripRequest> {
+                new DbTripRequest {
+                    Id = Guid.Parse("911C29AC-A98D-4102-9410-DC03D1727D3A"),
+                    Name = "Запрос 1",
+                    AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 36, стр 5",
+                    AddressTo = "Россия, Краснодарский край, Майкоп, Улица Адмирала Проценко, дом 1",
+                    ContactEmail = string.Empty,
+                    ContactFio = string.Empty,
+                    ContactPhone = string.Empty,
+                    TripDate = new DateTime(2022, 3, 1),
+                    Passengers = 10,
+                },
+                new DbTripRequest {
+                    Id = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
+                    Name = "Запрос 2",
+                    ContactEmail = string.Empty,
+                    ContactFio = string.Empty,
+                    ContactPhone = string.Empty,
+                    AddressFrom = "Россия, Крым, Ялта, Улица Сталина, дом 2, стр 5",
+                    AddressTo = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 1",
+                    TripDate = new DateTime(2022, 3, 4),
+                    Passengers = 15,
+                },
+                new DbTripRequest {
+                    Id = Guid.Parse("0DDF23B0-2C56-4ED0-AC05-659AE66D104C"),
+                    ContactEmail = string.Empty,
+                    ContactFio = string.Empty,
+                    ContactPhone = string.Empty,
+                    Name = "Запрос 3",
+                    AddressTo = "Россия, Крым, Ялта, Улица Сталина дом 2, стр 5",
+                    AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 1",
+                    TripDate = new DateTime(2022, 3, 6),
+                    Passengers = 15,
+                },
+                new DbTripRequest {
+                    Id = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
+                    Name = "Запрос 4",
+                    ContactEmail = string.Empty,
+                    ContactFio = string.Empty,
+                    ContactPhone = string.Empty,
+                    AddressFrom = "Россия, Москва, Ломоносовский проспект, дом 3, к1",
+                    AddressTo = "Россия, Ханты-Мансийский автономный округ, Когалым, Улица Молодёжная, дом 19",
+                    TripDate = new DateTime(2022, 2, 1),
+                    Passengers = 1,
+                },
+                new DbTripRequest {
+                    Id = Guid.Parse("64854EBF-A65D-410C-9988-F5F81399A88F"),
+                    Name = "Запрос 5",
+                    ContactEmail = string.Empty,
+                    ContactFio = string.Empty,
+                    ContactPhone = string.Empty,
+                    AddressFrom = "Россия, Ханты-Мансийский автономный округ, Когалым, Улица Молодёжная, дом 19",
+                    AddressTo = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 1",
+                    TripDate = new DateTime(2022, 5, 1),
+                    Passengers = 25,
+                },
+            };
+
+            uw.AddIfNotExists(tr);
+
+            var to = new List<DbTripRequestOption> { 
+                new DbTripRequestOption { 
+                    Id = Guid.Parse("CF8B46FB-117F-4A81-83CC-E6DC4D208142"),
+                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
+                    TripOptionId = TripOptions.CardPayment.GetEnumGuid()
+                },
+                new DbTripRequestOption {
+                    Id = Guid.Parse("2A4673EA-E9F7-4280-861A-DB1BBA0A8962"),
+                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
+                    TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
+                },
+                new DbTripRequestOption {
+                    Id = Guid.Parse("44597BCF-B59D-4E39-8DAB-9BA6CAD60DAD"),
+                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
+                    TripOptionId = TripOptions.TripGuide.GetEnumGuid()
+                },
+                new DbTripRequestOption {
+                    Id = Guid.Parse("702CFBE8-CA87-411C-BF18-AB78D93E0889"),
+                    TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
+                    TripOptionId = TripOptions.TripGuide.GetEnumGuid()
+                },
+                new DbTripRequestOption {
+                    Id = Guid.Parse("5B9A34E3-E741-497C-BE29-FE2AB8EF6FAB"),
+                    TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
+                    TripOptionId = TripOptions.CashPayment.GetEnumGuid()
+                },
+
+            };
+            uw.AddIfNotExists(to);
+
         }
-            
     }
 }
