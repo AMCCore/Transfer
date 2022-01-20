@@ -26,5 +26,6 @@ public partial class TransferContext
     public virtual DbSet<DbTripRequestOption> DbTripRequestOption { get; set; }
     public virtual DbSet<DbFile> DbFile { get; set; }
     public virtual DbSet<DbOrganisationFile> DbOrganisationFiles { get; set; }
+    public virtual DbSet<DbBankDetails> DbBankDetails { get; set; }
 }
 

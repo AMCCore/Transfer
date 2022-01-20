@@ -89,7 +89,8 @@ public class CarrierController : BaseController
     [Route("Carrier/New")]
     public IActionResult NewCarrier()
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); 
+        //return View("Carrier", )
     }
 
     [HttpGet]

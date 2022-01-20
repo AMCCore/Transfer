@@ -89,10 +89,43 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
 
     public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
 
+    /// <summary>
+    ///     Рэйтинг
+    /// </summary>
     public double Rating { get; set; } = 0;
 
+    /// <summary>
+    ///     Организация проверена
+    /// </summary>
     public bool Checked { get; set; }
 
     public virtual ICollection<DbOrganisationFile> Files { get; set; } = new List<DbOrganisationFile>();
+
+    /// <summary>
+    ///     Фактический адрес
+    /// </summary>
+    [MaxLength(1000)]
+    public string? FactAddress { get; set; }
+
+    /// <summary>
+    ///     Email
+    /// </summary>
+    [MaxLength(1000)]
+    [Required]
+    public string Email { get; set; }
+
+    /// <summary>
+    ///     Телефон
+    /// </summary>
+    [MaxLength(1000)]
+    [Required]
+    public string Phone { get; set; }
+
+    /// <summary>
+    ///     Согласие на оброаботку данных
+    /// </summary>
+    public bool Agreement { get; set; } = false;
+
+    public virtual ICollection<DbBankDetails> BankDetails { get; set; } = new List<DbBankDetails>();
 }
 
