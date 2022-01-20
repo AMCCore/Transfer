@@ -4,22 +4,23 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Transfer.Common;
 
-namespace Transfer.Web.Controllers
+namespace Transfer.Web.Controllers;
+
+[ApiExplorerSettings(IgnoreApi = true)]
+public abstract class BaseController : Controller
 {
-    public abstract class BaseController : Controller
+    protected readonly ILogger Logger;
+    protected readonly IUnitOfWork UnitOfWork;
+    protected readonly TransferSettings TransferSettings;
+    protected readonly IMapper Mapper;
+
+    protected BaseController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
     {
-        protected readonly ILogger Logger;
-        protected readonly IUnitOfWork UnitOfWork;
-        protected readonly TransferSettings TransferSettings;
-        protected readonly IMapper Mapper;
-
-        protected BaseController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger logger, IMapper mapper)
-        {
-            TransferSettings = transferSettings.Value;
-            UnitOfWork = unitOfWork;
-            Logger = logger;
-            Mapper = mapper;
-        }
-
+        TransferSettings = transferSettings.Value;
+        UnitOfWork = unitOfWork;
+        Logger = logger;
+        Mapper = mapper;
     }
+
 }
+

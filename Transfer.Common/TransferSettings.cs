@@ -11,5 +11,7 @@ namespace Transfer.Common
         public string TGBotToken { get; set; }
 
         public int TablePageSize { get; set; } = 25;
+
+        public string FileStoragePath { get; set; } = "/Files";
     }
 }
