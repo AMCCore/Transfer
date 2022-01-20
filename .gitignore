@@ -48,6 +48,5 @@ TestResults/
 LuceneIndex/
 
 # Project exclude paths
-RestChild.Web/Scripts/assets/AddressControlNew.js
-RestChild.Web/Scripts/assets/AddressControlNew.js.map
 CurrentCommit.txt
+Transfer.Web/wwwroot/Files/
