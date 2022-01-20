@@ -23,5 +23,8 @@ public class DbFile : IEntityBase, IEntityWithDateCreated
     public string Extention { get; set; }
 
     public long? Size { get; set; }
+
+    [MaxLength(1000)]
+    public string? ContentType { get; set; }
 }
 

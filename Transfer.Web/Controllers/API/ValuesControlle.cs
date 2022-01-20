@@ -1,12 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Transfer.Bl.Dto;
 using Transfer.Common;
+using Transfer.Dal.Entities;
 
 namespace Transfer.Web.Controllers.API
 {
@@ -16,12 +22,17 @@ namespace Transfer.Web.Controllers.API
     {
         private readonly IWebHostEnvironment _appEnvironment;
         private readonly TransferSettings _transferSettings;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ValuesController(IWebHostEnvironment webHostEnvironment, IOptions<TransferSettings> transferSettings)
+
+        public ValuesController(IWebHostEnvironment webHostEnvironment, IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _appEnvironment = webHostEnvironment;
             _transferSettings = transferSettings.Value;
-        }        
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
 
         [HttpGet]
         [Route("GetData/{someData}")]
@@ -32,8 +43,8 @@ namespace Transfer.Web.Controllers.API
         }
 
         [HttpPost]
-        [Route("UploadFile")]
-        public async Task<Guid> UploadFile(IFormFile uploadedFile)
+        [Route(nameof(FileUpload))]
+        private async Task<Guid> FileUpload(IFormFile uploadedFile)
         {
             if (uploadedFile != null)
             {
@@ -49,6 +60,14 @@ namespace Transfer.Web.Controllers.API
                 string path = $"{folder}{fileId}.{fileExtention}";
                 using var fileStream = new FileStream(path, FileMode.Create);
 
+                await _unitOfWork.AddEntityAsync(new DbFile
+                {
+                    Id = fileId,
+                    DateCreated = fileDate,
+                    Size = uploadedFile.Length,
+                    Extention = fileExtention,
+                }, CancellationToken.None);
+
                 await uploadedFile.CopyToAsync(fileStream);
 
                 return fileId;
@@ -59,6 +78,18 @@ namespace Transfer.Web.Controllers.API
         private static string GetFileExtention(string fileName)
         {
             return fileName.Split('.')[^1];
+        }
+
+        [HttpGet]
+        [Route(nameof(FileGet))]
+        public async Task<FileDto> FileGet([Required] [FromQuery] Guid fileId)
+        {
+            var entity = await _unitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, CancellationToken.None);
+            if (entity != null)
+            {
+                return _mapper.Map<FileDto>(entity);
+            }
+            throw new FileNotFoundException();
         }
     }
 }

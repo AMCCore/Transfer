@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,9 +35,13 @@ public class FileController : BaseController
             var fileDate = DateTime.Now;
             var fileExtention = GetFileExtention(uploadedFile.FileName);
 
-            string path = $"{TransferSettings.FileStoragePath}/{fileDate.Year}/{fileId}.{fileExtention}";
-            using var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create);
-
+            var folder = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{fileDate.Year}/";
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string path = $"{folder}{fileId}.{fileExtention}";
+            using var fileStream = new FileStream(path, FileMode.Create);
 
             await UnitOfWork.AddEntityAsync(new DbFile
             {
@@ -43,6 +49,7 @@ public class FileController : BaseController
                 DateCreated = fileDate,
                 Size = uploadedFile.Length,
                 Extention = fileExtention,
+                ContentType = uploadedFile.ContentType,
             }, CancellationToken.None);
 
             await uploadedFile.CopyToAsync(fileStream);
@@ -56,5 +63,20 @@ public class FileController : BaseController
     {
         return fileName.Split('.')[^1];
     }
-}
 
+    [HttpGet]
+    public async Task<IActionResult> GetFile([FromQuery][Required] Guid fileId)
+    {
+        var entity = await UnitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, CancellationToken.None);
+        if (entity != null)
+        {
+            var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{entity.DateCreated.Year}/{entity.Id}.{entity.Extention}";
+            using var fileStream = System.IO.File.OpenRead(path);
+            using var ms = new MemoryStream();
+            fileStream.CopyTo(ms);
+            var byts = ms.ToArray();
+            return File(byts, entity.ContentType ?? "application/octet-stream", $"{entity.Id}.{entity.Extention}");
+        }
+        return NotFound();
+    }
+}

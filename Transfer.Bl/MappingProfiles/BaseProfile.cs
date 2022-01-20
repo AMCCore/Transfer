@@ -28,5 +28,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => "Евгений"))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => "evgen6654@mail.ru"))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => "+7 916 789 58 98"));
+
+        CreateMap<DbFile, FileDto>()
+            .ForMember(x => x.Path, opt => opt.MapFrom(o => $"{o.DateCreated.Year}/{o.Id}.{o.Extention}"));
     }
 }
