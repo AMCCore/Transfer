@@ -31,5 +31,20 @@ public class BaseProfile : Profile
 
         CreateMap<DbFile, FileDto>()
             .ForMember(x => x.Path, opt => opt.MapFrom(o => $"{o.DateCreated.Year}/{o.Id}.{o.Extention}"));
+
+        CreateMap<DbOrganisation, OrganisationDto>();
+        CreateMap<OrganisationDto, DbOrganisation>();
+
+        CreateMap<DbOrganisation, CarrierDto>();
+        CreateMap<CarrierDto, DbOrganisation>();
+
+        CreateMap<DbBankDetails, CarrierDto>()
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.OrganisationFiles, opt => opt.Ignore());
+        CreateMap<CarrierDto, DbBankDetails>()
+            .ForMember(x => x.Id, opt => opt.Ignore());
+
+
+
     }
 }
