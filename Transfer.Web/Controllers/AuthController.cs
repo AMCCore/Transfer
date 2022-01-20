@@ -28,6 +28,7 @@ namespace Transfer.Web.Controllers
 
         }
 
+        [AutoValidateAntiforgeryToken]
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
@@ -55,7 +56,7 @@ namespace Transfer.Web.Controllers
                             AllowRefresh = true
                         });
 
-                    return Ok(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+                    return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
                 }
             }
 

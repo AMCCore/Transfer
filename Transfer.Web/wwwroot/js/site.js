@@ -21,6 +21,12 @@ function SomeButtonZero() {
     var name = "Zusul";
     alert(name + ' Version:' + v);
 }
+function LoginStart(e) {
+    $('#LoginPopUp :input').prop("disabled", true);
+}
+function LoginFailure(e) {
+    $('#LoginPopUp :input').prop("disabled", false);
+}
 function LoginSuccessRefresh(e) {
     if (e.redirect) {
         window.location.href = e.redirect;

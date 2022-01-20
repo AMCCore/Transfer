@@ -2,7 +2,7 @@
 @{
 }
 
-<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#LoginPopUp">
+<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-begin="LoginStart" data-ajax-failure="LoginFailure" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#LoginPopUp">
     @if (!string.IsNullOrEmpty(ViewBag.LoginErrorMessage))
     {
         <div class="row">
