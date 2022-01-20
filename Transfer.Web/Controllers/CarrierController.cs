@@ -14,6 +14,7 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Transfer.Web.Models.Carrier;
+using Transfer.Bl.Dto;
 
 namespace Transfer.Web.Controllers;
 
@@ -89,14 +90,21 @@ public class CarrierController : BaseController
     [Route("Carrier/New")]
     public IActionResult NewCarrier()
     {
-        throw new NotImplementedException(); 
-        //return View("Carrier", )
+        return View("Carrier", new CarrierDto());
     }
 
     [HttpGet]
     [Route("Carrier/{carrierId}")]
-    public IActionResult CarrierItem(Guid carrierId)
+    public async Task<IActionResult> CarrierItem(Guid carrierId)
     {
-        throw new NotImplementedException();
+        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
+        if(entity != null)
+        {
+            var res = Mapper.Map<CarrierDto>(entity);
+            Mapper.Map(entity.BankDetails.FirstOrDefault(x => !x.IsDeleted), res);
+
+            return View("Carrier", res);
+        }
+        return NotFound();
     }
 }

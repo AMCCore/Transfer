@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Transfer.Bl.Dto;
 public class OrganisationDto
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.Empty;
 
     /// <summary>
     ///     Наименование
