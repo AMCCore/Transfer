@@ -58,6 +58,6 @@ public class CarrierDto : OrganisationDto
     [Required]
     public string NameAccount { get; set; }
 
-    public IDictionary<Guid?, OrganisationFileDto> OrganisationFiles { get; set; }
+    public IDictionary<Guid?, OrganisationFileDto> OrganisationFiles { get; set; } = new Dictionary<Guid?, OrganisationFileDto>();
 }
 

@@ -15,6 +15,7 @@ using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Transfer.Web.Models.Carrier;
 using Transfer.Bl.Dto;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Web.Controllers;
 
@@ -113,8 +114,58 @@ public class CarrierController : BaseController
     [Route("Carrier/Save")]
     public async Task<IActionResult> Save([FromForm] CarrierDto model)
     {
-        
-        return View("Carrier", model);
+        if (!ModelState.IsValid)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return PartialView("Save", model);
+        }
+
+        if(!model.Agreement)
+        {
+            ViewBag.ErrorMsg = "Ошибка согласия перс данных";
+            return PartialView("Save", model);
+        }
+        if(string.IsNullOrWhiteSpace(model.City))
+        {
+            model.City = "Неизвестный город";
+        }
+
+        if (model.Id.IsNullOrEmpty())
+        {
+            var org = Mapper.Map<DbOrganisation>(model);
+            org.Id = Guid.NewGuid();
+            org.DirectorFio = string.Empty;
+            model.Id = org.Id;
+            await UnitOfWork.AddEntityAsync(org, CancellationToken.None);
+            var br = Mapper.Map<DbBankDetails>(model);
+            br.Id = Guid.NewGuid();
+            br.OrganisationId = org.Id;
+            await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
+        }
+        else
+        {
+            var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == model.Id);
+            if (org == null)
+                throw new KeyNotFoundException();
+            Mapper.Map(model, org);
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+            var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(CancellationToken.None);
+            foreach(var b in brd)
+            {
+                b.IsDeleted = true;
+            }
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+            var br = Mapper.Map<DbBankDetails>(model);
+            br.Id = Guid.NewGuid();
+            br.OrganisationId = org.Id;
+            await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
+        }
+
+
+        return Json(new { redirect = Url.Action(nameof(CarrierItem), new { carrierId = model.Id }) });
+        //return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
 
 }

@@ -49,13 +49,13 @@ public class OrganisationDto
     ///     Город
     /// </summary>
     [MaxLength(1000)]
-    public string City { get; set; }
+    public string? City { get; set; }
 
     /// <summary>
     ///     ФИО директора
     /// </summary>
     [MaxLength(1000)]
-    public string ContactFio { get; set; }
+    public string? ContactFio { get; set; }
 
     /// <summary>
     ///     Рэйтинг

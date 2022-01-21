@@ -1,0 +1,35 @@
+﻿@model Transfer.Bl.Dto.Carrier.CarrierDto
+@using Transfer.Common.Extensions
+
+@{
+}
+
+<div class="container">
+    <div class="row blank-row"></div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;@(Model.Id.IsNullOrEmpty() ? "Новый перевозчик" : Model.Name)
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">@(Model.Id.IsNullOrEmpty() ? "Добавление нового перевозчика" : "Редактирование перевозчика")</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form id="CarrierSave" asp-controller="Carrier" asp-action="Save" data-ajax-begin="LoginStart" data-ajax-failure="LoginFailure" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierSave">
+        @await Html.PartialAsync("~/Views/Carrier/Save.cshtml", Model)
+    </form>
+    <div class="row blank-row"></div>
+</div>

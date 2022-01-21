@@ -1,0 +1,163 @@
+﻿@model Transfer.Bl.Dto.Carrier.CarrierDto
+
+@Html.AntiForgeryToken();
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.City)
+
+<div class="container the-form">
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-11 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Name" class="form-control" placeholder="Краткое наименование компании" />
+            </div>
+        </div>
+        <div class="col-1 t-col">
+            <i class="far fa-question-circle fa-lg"></i>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-11 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="FullName" class="form-control" placeholder="Полное наименование компании в соответствии с уставом" />
+            </div>
+        </div>
+        <div class="col-1 t-col">
+            <i class="far fa-question-circle fa-lg"></i>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-11 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Address" class="form-control" placeholder="Юридический адрес" />
+            </div>
+        </div>
+        <div class="col-1 t-col">
+            <i class="far fa-question-circle fa-lg"></i>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-11 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="FactAddress" class="form-control" placeholder="Фактический адрес" />
+            </div>
+        </div>
+        <div class="col-1 t-col">
+            <i class="far fa-question-circle fa-lg"></i>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Phone" class="form-control" placeholder="Телефон" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Email" class="form-control" placeholder="Email" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="OGRN" class="form-control" placeholder="ОГРН" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="INN" class="form-control" placeholder="ИНН" />
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="col-12 t-col" style="color: #fff;"><h3>Банковские реквизиты</h3></div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-12 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="BankName" class="form-control" placeholder="Наименование банка" />
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Bik" class="form-control" placeholder="БИК" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Inn" class="form-control" placeholder="ИНН Банка" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="Kpp" class="form-control" placeholder="КПП" />
+            </div>
+        </div>
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="KorAccount" class="form-control" placeholder="Кор. счет" />
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-3 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="NumAccount" class="form-control" placeholder="Номер счета" />
+            </div>
+        </div>
+        <div class="t-col col-9 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="NameAccount" class="form-control" placeholder="Наименование получателя" />
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="col-12 t-col" style="color: #fff;"><h3>Дополнительные документы</h3></div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-12 chk-label form-group">
+            <input id="Agreement" asp-for="Agreement" class="form-check-input" />
+            <label for="Agreement">Согласие с условиями обработки персональных данных (<a href="#" target="_blank">Полные условия оферты</a>)</label>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col the-error col-10">
+            @if(!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
+            {
+                <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
+            }
+        </div>
+        <div class="t-col col-2 text-end">
+            <button type="submit" class="button-one">Сохранить</button>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+</div>
+
