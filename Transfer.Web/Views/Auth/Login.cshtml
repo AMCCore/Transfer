@@ -1,14 +1,9 @@
 ﻿@model Transfer.Web.Models.LoginModel
-@{
-}
 
-<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-begin="LoginStart" data-ajax-failure="LoginFailure" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#LoginPopUp">
-    @if (!string.IsNullOrEmpty(ViewBag.LoginErrorMessage))
-    {
-        <div class="row">
-            <div class="col-12 text-danger">@ViewBag.LoginErrorMessage</div>
-        </div>
-    }
+<form id="LoginPopUp" asp-controller="Auth" asp-action="Login" data-ajax-begin="LoginStart" data-ajax-failure="LoginFailure" data-ajax-success="LoginSuccessRefresh" data-ajax="true" data-ajax-method="POST" data-ajax-update="#the-msg">
+    <div class="row">
+        <div id="the-msg" class="col-12 text-danger"></div>
+    </div>
     <div class="row">
         <div class="form-group t-col col-10 login-input">
             <input asp-for="UserName" class="form-control" placeholder="Ваш логин" />

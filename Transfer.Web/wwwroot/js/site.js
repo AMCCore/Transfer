@@ -23,9 +23,11 @@ function SomeButtonZero() {
 }
 function LoginStart(e) {
     $('#LoginPopUp :input').prop("disabled", true);
+    $('#the-msg').html('');
 }
 function LoginFailure(e) {
     $('#LoginPopUp :input').prop("disabled", false);
+    $('#the-msg').html(e.responseText);
 }
 function LoginSuccessRefresh(e) {
     if (e.redirect) {

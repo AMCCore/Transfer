@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Transfer.Web.Controllers
 {
@@ -60,9 +61,7 @@ namespace Transfer.Web.Controllers
                 }
             }
 
-            ViewBag.LoginErrorMessage = "Неверный логин или пароль";
-            objLoginModel.Password = null;
-            return PartialView(objLoginModel);
+            return StatusCode(StatusCodes.Status403Forbidden, "Неверный логин или пароль");
         }
         
         [HttpGet]
