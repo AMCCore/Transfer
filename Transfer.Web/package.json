@@ -5,6 +5,7 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.11"
+    "@types/jquery": "^3.5.11",
+    "@types/bootstrap-fileinput": "5.0.3"
   }
 }

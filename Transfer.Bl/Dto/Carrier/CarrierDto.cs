@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -58,6 +59,12 @@ public class CarrierDto : OrganisationDto
     [Required]
     public string NameAccount { get; set; }
 
-    public IDictionary<Guid?, OrganisationFileDto> OrganisationFiles { get; set; } = new Dictionary<Guid?, OrganisationFileDto>();
+    public IFormFile? LogoFile { get; set; }
+
+    public IFormFile? LicenceFile { get; set; }
+
+    public Guid? LogoFileId { get; set; }
+
+    public Guid? LicenceFileId { get; set; }
 }
 

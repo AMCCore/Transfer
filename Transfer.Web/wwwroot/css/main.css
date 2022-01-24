@@ -410,6 +410,7 @@ img {
         width: 100%;
         border: 1px solid #0f4c71;
         background-color: #ecbf54;
+        text-align: center;
     }
 
     .the-form input.input-validation-error {

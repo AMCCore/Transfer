@@ -117,13 +117,13 @@ public class CarrierController : BaseController
         if (!ModelState.IsValid)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
-            return PartialView("Save", model);
+            return View("Carrier", model);
         }
 
         if(!model.Agreement)
         {
             ViewBag.ErrorMsg = "Ошибка согласия перс данных";
-            return PartialView("Save", model);
+            return View("Carrier", model);
         }
         if(string.IsNullOrWhiteSpace(model.City))
         {
@@ -163,9 +163,7 @@ public class CarrierController : BaseController
             await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
         }
 
-
-        return Json(new { redirect = Url.Action(nameof(CarrierItem), new { carrierId = model.Id }) });
-        //return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
+        return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
 
 }

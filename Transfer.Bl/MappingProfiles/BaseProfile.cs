@@ -39,8 +39,7 @@ public class BaseProfile : Profile
         CreateMap<CarrierDto, DbOrganisation>();
 
         CreateMap<DbBankDetails, CarrierDto>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForMember(x => x.OrganisationFiles, opt => opt.Ignore());
+            .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<CarrierDto, DbBankDetails>()
             .ForMember(x => x.Id, opt => opt.Ignore());
 
