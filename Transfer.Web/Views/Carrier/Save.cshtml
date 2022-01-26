@@ -136,7 +136,7 @@
         </div>
     </div>
     <div class="row blank-row"></div>
-    <div class="row">
+    @*<div class="row">
         <div class="col-12 t-col" style="color: #fff;"><h3>Дополнительные документы</h3></div>
     </div>
     <div class="row blank-row"></div>
@@ -147,14 +147,14 @@
                     <input asp-for="LicenceFileId" readonly="readonly" class="form-control" placeholder="Скан лицензии на осуществление перевозок" />
                 </div>
                 <div class="t-col col-4">
-                    <input asp-for="LicenceFile" class="file" data-show-Caption data-msg-placeholder="Скан лицензии на осуществление перевозок" data-browse-class="button-one" data-show-browse="true" data-browse-label="Загрузить" data-show-upload="false" data-show-preview="false" />
+                    <input asp-for="LicenceFile" accept="image/*" />
                 </div>
             </div>
         </div>
         <div class="t-col col-6 form-group text-center">
-            <input asp-for="LogoFile" class="file" data-msg-placeholder="Логотип компании" data-browse-label="Загрузить" data-show-upload="false" data-show-preview="false" />
+            <input asp-for="LogoFile" class="file" data-msg-placeholder="Логотип компании" data-browse-label="Загрузить" data-show-upload="false" data-show-remove="false" data-show-preview="false" />
         </div>
-    </div>
+    </div>*@
     <div class="row form-row">
         <div class="t-col col-12 chk-label form-group">
             <input id="Agreement" asp-for="Agreement" class="form-check-input" />

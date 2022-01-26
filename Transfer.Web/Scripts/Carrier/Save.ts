@@ -22,4 +22,21 @@
         showRemove: true,
         theme: "fas",
     });
+
+    let $el1 = $("#LicenceFile");
+
+    $el1.fileinput({
+        browseClass: "button-one",
+        showPreview: false,
+        showCaption: false,
+        showRemove: false,
+        showUpload: false,
+        browseLabel: "Загрузить",
+        uploadUrl: "/File/UploadFile",
+        uploadAsync: true,
+    }).on("filebatchselected", function (event, files) {
+        $el1.fileinput("upload");
+    }).on('filebatchuploadcomplete', function (event, files, extra) {
+        console.log('File batch upload complete', files, extra);
+    });
 });
