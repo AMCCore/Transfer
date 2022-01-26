@@ -91,7 +91,7 @@ public class CarrierController : BaseController
     [Route("Carrier/New")]
     public IActionResult NewCarrier()
     {
-        return View("Carrier", new CarrierDto());
+        return View("CarrierEdit", new CarrierDto());
     }
 
     [HttpGet]
@@ -105,6 +105,21 @@ public class CarrierController : BaseController
             Mapper.Map(entity.BankDetails.FirstOrDefault(x => !x.IsDeleted), res);
 
             return View("Carrier", res);
+        }
+        return NotFound();
+    }
+
+    [HttpGet]
+    [Route("Carrier/{carrierId}/Edit")]
+    public async Task<IActionResult> CarrierItemEdit(Guid carrierId)
+    {
+        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
+        if (entity != null)
+        {
+            var res = Mapper.Map<CarrierDto>(entity);
+            Mapper.Map(entity.BankDetails.FirstOrDefault(x => !x.IsDeleted), res);
+
+            return View("CarrierEdit", res);
         }
         return NotFound();
     }

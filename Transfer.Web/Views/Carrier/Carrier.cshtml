@@ -5,12 +5,7 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/css/fileinput.min.css" integrity="sha512-qPjB0hQKYTx1Za9Xip5h0PXcxaR1cRbHuZHo9z+gb5IgM6ZOTtIH4QLITCxcCp/8RMXtw2Z85MIZLv6LfGTLiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-}
-
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/js/fileinput.min.js" integrity="sha512-CCLv901EuJXf3k0OrE5qix8s2HaCDpjeBERR2wVHUwzEIc7jfiK9wqJFssyMOc1lJ/KvYKsDenzxbDTAQ4nh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="~/js/Carrier/Save.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="~/css/Carrier/carrier-info.css" />
 }
 
 <div class="container">
@@ -18,7 +13,7 @@
     <div class="row blank-row"></div>
     <div class="row">
         <div class="t-col col-12 crumbs">
-            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;@(Model.Id.IsNullOrEmpty() ? "Новый перевозчик" : Model.Name)
+            ---&nbsp;&nbsp;&nbsp;<a asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<span>@Model.Name</span>
         </div>
     </div>
     <div class="row blank-row"></div>
@@ -33,12 +28,116 @@
     <div class="row blank-row"></div>
     <div class="row">
         <div class="t-col col-12">
-            <h1 style="color: #0f4c71">@(Model.Id.IsNullOrEmpty() ? "Добавление нового перевозчика" : "Редактирование перевозчика")</h1>
+            <h1 style="color: #0f4c71">@Model.Name</h1>
         </div>
     </div>
     <div class="row blank-row"></div>
-    <form asp-controller="Carrier" asp-action="Save" method="post" enctype="multipart/form-data">
-        @await Html.PartialAsync("~/Views/Carrier/Save.cshtml", Model)
+    <div class="row">
+        <div class="col-12">
+            <div class="container carrier-info">
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-2">
+                        <div class="row">
+                            @if (Model.LogoFileId.IsNullOrEmpty())
+                            {
+                                <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
+                            }
+                            else
+                            {
+                                <div class="col-12 r-logo text-center"><img alt="" src='@Url.Action("GetFile", "File", new { fileId = Model.LogoFileId.Value } )' /></div>
+                            }
+                        </div>
+                        <div class="row"><div class="col-12 text-center"><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i style="color: #ecbf54" class="far fa-star fs-sm"></i><i style="color: #ecbf54" class="far fa-star fs-sm"></i></div></div>
+                        <div class="row blank-row"></div>
+                        <div class="row" style="color: #007896;">
+                            <div class="col-12 text-center">
+                                @if (Model.Checked)
+                                {
+                                    <i class="fas fa-lock-open fa-lg"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-lock fa-lg"></i>
+                                }
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="far fa-times-circle fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 text-center go">
+                                <a asp-action="CarrierItemEdit" asp-controller="Carrier" asp-route-carrierId="@Model.Id"><span>Редактировать</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-10">
+                        <div class="row blank-row"></div>
+                        @if (!string.IsNullOrWhiteSpace(Model.FactAddress))
+                        {
+                            <div class="row">
+                                <div class="col-12 dark-text">
+                                    Фактический адрес: @Model.FactAddress
+                                </div>
+                            </div>
+                        }
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 dark-text">
+                                Юридический адрес: @Model.Address
+                            </div>
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 dark-text contacts">
+                                Контакы: @Model.ContactFio, <a href="mailto: @Model.Email">@Model.Email</a>, <a href="tel: @Model.Phone">@Model.Phone</a>
+                            </div>
+                            <div class="col-12 col-md-3 dark-text">
+                                ОГРН: @Model.OGRN
+                            </div>
+                            <div class="col-12 col-md-3 dark-text">
+                                ИНН: @Model.INN
+                            </div>
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 dark-text">
+                                <h6>Банковские реквизиты</h6>
+                                <span class="black-text">
+                                    Наименование банка: @Model.BankName<br />
+                                    БИК: @Model.Bik<br />
+                                    ИНН: @Model.BankInn<br />
+                                    КПП: @Model.Kpp<br />
+                                    Кор. счет: @Model.KorAccount<br />
+                                    Счет: @Model.NumAccount<br />
+                                    Нименование платежа: "@Model.NameAccount"
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row blank-row"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form id="CarrierActivesSearch" class="carrier-actives-filter" asp-controller="Carrier" asp-action="SearchCarrierActives" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierActivesSearch">
+        <div class="row">
+            <div class="col-8 t-col dark-text">
+                <h4>Активы компании</h4>
+            </div>
+            <div class="t-col col-2">
+                <button type="button" class="button-one">Транспорт</button>
+            </div>
+            <div class="t-col col-2">
+                <button type="button" class="button-one">Водители</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 t-col col-offset-10 form-group">
+
+            </div>
+        </div>
     </form>
     <div class="row blank-row"></div>
 </div>

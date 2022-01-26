@@ -1,0 +1,62 @@
+﻿.carrier-info {
+    border-radius: 18px;
+    background-color: #f8fafb;
+}
+
+    .carrier-info .r-logo img {
+        height: 140px;
+        width: auto;
+        border: 0;
+        padding: 0;
+        margin: 18px 0;
+    }
+
+.carrier-info .go {
+    padding-right: 36px;
+    padding-left: 36px;
+}
+
+    .carrier-info .go a {
+        line-height: 36px;
+        border: solid 1px #007896;
+        color: #000;
+        display: flex;
+        border-radius: 18px;
+        text-decoration: none;
+    }
+
+        .carrier-info .go a:hover {
+            border: solid 1px #ecbf54;
+            background-color: #ecbf54;
+            color: #000;
+        }
+
+        .carrier-info .go a span {
+            margin: auto;
+        }
+
+    .carrier-info .contacts a {
+        color: #007896;
+        text-decoration: none;
+        border-bottom: dashed 1px #007896;
+    }
+
+        .carrier-info .contacts a:hover {
+            color: #ecbf54;
+            border-bottom: dashed 0px #007896;
+        }
+
+.carrier-actives-filter .button-one {
+    border-radius: 18px;
+    line-height: 34px;
+    width: 100%;
+    border: 1px solid #0f4c71;
+    background-color: #fff;
+    color: #000;
+}
+
+    .carrier-actives-filter .button-one:hover {
+        border: 1px solid #ecbf54;
+        color: #000;
+        background-color: #ecbf54;
+    }

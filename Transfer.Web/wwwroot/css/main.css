@@ -41,6 +41,18 @@ img {
     min-height: 18px;
 }
 
+.dark-text {
+    color: #0f4c71;
+}
+
+.light-text {
+    color: #007896;
+}
+
+.black-text {
+    color: #000;
+}
+
 .header {
     background: url("/images/243.png") left top no-repeat;
     color: #fff;
@@ -249,13 +261,14 @@ img {
     color: #007896;
 }
 
-    .crumbs a {
+    .crumbs a, .crumbs span {
         color: #007896;
         text-decoration: none;
         border-bottom: dashed 1px #007896;
+        cursor: pointer;
     }
 
-        .crumbs a:hover {
+        .crumbs a:hover, .crumbs span:hover {
             text-decoration: none;
             color: #ecbf54;
             border-bottom: dashed 1px #fff;

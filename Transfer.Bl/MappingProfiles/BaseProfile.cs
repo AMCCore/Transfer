@@ -35,13 +35,16 @@ public class BaseProfile : Profile
         CreateMap<DbOrganisation, OrganisationDto>();
         CreateMap<OrganisationDto, DbOrganisation>();
 
-        CreateMap<DbOrganisation, CarrierDto>();
+        CreateMap<DbOrganisation, CarrierDto>()
+            .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.DirectorFio) ? "Контактное лицо" : $"{o.DirectorFio} ({o.DirectorPosition})"));
         CreateMap<CarrierDto, DbOrganisation>();
 
         CreateMap<DbBankDetails, CarrierDto>()
-            .ForMember(x => x.Id, opt => opt.Ignore());
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.BankInn, opt => opt.MapFrom(o => o.Inn));
         CreateMap<CarrierDto, DbBankDetails>()
-            .ForMember(x => x.Id, opt => opt.Ignore());
+            .ForMember(x => x.Id, opt => opt.Ignore())
+            .ForMember(x => x.Inn, opt => opt.MapFrom(o => o.BankInn));
 
 
 

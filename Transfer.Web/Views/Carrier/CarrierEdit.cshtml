@@ -1,0 +1,44 @@
+﻿@model Transfer.Bl.Dto.Carrier.CarrierDto
+@using Transfer.Common.Extensions
+
+@{
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/css/fileinput.min.css" integrity="sha512-qPjB0hQKYTx1Za9Xip5h0PXcxaR1cRbHuZHo9z+gb5IgM6ZOTtIH4QLITCxcCp/8RMXtw2Z85MIZLv6LfGTLiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/js/fileinput.min.js" integrity="sha512-CCLv901EuJXf3k0OrE5qix8s2HaCDpjeBERR2wVHUwzEIc7jfiK9wqJFssyMOc1lJ/KvYKsDenzxbDTAQ4nh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="~/js/Carrier/Save.js" crossorigin="anonymous"></script>
+}
+
+<div class="container">
+    <div class="row blank-row"></div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;@(Model.Id.IsNullOrEmpty() ? "Новый перевозчик" : Model.Name)
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">@(Model.Id.IsNullOrEmpty() ? "Добавление нового перевозчика" : "Редактирование перевозчика")</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form asp-controller="Carrier" asp-action="Save" method="post" enctype="multipart/form-data">
+        @await Html.PartialAsync("~/Views/Carrier/Save.cshtml", Model)
+    </form>
+    <div class="row blank-row"></div>
+</div>

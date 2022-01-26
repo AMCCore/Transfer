@@ -29,7 +29,7 @@ public class CarrierDto : OrganisationDto
     /// </summary>
     [MaxLength(100)]
     [Required]
-    public string Inn { get; set; }
+    public string BankInn { get; set; }
 
     /// <summary>
     ///     КПП
