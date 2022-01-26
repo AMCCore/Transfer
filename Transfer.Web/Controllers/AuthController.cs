@@ -57,6 +57,7 @@ namespace Transfer.Web.Controllers
                             AllowRefresh = true
                         });
 
+                    //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };
                     return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
                 }
             }

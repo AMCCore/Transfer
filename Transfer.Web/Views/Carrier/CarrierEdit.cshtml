@@ -18,7 +18,15 @@
     <div class="row blank-row"></div>
     <div class="row">
         <div class="t-col col-12 crumbs">
-            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;@(Model.Id.IsNullOrEmpty() ? "Новый перевозчик" : Model.Name)
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+            @if(Model.Id.IsNullOrEmpty())
+            {
+                @:Новый перевозчик
+            }
+            else
+            {
+                <a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.Id">@Model.Name</a>
+            }
         </div>
     </div>
     <div class="row blank-row"></div>

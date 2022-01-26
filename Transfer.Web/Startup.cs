@@ -98,10 +98,14 @@ namespace Transfer.Web
                 //endpoints.MapRazorPages();
             });
 
-            app.UseSwaggerUI(c =>
+            if (env.IsDevelopment())
             {
-                c.SwaggerEndpoint("v1/swagger.json", "Transfer API V1");
-            });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v1/swagger.json", "Transfer API V1");
+                });
+            }
+
 
             var cookiePolicyOptions = new CookiePolicyOptions
             {

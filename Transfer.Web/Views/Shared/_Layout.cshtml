@@ -81,12 +81,6 @@
                         <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
                         <a class="col-md-2 text-center" asp-controller="Account" asp-action="Index">Личный кабинет</a>
                     </div>
-                    @if (Transfer.Web.Models.Security.ReviewEvents > 0)
-                    {
-                        <div class="row">
-                            <div class="col-md-2 offset-md-8 text-center events">@Transfer.Web.Models.Security.ReviewEvents новых</div>
-                        </div>
-                    }
                 }
                 else
                 {
@@ -214,7 +208,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" integrity="sha512-o6XqxgrUsKmchwy9G5VRNWSSxTS4Urr4loO6/0hYdpWmFUfHqGzawGxeQGMDqYzxjY9sbktPbNlkIQJWagVZQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="~/js/site.js" crossorigin="anonymous"></script>
+    <script src="/js/site.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

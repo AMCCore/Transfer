@@ -53,6 +53,15 @@ img {
     color: #000;
 }
 
+.white-text {
+    color: #fff;
+}
+
+.red-text {
+    color: #ff0000
+}
+
+
 .header {
     background: url("/images/243.png") left top no-repeat;
     color: #fff;
