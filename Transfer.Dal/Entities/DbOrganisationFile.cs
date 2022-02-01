@@ -24,16 +24,24 @@ public class DbOrganisationFile : IEntityBase, IEntityWithDateCreated, ISoftDele
 
     public OrganisationFileType FileType { get; set; }
 
+    [ForeignKey(nameof(Uploader))]
+    [Required]
+    public Guid UploaderId { get; set; }
+
+    public virtual DbAccount Uploader { get; set; }
+
     [ForeignKey(nameof(Organisation))]
     [Required]
     public Guid OrganisationId { get; set; }
 
     public virtual DbOrganisation Organisation { get; set; }
 
-    [ForeignKey(nameof(Uploader))]
+    [ForeignKey(nameof(File))]
     [Required]
-    public Guid UploaderId { get; set; }
+    public Guid FileId { get; set; }
 
-    public virtual DbAccount Uploader { get; set; }
+    public virtual DbFile File { get; set; }
+
+
 }
 

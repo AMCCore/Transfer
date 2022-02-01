@@ -47,6 +47,9 @@ public class BaseProfile : Profile
             .ForMember(x => x.Inn, opt => opt.MapFrom(o => o.BankInn));
 
 
+        //менять персданные водителей
+        //CreateMap<DbDriver, DbPersonData>();
+
 
     }
 }

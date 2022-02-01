@@ -34,5 +34,39 @@ namespace Transfer.Dal.Entities
 
         [ForeignKey(nameof(PersonData))]
         public Guid? PersonDataId { get; set; }
+
+        /// <summary>
+        /// Имя
+        /// </summary>
+        [MaxLength(1000)]
+        [Required]
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Фамилия
+        /// </summary>
+        [MaxLength(1000)]
+        [Required]
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// Отчество
+        /// </summary>
+        [MaxLength(1000)]
+        public string MiddleName { get; set; }
+
+        /// <summary>
+        /// EMail
+        /// </summary>
+        [MaxLength(1000)]
+        [Required]
+        public string EMail { get; set; }
+
+        /// <summary>
+        /// Phone
+        /// </summary>
+        [MaxLength(1000)]
+        [Required]
+        public string Phone { get; set; }
     }
 }

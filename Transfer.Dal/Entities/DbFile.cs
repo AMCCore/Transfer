@@ -26,5 +26,9 @@ public class DbFile : IEntityBase, IEntityWithDateCreated
 
     [MaxLength(1000)]
     public string? ContentType { get; set; }
+
+    public virtual ICollection<DbOrganisationFile> OrganisationFiles { get; set; } = new List<DbOrganisationFile>();
+
+    public virtual ICollection<DbDriverFile> DriverFiles { get; set; } = new List<DbDriverFile>();
 }
 

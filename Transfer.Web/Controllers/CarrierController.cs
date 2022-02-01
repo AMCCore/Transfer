@@ -181,4 +181,36 @@ public class CarrierController : BaseController
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
 
+    private async Task<OrganisationAssetsSearchFilter> GetAssetsDataFromDb(Guid OrganisationId, OrganisationAssetsSearchFilter filter = null)
+    {
+        filter ??= new OrganisationAssetsSearchFilter(new List<OrganisationAssetDto>(), TransferSettings.TablePageSize);
+
+
+
+        var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted).AsQueryable();
+        
+        //if (!string.IsNullOrWhiteSpace(filter.City))
+        //{
+        //    query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()));
+        //}
+
+
+        var totalCount = await query.CountAsync(CancellationToken.None);
+        var entity = await query.Skip(filter.StartRecord)
+            .Take(filter.PageSize).ToListAsync(CancellationToken.None);
+
+        filter.Results = new CommonPagedList<OrganisationAssetDto>(
+            entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList(),
+            filter.PageNumber, filter.PageSize, totalCount);
+
+        return filter;
+    }
+
+    public async Task<IActionResult> OrganisationAssets(Guid organisationId)
+    {
+        var result = await GetAssetsDataFromDb(organisationId);
+
+        return PartialView("Assets", result);
+    }
+
 }
