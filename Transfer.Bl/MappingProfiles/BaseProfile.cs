@@ -61,5 +61,10 @@ public class BaseProfile : Profile
         CreateMap<DbBus, DbBus>()
             .ForMember(x => x.Organisation, opt => opt.Ignore())
             .ForMember(x => x.BusFiles, opt => opt.Ignore());
+
+        CreateMap<DbDriver, DbDriver>()
+            .ForMember(x => x.Organisation, opt => opt.Ignore())
+            .ForMember(x => x.DriverFiles, opt => opt.Ignore())
+            .ForMember(x => x.DbDriversLicenses, opt => opt.Ignore());
     }
 }

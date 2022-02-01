@@ -124,7 +124,7 @@ public class CarrierController : BaseController
         return NotFound();
     }
 
-    [AutoValidateAntiforgeryToken]
+    [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("Carrier/Save")]
     public async Task<IActionResult> Save([FromForm] CarrierDto model)

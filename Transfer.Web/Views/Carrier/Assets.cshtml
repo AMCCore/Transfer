@@ -32,7 +32,7 @@
         <div class="t-col col-12 text-center">
             @if (Model.AssetType == OrganisationAssetType.Driver)
             {
-                <a asp-action="NewCarrier" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId"><div class="new-assert-link"><i class="fas fa-plus-circle"></i></div></a>
+                <a asp-action="NewDriver" asp-controller="Driver" asp-route-carrierId="@Model.OrganisationId"><div class="new-assert-link"><i class="fas fa-plus-circle"></i></div></a>
             }
             else if (Model.AssetType == OrganisationAssetType.Bus)
             {
@@ -76,13 +76,37 @@
                         <div class="col-12"><i class="fas fa-truck"></i> @c.TransportClass</div>
                     </div>
                 }
+                @if (!string.IsNullOrWhiteSpace(c.Phone))
+                {
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        <div class="col-12 contacts"><a href="tel: @c.Phone"><i class="fas fa-phone-alt"></i> @c.Phone</a></div>
+                    </div>
+                }
 
-                @if(Model.AssetType == OrganisationAssetType.Bus)
+                @if (!string.IsNullOrWhiteSpace(c.EMail))
+                {
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        <div class="col-12 contacts"><a href="mailto: @c.EMail"><i class="far fa-envelope"></i> @c.EMail</a></div>
+                    </div>
+                }
+
+                @if (Model.AssetType == OrganisationAssetType.Bus)
                 {
                     <div class="row blank-row"></div>
                     <div class="row">
                         <div class="col-12 offset-md-10 col-md-2 go">
                             <a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@Model.OrganisationId" asp-route-busId="@c.Id"><span>Подробнее</span></a>
+                        </div>
+                    </div>
+                }
+                else if (Model.AssetType == OrganisationAssetType.Driver)
+                {
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        <div class="col-12 offset-md-10 col-md-2 go">
+                            <a asp-action="DriverItem" asp-controller="Driver" asp-route-carrierId="@Model.OrganisationId" asp-route-driverId="@c.Id"><span>Подробнее</span></a>
                         </div>
                     </div>
                 }
