@@ -217,11 +217,18 @@ public class CarrierController : BaseController
 
     public async Task<IActionResult> OrganisationAssets(Guid organisationId)
     {
-        var result = await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, organisationId);
+        var result = await CarrierController.GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, organisationId);
 
         return PartialView("Assets", result);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> SearchCarrierAssets([FromForm] OrganisationAssetsSearchFilter filter)
+    {
+        var result = await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, filter);
+
+        return PartialView("/Views/Carrier/Assets.cshtml", result);
+    }
 }
 
 public class CarrierAssetsViewComponent : ViewComponent
