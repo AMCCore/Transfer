@@ -30,6 +30,8 @@ namespace Transfer.Dal.Entities
         
         public virtual ICollection<DbDriversLicense> DbDriversLicenses { get; set; } = new List<DbDriversLicense>();
 
+        public virtual ICollection<DbDriverFile> DriverFiles { get; set; } = new List<DbDriverFile>();
+
         public virtual DbPersonData? PersonData { get; set; }
 
         [ForeignKey(nameof(PersonData))]

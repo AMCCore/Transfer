@@ -87,8 +87,6 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
 
     public virtual ICollection<DbOrganisationWorkingArea> WorkingArea { get; set; } = new List<DbOrganisationWorkingArea>();
 
-    public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
-
     /// <summary>
     ///     Рэйтинг
     /// </summary>
@@ -127,5 +125,8 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public bool Agreement { get; set; } = false;
 
     public virtual ICollection<DbBankDetails> BankDetails { get; set; } = new List<DbBankDetails>();
-}
 
+    public virtual ICollection<DbBus> Buses { get; set; } = new List<DbBus>();
+
+    public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
+}
