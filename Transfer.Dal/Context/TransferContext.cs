@@ -30,6 +30,8 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbExternalLogin>().Property(d => d.LoginType).HasConversion(new GuidEnumConverter<ExternalLoginEnum>());
             modelBuilder.Entity<DbOrganisationAccount>().Property(d => d.AccountType).HasConversion(new GuidEnumConverter<OrganisationAccountType>());
             modelBuilder.Entity<DbOrganisationFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<OrganisationFileType>());
+            modelBuilder.Entity<DbDriverFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<DriverFileType>());
+            modelBuilder.Entity<DbBusFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<BusFileType>());
 
             modelBuilder.DisableCascadeDeleteConvention();
 

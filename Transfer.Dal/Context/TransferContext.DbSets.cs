@@ -27,5 +27,8 @@ public partial class TransferContext
     public virtual DbSet<DbFile> DbFile { get; set; }
     public virtual DbSet<DbOrganisationFile> DbOrganisationFiles { get; set; }
     public virtual DbSet<DbBankDetails> DbBankDetails { get; set; }
+    public virtual DbSet<DbBus> DbBuses { get; set; }
+    public virtual DbSet<DbBusFile> DbBusFiles { get; set; }
+    public virtual DbSet<DbDriverFile> DbDriverFiles { get; set; }
 }
 
