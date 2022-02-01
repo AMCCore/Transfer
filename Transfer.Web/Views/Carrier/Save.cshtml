@@ -38,8 +38,7 @@
         </div>
 
     </div>
-    <div class="row form-row">
-    </div>
+    <div class="row form-row"></div>
     <div class="row form-row">
         <div class="t-col col-12 white-text">
             Полное наименование компании в соответствии с уставом: <span class="red-text">*</span>
@@ -49,32 +48,37 @@
         <div class="t-col col-12 form-group">
             <div class="input-group input-group-icon">
                 <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="FullName" class="form-control" placeholder="Полное наименование компании в соответствии с уставом" />
+                <input asp-for="FullName" class="form-control" />
             </div>
         </div>
     </div>
-    <div class="row blank-row"></div>
+    <div class="row form-row"></div>
     <div class="row form-row">
-        <div class="t-col col-11 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="Address" class="form-control" placeholder="Юридический адрес" />
-            </div>
-        </div>
-        <div class="col-1 t-col">
-            <i class="far fa-question-circle fa-lg"></i>
+        <div class="t-col col-12 white-text">
+            Юридический адрес: <span class="red-text">*</span>
         </div>
     </div>
-    <div class="row blank-row"></div>
     <div class="row form-row">
-        <div class="t-col col-11 form-group">
+        <div class="t-col col-12 form-group">
             <div class="input-group input-group-icon">
                 <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="FactAddress" class="form-control" placeholder="Фактический адрес" />
+                <input asp-for="Address" class="form-control" />
             </div>
         </div>
-        <div class="col-1 t-col">
-            <i class="far fa-question-circle fa-lg"></i>
+    </div>
+    <div class="row form-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-12 white-text">
+            Фактический адрес:
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="t-col col-12 form-group">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="FactAddress" class="form-control" />
+            </div>
         </div>
     </div>
     <div class="row form-row">
@@ -136,54 +140,99 @@
     <div class="row">
         <div class="col-12 t-col" style="color: #fff;"><h3>Банковские реквизиты</h3></div>
     </div>
-    <div class="row blank-row"></div>
+    <div class="row form-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-12 white-text">
+            Наименование банка: <span class="red-text">*</span>
+        </div>
+    </div>
     <div class="row form-row">
         <div class="t-col col-12 form-group">
             <div class="input-group input-group-icon">
                 <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="BankName" class="form-control" placeholder="Наименование банка" />
+                <input asp-for="BankName" class="form-control" />
             </div>
         </div>
     </div>
-    <div class="row blank-row"></div>
     <div class="row form-row">
         <div class="t-col col-3 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="Bik" class="form-control" placeholder="БИК" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    БИК: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Bik" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="t-col col-3 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="BankInn" class="form-control" placeholder="ИНН Банка" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    ИНН Банка: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="BankInn" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="t-col col-3 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="Kpp" class="form-control" placeholder="КПП" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    КПП: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Kpp" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="t-col col-3 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="KorAccount" class="form-control" placeholder="Кор. счет" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    Кор. счет: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="KorAccount" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row blank-row"></div>
     <div class="row form-row">
         <div class="t-col col-3 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="NumAccount" class="form-control" placeholder="Номер счета" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    Номер счета: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="NumAccount" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="t-col col-9 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="NameAccount" class="form-control" placeholder="Наименование получателя" />
+            <div class="row">
+                <div class="col-12 white-text">
+                    Наименование получателя: <span class="red-text">*</span>
+                </div>
+                <div class="col-12 white-text">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="NameAccount" class="form-control" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -227,4 +276,5 @@
     </div>
     <div class="row blank-row"></div>
 </div>
+<div class="row blank-row"></div>
 

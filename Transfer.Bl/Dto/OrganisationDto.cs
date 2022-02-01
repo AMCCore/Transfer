@@ -49,7 +49,8 @@ public class OrganisationDto
     ///     Город
     /// </summary>
     [MaxLength(1000)]
-    public string? City { get; set; }
+    [Required]
+    public string City { get; set; }
 
     /// <summary>
     ///     ФИО директора
