@@ -99,7 +99,7 @@ public class CarrierController : BaseController
     public async Task<IActionResult> CarrierItem(Guid carrierId)
     {
         var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
-        if(entity != null)
+        if (entity != null)
         {
             var res = Mapper.Map<CarrierDto>(entity);
             Mapper.Map(entity.BankDetails.FirstOrDefault(x => !x.IsDeleted), res);
@@ -135,12 +135,12 @@ public class CarrierController : BaseController
             return View("Carrier", model);
         }
 
-        if(!model.Agreement)
+        if (!model.Agreement)
         {
             ViewBag.ErrorMsg = "Ошибка согласия перс данных";
             return View("Carrier", model);
         }
-        if(string.IsNullOrWhiteSpace(model.City))
+        if (string.IsNullOrWhiteSpace(model.City))
         {
             model.City = "Неизвестный город";
         }
@@ -166,7 +166,7 @@ public class CarrierController : BaseController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
             var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(CancellationToken.None);
-            foreach(var b in brd)
+            foreach (var b in brd)
             {
                 b.IsDeleted = true;
             }
@@ -181,36 +181,71 @@ public class CarrierController : BaseController
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
 
-    private async Task<OrganisationAssetsSearchFilter> GetAssetsDataFromDb(Guid OrganisationId, OrganisationAssetsSearchFilter filter = null)
+    internal static async Task<OrganisationAssetsSearchFilter> GetAssetsDataFromDb(IUnitOfWork UnitOfWork, IMapper Mapper, TransferSettings TransferSettings, Guid OrganisationId)
+    {
+        return await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, new OrganisationAssetsSearchFilter(new List<OrganisationAssetDto>(), TransferSettings.TablePageSize)
+        {
+            OrganisationId = OrganisationId
+        });
+    }
+
+    internal static async Task<OrganisationAssetsSearchFilter> GetAssetsDataFromDb(IUnitOfWork UnitOfWork, IMapper Mapper, TransferSettings TransferSettings, OrganisationAssetsSearchFilter filter = null)
     {
         filter ??= new OrganisationAssetsSearchFilter(new List<OrganisationAssetDto>(), TransferSettings.TablePageSize);
+        var totalCount = 0;
+        var entitys = new List<OrganisationAssetDto>();
 
+        if (filter.AssetType == OrganisationAssetType.Driver)
+        {
+            var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted && x.Id == filter.OrganisationId).SelectMany(x => x.Drivers);
+            totalCount = await query.CountAsync(CancellationToken.None);
+            var entity = await query.Skip(filter.StartRecord).Take(filter.PageSize).ToListAsync(CancellationToken.None);
+            entitys = entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList();
+        }
+        else if (filter.AssetType == OrganisationAssetType.Bus)
+        {
+            var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted && x.Id == filter.OrganisationId).SelectMany(x => x.Buses);
+            totalCount = await query.CountAsync(CancellationToken.None);
+            var entity = await query.Skip(filter.StartRecord).Take(filter.PageSize).ToListAsync(CancellationToken.None);
+            entitys = entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList();
+        }
 
-
-        var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted).AsQueryable();
-        
-        //if (!string.IsNullOrWhiteSpace(filter.City))
-        //{
-        //    query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()));
-        //}
-
-
-        var totalCount = await query.CountAsync(CancellationToken.None);
-        var entity = await query.Skip(filter.StartRecord)
-            .Take(filter.PageSize).ToListAsync(CancellationToken.None);
-
-        filter.Results = new CommonPagedList<OrganisationAssetDto>(
-            entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList(),
-            filter.PageNumber, filter.PageSize, totalCount);
+        filter.Results = new CommonPagedList<OrganisationAssetDto>(entitys, filter.PageNumber, filter.PageSize, totalCount);
 
         return filter;
     }
 
     public async Task<IActionResult> OrganisationAssets(Guid organisationId)
     {
-        var result = await GetAssetsDataFromDb(organisationId);
+        var result = await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, organisationId);
 
         return PartialView("Assets", result);
     }
+
+}
+
+public class CarrierAssetsViewComponent : ViewComponent
+{
+    protected readonly ILogger Logger;
+    protected readonly IUnitOfWork UnitOfWork;
+    protected readonly TransferSettings TransferSettings;
+    protected readonly IMapper Mapper;
+
+    public CarrierAssetsViewComponent(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork,
+        ILogger<CarrierController> logger, IMapper mapper)
+    {
+        TransferSettings = transferSettings.Value;
+        UnitOfWork = unitOfWork;
+        Logger = logger;
+        Mapper = mapper;
+    }
+
+    public async Task<IViewComponentResult> InvokeAsync(Guid organisationId)
+    {
+        var result = await CarrierController.GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, organisationId);
+
+        return View("/Views/Carrier/Assets.cshtml", result);
+    }
+
 
 }

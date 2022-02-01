@@ -121,23 +121,5 @@
         </div>
     </div>
     <div class="row blank-row"></div>
-    <form id="CarrierActivesSearch" class="carrier-actives-filter" asp-controller="Carrier" asp-action="SearchCarrierActives" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierActivesSearch">
-        <div class="row">
-            <div class="col-8 t-col dark-text">
-                <h4>Активы компании</h4>
-            </div>
-            <div class="t-col col-2">
-                <button type="button" class="button-one">Транспорт</button>
-            </div>
-            <div class="t-col col-2">
-                <button type="button" class="button-one">Водители</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2 t-col col-offset-10 form-group">
-
-            </div>
-        </div>
-    </form>
-    <div class="row blank-row"></div>
+    @await Component.InvokeAsync("CarrierAssets", new { organisationId = Model.Id })
 </div>

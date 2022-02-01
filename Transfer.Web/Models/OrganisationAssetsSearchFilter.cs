@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Transfer.Bl.Dto;
 
 namespace Transfer.Web.Models;
@@ -10,4 +11,6 @@ public class OrganisationAssetsSearchFilter : BaseFilterModel<OrganisationAssetD
     public OrganisationAssetsSearchFilter(IEnumerable<OrganisationAssetDto> list, int pageSize) : base(list, pageSize) { }
 
     public OrganisationAssetType AssetType { get; set; } = OrganisationAssetType.Bus;
+
+    public Guid OrganisationId { get; set; }
 }

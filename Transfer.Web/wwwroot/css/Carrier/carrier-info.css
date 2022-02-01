@@ -1,39 +1,42 @@
-﻿.carrier-info {
+﻿.r-logo img {
+    height: 140px;
+    width: auto;
+    border: 0;
+    padding: 0;
+    margin: 18px 0;
+}
+
+.carrier-info {
     border-radius: 18px;
     background-color: #f8fafb;
 }
 
-    .carrier-info .r-logo img {
-        height: 140px;
-        width: auto;
-        border: 0;
-        padding: 0;
-        margin: 18px 0;
+    .assert-info .go,
+    .carrier-info .go {
+        padding-right: 36px;
+        padding-left: 36px;
     }
 
-.carrier-info .go {
-    padding-right: 36px;
-    padding-left: 36px;
-}
-
-    .carrier-info .go a {
-        line-height: 36px;
-        border: solid 1px #007896;
-        color: #000;
-        display: flex;
-        border-radius: 18px;
-        text-decoration: none;
-    }
-
-        .carrier-info .go a:hover {
-            border: solid 1px #ecbf54;
-            background-color: #ecbf54;
+        .assert-info .go a,
+        .carrier-info .go a {
+            line-height: 36px;
+            border: solid 1px #007896;
             color: #000;
+            display: flex;
+            border-radius: 18px;
+            text-decoration: none;
         }
 
-        .carrier-info .go a span {
-            margin: auto;
-        }
+            .assert-info .go a:hover,
+            .carrier-info .go a:hover {
+                border: solid 1px #ecbf54;
+                background-color: #ecbf54;
+                color: #000;
+            }
+            .assert-info .go a span,
+            .carrier-info .go a span {
+                margin: auto;
+            }
 
     .carrier-info .contacts a {
         color: #007896;
@@ -59,4 +62,46 @@
         border: 1px solid #ecbf54;
         color: #000;
         background-color: #ecbf54;
+    }
+
+.btn-check[type="radio"]:checked + label {
+    background-color: #000;
+    border: 1px solid #000;
+    color: #fff !important;
+}
+
+#CarrierAssetsSearch .btn {
+    width: 100%;
+    line-height: 36px;
+    border-radius: 18px;
+    padding: 0;
+    border: 1px solid #007896;
+    color: #000;
+}
+
+    #CarrierAssetsSearch .btn:hover {
+        border: 1px solid #ecbf54;
+        background-color: #ecbf54;
+        color: #000 !important;
+    }
+
+#CarrierAssetsSearch .form-select {
+    color: #0f4c71;
+    border: solid 1px #007896;
+}
+
+#CarrierAssetsSearch .new-assert-link {
+    height: 72px;
+    width: 72px;
+    margin: auto;
+    line-height: 72px;
+    background-color: #ecbf54;
+    color: #007896;
+    border-radius: 18px;
+    border: solid 1px #ecbf54;
+}
+
+    #CarrierAssetsSearch .new-assert-link:hover {
+        background-color: #fff;
+        border: solid 1px #007896;
     }

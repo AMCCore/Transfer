@@ -50,6 +50,16 @@ public class BaseProfile : Profile
         //менять персданные водителей
         //CreateMap<DbDriver, DbPersonData>();
 
+        CreateMap<DbDriver, OrganisationAssetDto>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.LastName} {o.FirstName} {o.MiddleName}".Trim()));
+        //.ForMember(x => x.Phone, opt => opt.MapFrom(o => o.Phone))
+        //.ForMember(x => x.EMail, opt => opt.MapFrom(o => o.EMail));
+        CreateMap<DbBus, OrganisationAssetDto>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
+            .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
+        CreateMap<DbBus, DbBus>()
+            .ForMember(x => x.Organisation, opt => opt.Ignore())
+            .ForMember(x => x.BusFiles, opt => opt.Ignore());
     }
 }
