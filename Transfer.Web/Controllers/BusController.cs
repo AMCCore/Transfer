@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Common.Extensions;
+using Transfer.Web.Models;
+using System.Collections.Generic;
+using Transfer.Bl.Dto;
 
 namespace Transfer.Web.Controllers;
 
@@ -76,5 +79,66 @@ public class BusController : BaseController
 
         return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
     }
+
+
+    private async Task<BusSearchFilter> GetDataFromDb(BusSearchFilter filter = null)
+    {
+        filter ??= new BusSearchFilter(new List<OrganisationAssetDto>(), TransferSettings.TablePageSize);
+        var query = UnitOfWork.GetSet<DbBus>().Include(x => x.Organisation).Where(x => !x.IsDeleted && !x.Organisation.IsDeleted).AsQueryable();
+        if (!string.IsNullOrWhiteSpace(filter.Model))
+        {
+            query = query.Where(x => x.Model.ToLower().Contains(filter.Model.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filter.OrganisationName))
+        {
+            query = query.Where(x => x.Organisation.Name.ToLower().Contains(filter.OrganisationName.ToLower()) 
+            || x.Organisation.FullName.ToLower().Contains(filter.OrganisationName.ToLower())
+            || x.Organisation.INN.ToLower().Contains(filter.OrganisationName.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filter.Make))
+        {
+            query = query.Where(x => x.Model.ToLower().Contains(filter.Make.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(filter.City))
+        {
+            query = query.Where(x => x.Organisation.City.ToLower().Contains(filter.City.ToLower()));
+        }
+        if (filter.Year.HasValue && filter.Year > 1930)
+        {
+            query = query.Where(x => x.Yaer >= filter.Year);
+        }
+        if (filter.PeopleCopacity.HasValue && filter.PeopleCopacity > 0)
+        {
+            query = query.Where(x => x.PeopleCopacity >= filter.Year);
+        }
+
+        var totalCount = await query.CountAsync(CancellationToken.None);
+        var entity = await query.Skip(filter.StartRecord)
+            .Take(filter.PageSize).ToListAsync(CancellationToken.None);
+
+        filter.Results = new CommonPagedList<OrganisationAssetDto>(
+            entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList(),
+            filter.PageNumber, filter.PageSize, totalCount);
+
+        return filter;
+    }
+
+    [HttpGet]
+    [Route("Bus/Search")]
+    public async Task<IActionResult> Search()
+    {
+        var result = await GetDataFromDb();
+        return View(result);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Route("Bus/Search")]
+    public async Task<IActionResult> SearchBus([FromForm] BusSearchFilter filter)
+    {
+        var result = await GetDataFromDb(filter);
+        return View("Search", result);
+    }
+
 }
 

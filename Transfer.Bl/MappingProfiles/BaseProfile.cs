@@ -51,11 +51,15 @@ public class BaseProfile : Profile
         //CreateMap<DbDriver, DbPersonData>();
 
         CreateMap<DbDriver, OrganisationAssetDto>()
+            .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
+            .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.LastName} {o.FirstName} {o.MiddleName}".Trim()));
         //.ForMember(x => x.Phone, opt => opt.MapFrom(o => o.Phone))
         //.ForMember(x => x.EMail, opt => opt.MapFrom(o => o.EMail));
         CreateMap<DbBus, OrganisationAssetDto>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
+            .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
+            .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
         CreateMap<DbBus, DbBus>()

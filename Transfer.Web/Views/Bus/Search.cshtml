@@ -1,0 +1,38 @@
+﻿@using Transfer.Common.Extensions
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common
+
+@model Transfer.Web.Models.BusSearchFilter
+
+@section Styles {
+<link rel="stylesheet" href="~/css/Carrier/Search.css" />
+}
+
+<div class="container">
+    <div class="row blank-row"></div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Bus" asp-action="Search">Поиск ТС</a>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">Поиск транспортного средства</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form id="SearchBus" asp-controller="Bus" asp-action="SearchBus" data-ajax="true" data-ajax-method="POST" data-ajax-update="#SearchBus">
+        @await Html.PartialAsync("~/Views/Bus/SearchResults.cshtml", Model)
+    </form>
+</div>

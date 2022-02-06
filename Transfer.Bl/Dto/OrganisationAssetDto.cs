@@ -16,6 +16,12 @@ namespace Transfer.Bl.Dto
 
         public string TransportClass { get; set; }
 
+        public string LicenseNumber { get; set; }
+
+        public string CompanyName { get; set; }
+
+        public Guid? CompanyId { get; set; }
+
         public int? PeopleCopacity { get; set; }
 
         public string Phone { get; set; }
