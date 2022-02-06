@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Transfer.Bl.Dto;
+using Transfer.Bl.Dto.Bus;
 
 namespace Transfer.Web.Models
 {
-    public class BusSearchFilter : BaseFilterModel<OrganisationAssetDto>
+    public class BusSearchFilter : BaseFilterModel<BusSearchItem>
     {
         public BusSearchFilter() { }
 
-        public BusSearchFilter(IEnumerable<OrganisationAssetDto> list, int pageSize) : base(list, pageSize) { }
+        public BusSearchFilter(IEnumerable<BusSearchItem> list, int pageSize) : base(list, pageSize) { }
 
         public string OrganisationName { get; set; }
 

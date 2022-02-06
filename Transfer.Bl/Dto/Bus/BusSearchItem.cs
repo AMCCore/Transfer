@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfer.Bl.Dto
+namespace Transfer.Bl.Dto.Bus
 {
-    public class OrganisationAssetDto
+    public class BusSearchItem
     {
+        public string CompanyName { get; set; }
+
+        public Guid? CompanyId { get; set; }
+
         public Guid Id { get; set; }
 
         public string Name { get; set; }
@@ -20,8 +24,6 @@ namespace Transfer.Bl.Dto
 
         public int? PeopleCopacity { get; set; }
 
-        public string Phone { get; set; }
-
-        public string EMail { get; set; }
+        public string[] OptionsInstalled { get; set; }
     }
 }

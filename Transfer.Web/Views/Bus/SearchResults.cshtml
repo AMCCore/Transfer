@@ -2,4 +2,234 @@
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 
+@{
+    var years = new List<SelectListItem>();
+    for (int i = (DateTime.Now.Year - 50); i <= DateTime.Now.Year; i++)
+    {
+        years.Add(new SelectListItem
+                {
+                    Text = i.ToString(),
+                    Value = i.ToString(),
+                });
+    }
+}
+
 @model Transfer.Web.Models.BusSearchFilter
+
+@Html.AntiForgeryToken()
+
+<div class="container the-form">
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Марка:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Make" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Модель:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Model" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-2">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Год:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    @Html.DropDownListFor(x => x.Year, years, null, new { @class = "form-select form-select-sm" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row form-row">
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Класс транспортного средства:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="TransportClass" class="form-control" readonly="readonly" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Город:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="City" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-2">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Посадочных мест:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="PeopleCopacity" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row form-row">
+        <div class="t-col col-12 col-md-12 white-text">
+            Организация перевозчик:
+        </div>
+        <div class="t-col col-12 col-md-12 white-text">
+            <div class="input-group input-group-icon">
+                <i class="fas fa-pencil-alt input-group-text"></i>
+                <input asp-for="OrganisationName" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row form-row">
+        <div class="t-col the-error col-10">
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
+            {
+                <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
+            }
+        </div>
+        <div class="t-col col-2 text-end">
+            <button type="submit" class="button-one">Найти</button>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+</div>
+<div class="row blank-row"></div>
+<div class="row ordering">
+    <div class="t-col col-9 form-group clear">
+        <span class="dark-text">Результаты поиска</span> <a asp-controller="Bus" asp-action="Search">(Сбросить)</a>
+    </div>
+    <div class="t-col col-2 text-end form-group">
+        Выводить по:
+    </div>
+    <div class="t-col col-1 text-end form-group">
+        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
+    </div>
+</div>
+@foreach (var c in Model.Results)
+{
+    <hr style="color: #fff; border: dashed 1px #007896;">
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="col-2">
+            <div class="row">
+                @if (c.Picture.IsNullOrEmpty())
+                {
+                    <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
+                }
+                else
+                {
+                    <div class="col-12 r-logo text-center"><img alt="" src='@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )' /></div>
+                }
+            </div>
+        </div>
+        <div class="col-4 assert-info">
+            <div class="row blank-row"></div>
+            <div class="row">
+                <div class="col-12"><strong>@c.Name</strong></div>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(c.CompanyName) && !c.CompanyId.IsNullOrEmpty())
+            {
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-12">Перевозчик: <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.CompanyId" class="link-light-yellow-du">@c.CompanyName</a></div>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
+            {
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-12">Гос. номер: @c.LicenseNumber</div>
+                </div>
+            }
+        </div>
+        <div class="col-3 assert-info">
+            @if (!string.IsNullOrWhiteSpace(c.TransportClass))
+            {
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-12"><i class="fas fa-truck"></i> @c.TransportClass</div>
+                </div>
+            }
+            @if (c.PeopleCopacity > 0)
+            {
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-12">Вместимость: @c.PeopleCopacity чел.</div>
+                </div>
+            }
+        </div>
+        <div class="col-3 assert-info">
+            @if (c.OptionsInstalled.Any())
+            {
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-12"><strong>Установленое дополнительное оборудование:</strong> @(string.Join(", ", c.OptionsInstalled))</div>
+                </div>
+            }
+
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+}
+<hr style="color: #007896; border: dashed 1px #007896;">
+<div class="row blank-row"></div>
+<div class="row">
+    <div class="t-col col-12">
+        @Html.PagedListPager(Model.Results, page =>
+        {
+        Model.Results = null;
+        Model.PageNumber = page;
+        return Url.Action("SearchBus", "Bus", Model);
+        }, new PagedListRenderOptions {
+        DisplayItemSliceAndTotal = false,
+        ItemSliceAndTotalFormat = "Всего записей: {2} ",
+        DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+        DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+        LinkToPreviousPageFormat = "Назад",
+        LinkToNextPageFormat = "Вперед"
+        })
+    </div>
+</div>

@@ -61,6 +61,30 @@ img {
     color: #ff0000
 }
 
+a.dark-link-basic {
+    color: #0f4c71;
+    text-decoration: none;
+}
+
+a.link-light-yellow-du {
+    color: #007896;
+    text-decoration: none;
+    border-bottom: dashed 1px #007896;
+}
+
+    a.link-light-yellow-du:hover {
+        color: #ecbf54;
+        border-bottom: none;
+    }
+
+.r-logo img {
+    height: 140px;
+    width: auto;
+    border: 0;
+    padding: 0;
+    margin: 18px 0;
+}
+
 
 .header {
     background: url("/images/243.png") left top no-repeat;
@@ -352,6 +376,18 @@ img {
     .ordering .btn:hover .fa-caret-down {
         color: #ecbf54;
     }
+
+    .ordering .clear a {
+        color: #007896;
+        text-decoration: none;
+        border-bottom: dashed 1px #007896;
+    }
+
+    .ordering .clear a:hover {
+        color: #ecbf54;
+        border-bottom: none;
+    }
+
 
 .pagination-container li {
     height: 36px;

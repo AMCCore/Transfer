@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto;
+using Transfer.Bl.Dto.Bus;
 using Transfer.Bl.Dto.Carrier;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Dal.Entities;
@@ -51,15 +52,15 @@ public class BaseProfile : Profile
         //CreateMap<DbDriver, DbPersonData>();
 
         CreateMap<DbDriver, OrganisationAssetDto>()
-            .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
-            .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
+            //.ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
+            //.ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.LastName} {o.FirstName} {o.MiddleName}".Trim()));
         //.ForMember(x => x.Phone, opt => opt.MapFrom(o => o.Phone))
         //.ForMember(x => x.EMail, opt => opt.MapFrom(o => o.EMail));
         CreateMap<DbBus, OrganisationAssetDto>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
-            .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
-            .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
+            //.ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
+            //.ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
         CreateMap<DbBus, DbBus>()
@@ -70,5 +71,47 @@ public class BaseProfile : Profile
             .ForMember(x => x.Organisation, opt => opt.Ignore())
             .ForMember(x => x.DriverFiles, opt => opt.Ignore())
             .ForMember(x => x.DbDriversLicenses, opt => opt.Ignore());
+
+        CreateMap<DbBus, BusSearchItem>()
+            .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
+            .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
+            .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
+            .ForMember(x => x.OptionsInstalled, opt => opt.MapFrom(o => BusOptionsConvert(o)))
+            .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
+
+    }
+
+    private static string[] BusOptionsConvert(DbBus bus)
+    {
+        var result = new List<string>();
+        //ремни безопасности
+        if (bus.TV)
+        {
+            result.Add("телевизор");
+        }
+        if (bus.AirConditioner)
+        {
+            result.Add("кондиционер");
+        }
+        if (bus.Audio)
+        {
+            result.Add("аудиостсиема");
+        }
+        if (bus.WC)
+        {
+            result.Add("туалет");
+        }
+        if (bus.Microphone)
+        {
+            result.Add("микрофон");
+        }
+        if (bus.Wifi)
+        {
+            result.Add("wifi");
+        }
+
+
+
+        return result.ToArray();
     }
 }

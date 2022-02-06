@@ -62,6 +62,13 @@
                 <div class="row">
                     <div class="col-12"><strong>@c.Name</strong></div>
                 </div>
+                @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
+                {
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        <div class="col-12">Гос. номер: @c.LicenseNumber</div>
+                    </div>
+                }
                 @if (c.PeopleCopacity > 0)
                 {
                     <div class="row blank-row"></div>
@@ -76,14 +83,6 @@
                         <div class="col-12"><i class="fas fa-truck"></i> @c.TransportClass</div>
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
-                {
-                    <div class="row blank-row"></div>
-                    <div class="row">
-                        <div class="col-12"><i class="far fa-address-card"></i> @c.LicenseNumber</div>
-                    </div>
-                }
-
                 @if (!string.IsNullOrWhiteSpace(c.Phone))
                 {
                     <div class="row blank-row"></div>

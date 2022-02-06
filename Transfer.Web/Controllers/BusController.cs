@@ -14,6 +14,7 @@ using Transfer.Common.Extensions;
 using Transfer.Web.Models;
 using System.Collections.Generic;
 using Transfer.Bl.Dto;
+using Transfer.Bl.Dto.Bus;
 
 namespace Transfer.Web.Controllers;
 
@@ -83,7 +84,7 @@ public class BusController : BaseController
 
     private async Task<BusSearchFilter> GetDataFromDb(BusSearchFilter filter = null)
     {
-        filter ??= new BusSearchFilter(new List<OrganisationAssetDto>(), TransferSettings.TablePageSize);
+        filter ??= new BusSearchFilter(new List<BusSearchItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbBus>().Include(x => x.Organisation).Where(x => !x.IsDeleted && !x.Organisation.IsDeleted).AsQueryable();
         if (!string.IsNullOrWhiteSpace(filter.Model))
         {
@@ -97,7 +98,7 @@ public class BusController : BaseController
         }
         if (!string.IsNullOrWhiteSpace(filter.Make))
         {
-            query = query.Where(x => x.Model.ToLower().Contains(filter.Make.ToLower()));
+            query = query.Where(x => x.Make.ToLower().Contains(filter.Make.ToLower()));
         }
         if (!string.IsNullOrWhiteSpace(filter.City))
         {
@@ -116,8 +117,8 @@ public class BusController : BaseController
         var entity = await query.Skip(filter.StartRecord)
             .Take(filter.PageSize).ToListAsync(CancellationToken.None);
 
-        filter.Results = new CommonPagedList<OrganisationAssetDto>(
-            entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList(),
+        filter.Results = new CommonPagedList<BusSearchItem>(
+            entity.Select(ss => Mapper.Map<BusSearchItem>(ss)).ToList(),
             filter.PageNumber, filter.PageSize, totalCount);
 
         return filter;
@@ -137,7 +138,7 @@ public class BusController : BaseController
     public async Task<IActionResult> SearchBus([FromForm] BusSearchFilter filter)
     {
         var result = await GetDataFromDb(filter);
-        return View("Search", result);
+        return PartialView("SearchResults", result);
     }
 
 }

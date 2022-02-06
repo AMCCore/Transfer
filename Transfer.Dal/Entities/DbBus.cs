@@ -86,7 +86,7 @@ public class DbBus : IEntityBase, ISoftDeleteEntity
     public bool Audio { get; set; }
 
     /// <summary>
-    /// Наличие туолета
+    /// Наличие туалета
     /// </summary>
     public bool WC { get; set; }
 
