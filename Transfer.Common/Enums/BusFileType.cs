@@ -23,27 +23,27 @@ public enum BusFileType
     /// Техосмотр
     /// </summary>
     [Description("Техосмотр")]
-    [EnumGuid("A5BCD729-7BA9-4647-B4F2-27C87B69C490")]
+    [EnumGuid("60480B00-CFA0-4ECF-8875-33340C5EC397")]
     TO,
 
     /// <summary>
     /// ОСАГО
     /// </summary>
     [Description("ОСАГО")]
-    [EnumGuid("A5BCD729-7BA9-4647-B4F2-27C87B69C490")]
+    [EnumGuid("124246B1-3168-4FEF-BE2F-71F4D25B931C")]
     Inshurance,
 
     /// <summary>
     /// ОСГОП
     /// </summary>
     [Description("ОСГОП")]
-    [EnumGuid("A5BCD729-7BA9-4647-B4F2-27C87B69C490")]
+    [EnumGuid("B6C27510-6179-4F50-8537-D749C335CFB3")]
     Osgop,
 
     /// <summary>
     /// Калибровка тахографа
     /// </summary>
     [Description("Калибровка тахографа")]
-    [EnumGuid("A5BCD729-7BA9-4647-B4F2-27C87B69C490")]
+    [EnumGuid("DC61766B-F37A-4AC9-AD30-E950DCE55BEB")]
     Tahograf,
 }

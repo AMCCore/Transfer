@@ -1,4 +1,4 @@
-﻿@model Transfer.Dal.Entities.DbBus
+﻿@model Transfer.Bl.Dto.Bus.BusDto
 @using Transfer.Common.Extensions
 
 <div class="container">
@@ -8,7 +8,7 @@
         <div class="t-col col-12 crumbs">
             ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>
             &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
-            &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId">@Model.Organisation.Name</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId">@Model.OrganisationName</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
             @if (Model.Id.IsNullOrEmpty())
             {
                 @:Новое транспортное средство
@@ -161,6 +161,26 @@
                 <div class="t-col col-12 col-md-4 chk-label form-group">
                     <input asp-for="Wifi" class="form-check-input" />
                     <label for="Wifi">Наличие WiFi</label>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-8">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            ОСАГО: <span class="red-text">*</span>
+                            @if(!Model.OsagoFileId.IsNullOrEmpty())
+                            {
+                                @($" ({Model.OsagoFileId})")
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <input asp-for="OsagoFile" type="file" class = "form-control">
+                            <input asp-for="OsagoFileId" type="hidden">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row blank-row"></div>

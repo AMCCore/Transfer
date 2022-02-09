@@ -67,6 +67,15 @@ public class BaseProfile : Profile
             .ForMember(x => x.Organisation, opt => opt.Ignore())
             .ForMember(x => x.BusFiles, opt => opt.Ignore());
 
+        CreateMap<DbBus, BusDto>()
+            .ForMember(x => x.OsagoFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Inshurance).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null));
+
+        CreateMap<BusDto, DbBus>()
+            .ForMember(x => x.OrganisationId, opt => opt.Ignore())
+            .ForMember(x => x.BusFiles, opt => opt.Ignore());
+
+
         CreateMap<DbDriver, DbDriver>()
             .ForMember(x => x.Organisation, opt => opt.Ignore())
             .ForMember(x => x.DriverFiles, opt => opt.Ignore())
