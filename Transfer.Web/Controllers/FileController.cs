@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
@@ -59,6 +60,17 @@ public class FileController : BaseController
         throw new ArgumentNullException(nameof(uploadedFile));
     }
 
+    public async Task<IActionResult> UploadAnyFile()
+    {
+        var file = Request.Form.Files.FirstOrDefault();
+        if (file != null)
+        {
+            var fileId = Guid.NewGuid(); //await UploadFile(file);
+            return Json(new { fileId, fileName = file.FileName });
+        }
+        throw new NotSupportedException();
+    }
+
     private static string GetFileExtention(string fileName)
     {
         return fileName.Split('.')[^1];
@@ -80,5 +92,5 @@ public class FileController : BaseController
         return NotFound();
     }
 
-    
+
 }

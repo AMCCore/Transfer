@@ -91,8 +91,6 @@ namespace Transfer.Bl.Dto.Bus
         /// </summary>
         public bool Wifi { get; set; }
 
-        public IFormFile OsagoFile { get; set; }
-
         public Guid? OsagoFileId { get; set; }
     }
 }

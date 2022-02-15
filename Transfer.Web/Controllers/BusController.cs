@@ -84,22 +84,24 @@ public class BusController : BaseController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
+
+
         //Файл осаго
-        if(busModel.OsagoFileId.IsNullOrEmpty() || (busModel.OsagoFile != null && busModel.OsagoFile.Length > 0))
+        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Inshurance).ToListAsync(CancellationToken.None);
+        if (busModel.OsagoFileId.IsNullOrEmpty())
         {
-            var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Inshurance).ToListAsync(CancellationToken.None);
             foreach (var osagoFile in osagoFiles)
             {
                 osagoFile.IsDeleted = true;
             }
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
-        if (busModel.OsagoFile != null && busModel.OsagoFile.Length > 0)
+        if (!busModel.OsagoFileId.IsNullOrEmpty() && osagoFiles.All(x => x.FileId != busModel.OsagoFileId))
         {
-            var fileid = await fileController.UploadFile(busModel.OsagoFile);
-            await UnitOfWork.AddEntityAsync(new DbBusFile { 
+            await UnitOfWork.AddEntityAsync(new DbBusFile
+            {
                 BusId = busModel.Id,
-                FileId = fileid,
+                FileId = busModel.OsagoFileId.Value,
                 IsDeleted = false,
                 FileType = Common.Enums.BusFileType.Inshurance,
                 UploaderId = Security.CurrentAccountId

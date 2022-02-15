@@ -383,10 +383,10 @@ a.link-light-yellow-du {
         border-bottom: dashed 1px #007896;
     }
 
-    .ordering .clear a:hover {
-        color: #ecbf54;
-        border-bottom: none;
-    }
+        .ordering .clear a:hover {
+            color: #ecbf54;
+            border-bottom: none;
+        }
 
 
 .pagination-container li {
@@ -482,3 +482,18 @@ a.link-light-yellow-du {
         .the-form .the-error i {
             color: #007896;
         }
+
+a.dwn-link {
+    border-bottom: 1px dashed #fff;
+    text-decoration: none;
+    color: #fff;
+}
+    a.dwn-link:hover {
+        border-bottom: none;
+    }
+
+
+.dwn-link i {
+    color: #fff !important;
+}
+
