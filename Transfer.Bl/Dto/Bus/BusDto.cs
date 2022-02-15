@@ -92,5 +92,14 @@ namespace Transfer.Bl.Dto.Bus
         public bool Wifi { get; set; }
 
         public Guid? OsagoFileId { get; set; }
+
+        public Guid? RegFileId { get; set; }
+
+        public Guid? ToFileId { get; set; }
+
+        public Guid? OsgopFileId { get; set; }
+
+        public Guid? TahografFileId { get; set; }
     }
+
 }
