@@ -7,6 +7,15 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/js/fileinput.min.js" integrity="sha512-CCLv901EuJXf3k0OrE5qix8s2HaCDpjeBERR2wVHUwzEIc7jfiK9wqJFssyMOc1lJ/KvYKsDenzxbDTAQ4nh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script language="javascript">
+        $.fn.fileinputBsVersion = "3.3.7";
+
+        $(() => {
+            $("#input-id").fileinput(
+
+            );
+        });
+    </script>
 }
 
 <div class="container">
@@ -185,8 +194,8 @@
                     </div>
                     <div class="row">
                         <div class="t-col col-12 form-group">
-                            <input asp-for="OsagoFile" type="file" class = "form-control">
-                            <input asp-for="OsagoFileId" type="hidden">
+                            <input asp-for="OsagoFile" type="file" class="form-control" id="input-id">
+                            @*<input asp-for="OsagoFileId" type="text" class="form-control">*@
                         </div>
                     </div>
                 </div>
