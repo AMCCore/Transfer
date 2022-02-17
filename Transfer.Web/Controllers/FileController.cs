@@ -65,7 +65,7 @@ public class FileController : BaseController
         var file = Request.Form.Files.FirstOrDefault();
         if (file != null)
         {
-            var fileId = Guid.NewGuid(); //await UploadFile(file);
+            var fileId = await UploadFile(file);
             return Json(new { fileId, fileName = file.FileName });
         }
         throw new NotSupportedException();

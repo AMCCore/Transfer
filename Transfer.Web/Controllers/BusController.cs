@@ -87,28 +87,46 @@ public class BusController : BaseController
 
 
         //Файл осаго
-        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Inshurance).ToListAsync(CancellationToken.None);
-        if (busModel.OsagoFileId.IsNullOrEmpty())
+        await SetBusFile(busModel.Id, busModel.OsagoFileId.Value, Common.Enums.BusFileType.Inshurance);
+
+        //Файл СТС
+        await SetBusFile(busModel.Id, busModel.RegFileId.Value, Common.Enums.BusFileType.Reg);
+
+        //Файл ТО
+        await SetBusFile(busModel.Id, busModel.ToFileId.Value, Common.Enums.BusFileType.TO);
+
+        //Файл ОСГОП
+        await SetBusFile(busModel.Id, busModel.OsgopFileId.Value, Common.Enums.BusFileType.Osgop);
+
+        //Файл Калибровка тахографа
+        await SetBusFile(busModel.Id, busModel.TahografFileId.Value, Common.Enums.BusFileType.Tahograf);
+
+
+        return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
+    }
+
+    private async Task SetBusFile(Guid busId, Guid fileId, Common.Enums.BusFileType fileType)
+    {
+        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        if (osagoFiles.All(x => x.FileId != fileId))
         {
             foreach (var osagoFile in osagoFiles)
             {
                 osagoFile.IsDeleted = true;
             }
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
-        }
-        if (!busModel.OsagoFileId.IsNullOrEmpty() && osagoFiles.All(x => x.FileId != busModel.OsagoFileId))
-        {
+
+
             await UnitOfWork.AddEntityAsync(new DbBusFile
             {
-                BusId = busModel.Id,
-                FileId = busModel.OsagoFileId.Value,
+                BusId = busId,
+                FileId = fileId,
                 IsDeleted = false,
-                FileType = Common.Enums.BusFileType.Inshurance,
+                FileType = fileType,
                 UploaderId = Security.CurrentAccountId
             }, CancellationToken.None);
         }
 
-        return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
     }
 
 
