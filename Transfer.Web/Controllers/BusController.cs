@@ -84,8 +84,6 @@ public class BusController : BaseController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
-
-
         //Файл осаго
         await SetBusFile(busModel.Id, busModel.OsagoFileId.Value, Common.Enums.BusFileType.Inshurance);
 

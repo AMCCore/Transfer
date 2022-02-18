@@ -100,6 +100,18 @@ namespace Transfer.Bl.Dto.Bus
         public Guid? OsgopFileId { get; set; }
 
         public Guid? TahografFileId { get; set; }
+
+        public Guid? Photo1 { get; set; }
+
+        public Guid? Photo2 { get; set; }
+
+        public Guid? Photo3 { get; set; }
+
+        public Guid? Photo4 { get; set; }
+
+        public Guid? Photo5 { get; set; }
+
+        public Guid? Photo6 { get; set; }
     }
 
 }

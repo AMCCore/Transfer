@@ -52,6 +52,7 @@
 
         <div class="container the-form">
             <div class="row blank-row"></div>
+            <h2 class="white-text">Основные данные:</h2>
             <div class="row form-row">
                 <div class="t-col col-12 col-md-8">
                     <div class="row">
@@ -173,6 +174,7 @@
                 </div>
             </div>
             <div class="row blank-row"></div>
+            <h2 class="white-text">Копии документов:</h2>
             <div class="row form-row">
                 <input asp-for="RegFileId" type="hidden" class="form-control file-result-id">
                 <div class="t-col file-upl col-12 col-md-8 @(!Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
@@ -258,7 +260,7 @@
                 </div>
             </div>
             <div class="row form-row">
-                <input asp-for="TahografFileId" type="hidden" class="form-control file-result-id">
+                <input asp-for="TahografFileId" type="hidden" class="file-result-id">
                 <div class="t-col file-upl col-12 col-md-8 @(!Model.TahografFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
@@ -279,6 +281,100 @@
                 </div>
             </div>
             <div class="row blank-row"></div>
+            <h2 class="white-text">Фотографии транспортного средства:</h2>
+            <div class="row">
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo1" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo2" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo3" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo4" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo5" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="form-row">
+                        <input asp-for="Photo6" type="hidden" class="file-result-id">
+                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
             <div class="row form-row">
                 <div class="t-col the-error col-10">
                     @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
@@ -290,7 +386,6 @@
                     <button type="submit" class="button-one">Сохранить</button>
                 </div>
             </div>
-
             <div class="row blank-row"></div>
         </div>
         <div class="row blank-row"></div>

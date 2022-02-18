@@ -488,6 +488,7 @@ a.dwn-link {
     text-decoration: none;
     color: #fff;
 }
+
     a.dwn-link:hover {
         border-bottom: none;
     }
@@ -497,3 +498,28 @@ a.dwn-link {
     color: #fff !important;
 }
 
+.add-photo-link {
+    height: 72px;
+    width: 72px;
+    margin: auto;
+    line-height: 72px;
+    background-color: #ecbf54;
+    color: #007896;
+    border-radius: 18px;
+    border: solid 1px #ecbf54;
+    text-align: center;
+    margin-top: 64px;
+}
+
+    .add-photo-link:hover {
+        background-color: #fff;
+        border: solid 1px #007896;
+    }
+
+.i-button {
+    display: none;
+}
+
+.col-p-u-i:hover .i-button {
+    display: block;
+}
