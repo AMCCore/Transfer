@@ -292,7 +292,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo1.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
@@ -301,13 +301,13 @@
                 <div class="col-4 col-md-2">
                     <div class="form-row">
                         <input asp-for="Photo2" type="hidden" class="file-result-id">
-                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-p-e @(!Model.Photo2.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                        <div class="col-12 col-p-u @(Model.Photo2.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo2.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
@@ -316,13 +316,13 @@
                 <div class="col-4 col-md-2">
                     <div class="form-row">
                         <input asp-for="Photo3" type="hidden" class="file-result-id">
-                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-p-e @(!Model.Photo3.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                        <div class="col-12 col-p-u @(Model.Photo3.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo3.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
@@ -331,13 +331,13 @@
                 <div class="col-4 col-md-2">
                     <div class="form-row">
                         <input asp-for="Photo4" type="hidden" class="file-result-id">
-                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-p-e @(!Model.Photo4.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                        <div class="col-12 col-p-u @(Model.Photo4.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo4.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
@@ -346,13 +346,13 @@
                 <div class="col-4 col-md-2">
                     <div class="form-row">
                         <input asp-for="Photo5" type="hidden" class="file-result-id">
-                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-p-e @(!Model.Photo5.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                        <div class="col-12 col-p-u @(Model.Photo5.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo5.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
@@ -361,13 +361,13 @@
                 <div class="col-4 col-md-2">
                     <div class="form-row">
                         <input asp-for="Photo6" type="hidden" class="file-result-id">
-                        <div class="col-12 col-p-e @(!Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-p-e @(!Model.Photo6.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-p-u @(Model.Photo1.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover;">
+                        <div class="col-12 col-p-u @(Model.Photo6.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Photo6.Value'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>

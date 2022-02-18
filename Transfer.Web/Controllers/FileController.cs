@@ -79,6 +79,17 @@ public class FileController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetFile([FromQuery][Required] Guid fileId)
     {
+        var entitys = await UnitOfWork.GetSet<DbFile>().Where(x => !x.OrganisationFiles.Any() && !x.DriverFiles.Any() && x.DateCreated <= DateTime.Now.AddDays(-33)).ToListAsync(CancellationToken.None);
+        foreach(var e in entitys)
+        {
+            var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{e.DateCreated.Year}/{e.Id}.{e.Extention}";
+            if(System.IO.File.Exists(path))
+            {
+                await UnitOfWork.DeleteAsync(e, CancellationToken.None);
+                System.IO.File.Delete(path);
+            }
+        }
+
         var entity = await UnitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, CancellationToken.None);
         if (entity != null)
         {

@@ -13,7 +13,10 @@ $(() => {
         $(".input-file").each(function () {
             let $el1 = $(this).closest('.form-row').find('.file-result-id');
             let $el2 = $(this).closest('.form-row').find('.file-result-name');
-            if ($el1.val() && !$el2.val()) {
+
+            //console.log($el1.val(), $el2.val());
+
+            if (!$el1.val()) {
                 $el2.addClass('input-validation-error');
                 notValid = true;
             }
@@ -37,7 +40,7 @@ $(() => {
             uploadUrl: "/File/UploadAnyFile",
             uploadAsync: true,
             layoutTemplates: { progress: '' },
-            allowedFileExtensions: ["jpg", "png", "gif", "pdf"],
+            allowedFileExtensions: ["jpg", "png", "gif", "pdf", "jpeg"],
         }).on("filebatchselected", function (event, files) {
             $el1.fileinput("upload");
         }).on('fileuploaded', function (event, data, previewId, index, fileId) {
@@ -62,7 +65,7 @@ $(() => {
             uploadUrl: "/File/UploadAnyFile",
             uploadAsync: true,
             layoutTemplates: { progress: '' },
-            allowedFileExtensions: ["jpg", "png", "gif"],
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
         }).on("filebatchselected", function (event, files) {
             $el1.fileinput("upload");
         }).on('fileuploaded', function (event, data, previewId, index, fileId) {

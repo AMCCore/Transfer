@@ -61,6 +61,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
             //.ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
             //.ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
         CreateMap<DbBus, DbBus>()
@@ -73,11 +74,11 @@ public class BaseProfile : Profile
             .ForMember(x => x.ToFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.TO).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.OsgopFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Osgop).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Tahograf).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Photo1, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Photo2, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(1).FirstOrDefault()))
-            .ForMember(x => x.Photo3, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(2).FirstOrDefault()))
-            .ForMember(x => x.Photo4, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(3).FirstOrDefault()))
-            .ForMember(x => x.Photo5, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(4).FirstOrDefault()))
+            .ForMember(x => x.Photo1, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Photo2, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Photo3, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(1).FirstOrDefault()))
+            .ForMember(x => x.Photo4, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(2).FirstOrDefault()))
+            .ForMember(x => x.Photo5, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(3).FirstOrDefault()))
             .ForMember(x => x.Photo6, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(5).FirstOrDefault()))
             .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null));
 
