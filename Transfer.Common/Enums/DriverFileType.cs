@@ -20,6 +20,13 @@ public enum DriverFileType
     License,
 
     /// <summary>
+    /// Водительское удостоверения (обр. стр)
+    /// </summary>
+    [Description("Водительское удостоверения (обр. стр)")]
+    [EnumGuid("0CF5C874-AC5E-4A70-82D6-D6475292D924")]
+    LicenseBack,
+
+    /// <summary>
     /// Карта тахографа
     /// </summary>
     [Description("Карта тахографа")]

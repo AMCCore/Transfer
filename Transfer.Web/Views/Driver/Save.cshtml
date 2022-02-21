@@ -1,5 +1,16 @@
-﻿@model Transfer.Dal.Entities.DbDriver
+﻿@model Transfer.Bl.Dto.Driver.DriverDto
 @using Transfer.Common.Extensions
+
+@section Styles {
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/css/fileinput.min.css" integrity="sha512-qPjB0hQKYTx1Za9Xip5h0PXcxaR1cRbHuZHo9z+gb5IgM6ZOTtIH4QLITCxcCp/8RMXtw2Z85MIZLv6LfGTLiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.2.7/js/fileinput.min.js" integrity="sha512-CCLv901EuJXf3k0OrE5qix8s2HaCDpjeBERR2wVHUwzEIc7jfiK9wqJFssyMOc1lJ/KvYKsDenzxbDTAQ4nh1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/Driver/Save.js" crossorigin="anonymous"></script>
+<script src="~/js/BasicSave.js" crossorigin="anonymous"></script>
+}
+
 
 <div class="container">
     <div class="row blank-row"></div>
@@ -8,7 +19,7 @@
         <div class="t-col col-12 crumbs">
             ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>
             &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
-            &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId">@Model.Organisation.Name</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId">@Model.OrganisationName</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
             @if (Model.Id.IsNullOrEmpty())
             {
                 @:Новый водитель
@@ -35,7 +46,7 @@
         </div>
     </div>
     <div class="row blank-row"></div>
-    <form asp-controller="Driver" asp-action="Save" method="post" enctype="multipart/form-data">
+    <form asp-controller="Driver" asp-action="Save" method="post" id="mainSaveForm">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
         @Html.HiddenFor(x => x.LastUpdateTick)
@@ -43,6 +54,7 @@
 
         <div class="container the-form">
             <div class="row blank-row"></div>
+            <h2 class="white-text">Основные данные:</h2>
             <div class="row form-row">
                 <div class="t-col col-12 col-md-4">
                     <div class="row">
@@ -90,7 +102,7 @@
                     </div>
                 </div>
             </div>
-                        <div class="row blank-row"></div>
+            <div class="row blank-row"></div>
             <div class="row form-row">
                 <div class="t-col col-12 col-md-4">
                     <div class="row">
@@ -135,7 +147,93 @@
                     </div>
                 </div>
             </div>
+            <div class="row blank-row"></div>
+            <div class="row">
+                <div class="col-12 col-md-8">
+                    <h2 class="white-text">Копии документов:</h2>
+                    <div class="row form-row">
+                        <input asp-for="License1" type="hidden" class="file-result-id">
+                        <div class="t-col file-upl col-12 @(!Model.License1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="row">
+                                <div class="t-col col-12 white-text">
+                                    Скан водительского удостоверения: <span class="red-text">*</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="t-col col-10 form-group">
+                                    <input type="text" class="form-control file-result-name" readonly="readonly" />
+                                </div>
+                                <div class="t-col col-2 form-group">
+                                    <input type="file" class="form-control input-file">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t-col file-dwn white-text col-12 form-group @(Model.License1.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            Скан водительского удостоверения: <a href="/File/GetFile?fileId=@Model.License1" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
+                    <div class="row form-row">
+                        <input asp-for="License2" type="hidden" class="file-result-id">
+                        <div class="t-col file-upl col-12 @(!Model.License2.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="row">
+                                <div class="t-col col-12 white-text">
+                                    Скан водительского удостоверения (обр. ст.): <span class="red-text">*</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="t-col col-10 form-group">
+                                    <input type="text" class="form-control file-result-name" readonly="readonly" />
+                                </div>
+                                <div class="t-col col-2 form-group">
+                                    <input type="file" class="form-control input-file">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t-col file-dwn white-text col-12 form-group @(Model.License2.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            Скан водительского удостоверения (обр. ст.): <a href="/File/GetFile?fileId=@Model.License2" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
+                    <div class="row form-row">
+                        <input asp-for="TahografFileId" type="hidden" class="file-result-id">
+                        <div class="t-col file-upl col-12 @(!Model.TahografFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="row">
+                                <div class="t-col col-12 white-text">
+                                    Фото карты водителя для тахографа: <span class="red-text">*</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="t-col col-10 form-group">
+                                    <input type="text" class="form-control file-result-name" readonly="readonly" />
+                                </div>
+                                <div class="t-col col-2 form-group">
+                                    <input type="file" class="form-control input-file">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t-col file-dwn white-text col-12 form-group @(Model.TahografFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            Фото карты водителя для тахографа: <a href="/File/GetFile?fileId=@Model.TahografFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h2 class="white-text">Фото водителя:</h2>
+                    <div class="row blank-row d-none d-md-block"></div>
+                    <div class="form-row">
+                        <input asp-for="Avatar" type="hidden" class="file-result-id">
+                        <div class="col-12 col-md-6 col-p-e @(!Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
+                                <input type="file" class="form-control input-photo-file">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-p-u @(Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Avatar.Value'">
+                                <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
             <div class="row blank-row"></div>
             <div class="row form-row">
                 <div class="t-col the-error col-10">
@@ -148,7 +246,6 @@
                     <button type="submit" class="button-one">Сохранить</button>
                 </div>
             </div>
-
             <div class="row blank-row"></div>
         </div>
         <div class="row blank-row"></div>

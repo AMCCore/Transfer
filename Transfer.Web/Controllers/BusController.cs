@@ -168,10 +168,10 @@ public class BusController : BaseController
 
     private async Task SetBusFile(Guid busId, Guid fileId, Common.Enums.BusFileType fileType)
     {
-        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
-        if (osagoFiles.All(x => x.FileId != fileId))
+        var files = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        if (files.All(x => x.FileId != fileId))
         {
-            foreach (var osagoFile in osagoFiles)
+            foreach (var osagoFile in files)
             {
                 osagoFile.IsDeleted = true;
             }
@@ -189,7 +189,6 @@ public class BusController : BaseController
         }
 
     }
-
 
     private async Task<BusSearchFilter> GetDataFromDb(BusSearchFilter filter = null)
     {
