@@ -15,12 +15,18 @@ using Transfer.Web.Models;
 using System.Collections.Generic;
 using Transfer.Bl.Dto;
 using Transfer.Bl.Dto.Bus;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Transfer.Web.Controllers;
 
 public class BusController : BaseController
 {
-    public BusController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<BusController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper) { }
+    private readonly FileController fileController;
+
+    public BusController(IWebHostEnvironment webHostEnvironment, IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<BusController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper) 
+    {
+        fileController = new FileController(webHostEnvironment, transferSettings, unitOfWork, null, mapper);
+    }
 
     [HttpGet]
     [Route("Carrier/{carrierId}/Bus/New")]
@@ -30,24 +36,25 @@ public class BusController : BaseController
         if (entity == null)
             return NotFound();
 
-        return View("Save", new DbBus { OrganisationId = carrierId, Organisation = entity });
+        return View("Save",  new BusDto { OrganisationId = carrierId, OrganisationName = entity.Name });
     }
 
     [HttpGet]
     [Route("Carrier/{carrierId}/Bus/{busId}")]
     public async Task<IActionResult> BusItem([Required] Guid carrierId, [Required] Guid busId)
     {
-        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
-        var bus = entity.Buses.FirstOrDefault(x => x.Id == busId);
-        if (entity == null || bus == null)
+        var entity = await UnitOfWork.GetSet<DbBus>().Include(x => x.Organisation).Include(x => x.BusFiles).FirstOrDefaultAsync(ss => ss.OrganisationId == carrierId && ss.Id == busId, CancellationToken.None);
+        if (entity == null)
             return NotFound();
 
-        return View("Save", bus);
+        var res = Mapper.Map<BusDto>(entity);
+
+        return View("Save", res);
     }
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> Save([FromForm] DbBus busModel)
+    public async Task<IActionResult> Save([FromForm] BusDto busModel)
     {
         var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == busModel.OrganisationId, CancellationToken.None);
         if (entity == null)
@@ -56,16 +63,15 @@ public class BusController : BaseController
         if (!ModelState.IsValid)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
-            busModel.Organisation = entity;
+            busModel.OrganisationName = entity.Name;
             return View("Save", busModel);
         }
         
         if(busModel.Id.IsNullOrEmpty())
         {
             busModel.Id = Guid.NewGuid();
-            busModel.Organisation = null;
             busModel.IsDeleted = false;
-            await UnitOfWork.AddEntityAsync(busModel, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(Mapper.Map<DbBus>(busModel), CancellationToken.None);
         }
         else
         {
@@ -78,9 +84,111 @@ public class BusController : BaseController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
+        //Файл осаго
+        await SetBusFile(busModel.Id, busModel.OsagoFileId.Value, Common.Enums.BusFileType.Inshurance);
+
+        //Файл СТС
+        await SetBusFile(busModel.Id, busModel.RegFileId.Value, Common.Enums.BusFileType.Reg);
+
+        //Файл ТО
+        await SetBusFile(busModel.Id, busModel.ToFileId.Value, Common.Enums.BusFileType.TO);
+
+        //Файл ОСГОП
+        await SetBusFile(busModel.Id, busModel.OsgopFileId.Value, Common.Enums.BusFileType.Osgop);
+
+        //Файл Калибровка тахографа
+        await SetBusFile(busModel.Id, busModel.TahografFileId.Value, Common.Enums.BusFileType.Tahograf);
+
+        var photos = new List<Guid>();
+        //if (!busModel.Photo1.IsNullOrEmpty())
+        //    photos.Add(busModel.Photo1.Value);
+        if (!busModel.Photo2.IsNullOrEmpty())
+            photos.Add(busModel.Photo2.Value);
+        if (!busModel.Photo3.IsNullOrEmpty())
+            photos.Add(busModel.Photo3.Value);
+        if (!busModel.Photo4.IsNullOrEmpty())
+            photos.Add(busModel.Photo4.Value);
+        if (!busModel.Photo5.IsNullOrEmpty())
+            photos.Add(busModel.Photo5.Value);
+        if (!busModel.Photo6.IsNullOrEmpty())
+            photos.Add(busModel.Photo6.Value);
+
+        var osagoFilesMain = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.PhotoMain).ToListAsync(CancellationToken.None);
+        foreach (var e in osagoFilesMain.Where(x => x.FileId != busModel.Photo1))
+        {
+            e.IsDeleted = true;
+        }
+        await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        if(!busModel.Photo1.IsNullOrEmpty() && !osagoFilesMain.Any(x => x.FileId == busModel.Photo1.Value))
+        {
+            await UnitOfWork.AddEntityAsync(new DbBusFile
+            {
+                BusId = busModel.Id,
+                FileId = busModel.Photo1.Value,
+                IsDeleted = false,
+                FileType = Common.Enums.BusFileType.PhotoMain,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+        }
+        else if(photos.Any())
+        {
+            var pId = photos.First();
+            await UnitOfWork.AddEntityAsync(new DbBusFile
+            {
+                BusId = busModel.Id,
+                FileId = pId,
+                IsDeleted = false,
+                FileType = Common.Enums.BusFileType.PhotoMain,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+            photos.Remove(pId);
+        }
+
+        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Photo).ToListAsync(CancellationToken.None);
+        foreach(var e in osagoFiles.Where(x => !photos.Contains(x.FileId)))
+        {
+            e.IsDeleted = true;
+        }
+        await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+        foreach(var p in photos)
+        {
+            await UnitOfWork.AddEntityAsync(new DbBusFile
+            {
+                BusId = busModel.Id,
+                FileId = p,
+                IsDeleted = false,
+                FileType = Common.Enums.BusFileType.Photo,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+        }
+
         return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
     }
 
+    private async Task SetBusFile(Guid busId, Guid fileId, Common.Enums.BusFileType fileType)
+    {
+        var files = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        if (files.All(x => x.FileId != fileId))
+        {
+            foreach (var osagoFile in files)
+            {
+                osagoFile.IsDeleted = true;
+            }
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+
+            await UnitOfWork.AddEntityAsync(new DbBusFile
+            {
+                BusId = busId,
+                FileId = fileId,
+                IsDeleted = false,
+                FileType = fileType,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+        }
+
+    }
 
     private async Task<BusSearchFilter> GetDataFromDb(BusSearchFilter filter = null)
     {

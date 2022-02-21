@@ -383,10 +383,10 @@ a.link-light-yellow-du {
         border-bottom: dashed 1px #007896;
     }
 
-    .ordering .clear a:hover {
-        color: #ecbf54;
-        border-bottom: none;
-    }
+        .ordering .clear a:hover {
+            color: #ecbf54;
+            border-bottom: none;
+        }
 
 
 .pagination-container li {
@@ -482,3 +482,44 @@ a.link-light-yellow-du {
         .the-form .the-error i {
             color: #007896;
         }
+
+a.dwn-link {
+    border-bottom: 1px dashed #fff;
+    text-decoration: none;
+    color: #fff;
+}
+
+    a.dwn-link:hover {
+        border-bottom: none;
+    }
+
+
+.dwn-link i {
+    color: #fff !important;
+}
+
+.add-photo-link {
+    height: 72px;
+    width: 72px;
+    margin: auto;
+    line-height: 72px;
+    background-color: #ecbf54;
+    color: #007896;
+    border-radius: 18px;
+    border: solid 1px #ecbf54;
+    text-align: center;
+    margin-top: 64px;
+}
+
+    .add-photo-link:hover {
+        background-color: #fff;
+        border: solid 1px #007896;
+    }
+
+.i-button {
+    display: none;
+}
+
+.col-p-u-i:hover .i-button {
+    display: block;
+}

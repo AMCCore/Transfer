@@ -46,4 +46,11 @@ public enum BusFileType
     [Description("Калибровка тахографа")]
     [EnumGuid("DC61766B-F37A-4AC9-AD30-E950DCE55BEB")]
     Tahograf,
+
+    /// <summary>
+    /// Главняа фотография
+    /// </summary>
+    [Description("Калибровка тахографа")]
+    [EnumGuid("525AB103-DD52-4B30-8F01-EFB31F19064B")]
+    PhotoMain,
 }

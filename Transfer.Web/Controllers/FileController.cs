@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
@@ -59,6 +60,17 @@ public class FileController : BaseController
         throw new ArgumentNullException(nameof(uploadedFile));
     }
 
+    public async Task<IActionResult> UploadAnyFile()
+    {
+        var file = Request.Form.Files.FirstOrDefault();
+        if (file != null)
+        {
+            var fileId = await UploadFile(file);
+            return Json(new { fileId, fileName = file.FileName });
+        }
+        throw new NotSupportedException();
+    }
+
     private static string GetFileExtention(string fileName)
     {
         return fileName.Split('.')[^1];
@@ -67,6 +79,17 @@ public class FileController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetFile([FromQuery][Required] Guid fileId)
     {
+        var entitys = await UnitOfWork.GetSet<DbFile>().Where(x => !x.OrganisationFiles.Any() && !x.DriverFiles.Any() && x.DateCreated <= DateTime.Now.AddDays(-33)).ToListAsync(CancellationToken.None);
+        foreach(var e in entitys)
+        {
+            var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{e.DateCreated.Year}/{e.Id}.{e.Extention}";
+            if(System.IO.File.Exists(path))
+            {
+                await UnitOfWork.DeleteAsync(e, CancellationToken.None);
+                System.IO.File.Delete(path);
+            }
+        }
+
         var entity = await UnitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, CancellationToken.None);
         if (entity != null)
         {
@@ -79,4 +102,6 @@ public class FileController : BaseController
         }
         return NotFound();
     }
+
+
 }

@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Common.Extensions;
+using Transfer.Bl.Dto.Driver;
+using Transfer.Web.Models;
 
 namespace Transfer.Web.Controllers;
 
@@ -26,7 +28,7 @@ public class DriverController : BaseController
         if (entity == null)
             return NotFound();
 
-        return View("Save", new DbDriver { OrganisationId = carrierId, Organisation = entity });
+        return View("Save", new DriverDto { OrganisationId = carrierId, OrganisationName = entity.Name });
     }
 
     [HttpGet]
@@ -38,12 +40,12 @@ public class DriverController : BaseController
         if (entity == null || bus == null)
             return NotFound();
 
-        return View("Save", bus);
+        return View("Save", Mapper.Map<DriverDto>(bus));
     }
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> Save([FromForm] DbDriver driverModel)
+    public async Task<IActionResult> Save([FromForm] DriverDto driverModel)
     {
         var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == driverModel.OrganisationId, CancellationToken.None);
         if (entity == null)
@@ -52,16 +54,14 @@ public class DriverController : BaseController
         if (!ModelState.IsValid)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
-            driverModel.Organisation = entity;
             return View("Save", driverModel);
         }
 
         if (driverModel.Id.IsNullOrEmpty())
         {
             driverModel.Id = Guid.NewGuid();
-            driverModel.Organisation = null;
             driverModel.IsDeleted = false;
-            await UnitOfWork.AddEntityAsync(driverModel, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(Mapper.Map<DbDriver>(driverModel), CancellationToken.None);
         }
         else
         {
@@ -74,7 +74,43 @@ public class DriverController : BaseController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
+        //права
+        await SetDriverFile(driverModel.Id, driverModel.License1.Value, Common.Enums.DriverFileType.License);
+
+        //права обр ст
+        await SetDriverFile(driverModel.Id, driverModel.License2.Value, Common.Enums.DriverFileType.LicenseBack);
+
+        //тахограф
+        await SetDriverFile(driverModel.Id, driverModel.TahografFileId.Value, Common.Enums.DriverFileType.TahografCard);
+
+        //аватар
+        await SetDriverFile(driverModel.Id, driverModel.Avatar.Value, Common.Enums.DriverFileType.Avatar);
+
+
 
         return RedirectToAction(nameof(DriverItem), new { carrierId = driverModel.OrganisationId, driverId = driverModel.Id });
+    }
+
+    private async Task SetDriverFile(Guid driverId, Guid fileId, Common.Enums.DriverFileType fileType)
+    {
+        var files = await UnitOfWork.GetSet<DbDriverFile>().Where(x => x.DriverId == driverId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        if (files.All(x => x.FileId != fileId))
+        {
+            foreach (var file in files)
+            {
+                file.IsDeleted = true;
+            }
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+            await UnitOfWork.AddEntityAsync(new DbDriverFile
+            {
+                FileId = fileId,
+                DriverId = driverId,
+                IsDeleted = false,
+                FileType = fileType,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+        }
+
     }
 }
