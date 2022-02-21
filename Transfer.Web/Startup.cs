@@ -34,6 +34,7 @@ namespace Transfer.Web
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Transfer API", Version = "v1" });
+                c.OperationFilter<SwaggerFileOperationFilter>();
             });
 
             //параметры приложения

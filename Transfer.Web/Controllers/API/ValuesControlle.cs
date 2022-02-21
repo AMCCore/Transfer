@@ -43,6 +43,32 @@ namespace Transfer.Web.Controllers.API
         }
 
         [HttpPost]
+        [Route("two-files")]
+        public async Task<string> Upload(IFormFile file1)
+        {
+            // validate the files, scan virus, save them to a file storage
+            //var folder = $"{_appEnvironment.WebRootPath}{_transferSettings.FileStoragePath}/{DateTime.Now.Year}/";
+
+            var fileId = Guid.NewGuid();
+            var fileDate = DateTime.Now;
+            var fileExtention = GetFileExtention(file1.FileName);
+
+            var folder = Path.GetFullPath($"{_appEnvironment.WebRootPath}{_transferSettings.FileStoragePath}/{fileDate.Year}/");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string path = $"{folder}{fileId}.{fileExtention}";
+            using var fileStream = new FileStream(path, FileMode.Create);
+
+
+            await file1.CopyToAsync(fileStream);
+
+
+            return folder;
+        }
+
+        [HttpPost]
         [Route(nameof(FileUpload))]
         private async Task<Guid> FileUpload(IFormFile uploadedFile)
         {

@@ -36,7 +36,7 @@ public class FileController : BaseController
             var fileDate = DateTime.Now;
             var fileExtention = GetFileExtention(uploadedFile.FileName);
 
-            var folder = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{fileDate.Year}/";
+            var folder = Path.GetFullPath($"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{fileDate.Year}/");
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
