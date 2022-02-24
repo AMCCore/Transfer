@@ -220,13 +220,13 @@
                     <div class="row blank-row d-none d-md-block"></div>
                     <div class="form-row">
                         <input asp-for="Avatar" type="hidden" class="file-result-id">
-                        <div class="col-12 col-md-6 col-p-e @(!Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                        <div class="col-12 col-md-6 col-p-e @(Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
                             <div style="border: 1px dashed #007896; height: 200px; border-radius: 9px;">
                                 <input type="file" class="form-control input-photo-file">
                             </div>
                         </div>
-                        <div class="col-12 col-md-6 col-p-u @(Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Avatar.Value'">
+                        <div class="col-12 col-md-6 col-p-u @(!Model.Avatar.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                            <div class="col-p-u-i" style="border: 1px dashed #007896; height: 200px; border-radius: 9px; background-position: center center; background-size: cover; background-image: url('/File/GetFile?fileId=@Model.Avatar'">
                                 <a href="javascript:void(0);" class="i-button" onclick="DeleteFile(this)"><div class="add-photo-link"><i class="fas fa-times-circle"></i></div></a>
                             </div>
                         </div>
