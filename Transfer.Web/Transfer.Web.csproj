@@ -7,11 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Remove="Scripts\TripRequest\**" />
 		<Compile Remove="wwwroot\Files\**" />
+		<Content Remove="Scripts\TripRequest\**" />
 		<Content Remove="wwwroot\Files\**" />
+		<EmbeddedResource Remove="Scripts\TripRequest\**" />
 		<EmbeddedResource Remove="wwwroot\Files\**" />
+		<None Remove="Scripts\TripRequest\**" />
 		<None Remove="wwwroot\Files\**" />
 		<TypeScriptCompile Remove="node_modules\**" />
+		<TypeScriptCompile Remove="Scripts\TripRequest\**" />
 		<TypeScriptCompile Remove="wwwroot\Files\**" />
 	</ItemGroup>
 
@@ -39,7 +44,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Scripts\TripRequest\" />
 		<Folder Include="wwwroot\dist\" />
 	</ItemGroup>
 

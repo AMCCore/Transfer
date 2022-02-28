@@ -6,6 +6,7 @@ w.$ = $;
 
 function TSButton() {
     let name = "Fred";
+    let ыname = "Smith";
     $('.ts-example').html(greeter(user));
 }
 
