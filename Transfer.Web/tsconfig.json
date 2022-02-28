@@ -11,5 +11,6 @@
   "include": [
     "scripts"
   ],
+  "files": ["empty.ts"],
   "exclude": [ "node_modules", "**/*.spec.ts" ]
 }
