@@ -9,9 +9,6 @@
     "outDir": "wwwroot/js"
   },
   "include": [
-    "scripts/**/*"
-  ],
-  "exclude": [
-    "wwwroot"
+    "scripts"
   ]
 }

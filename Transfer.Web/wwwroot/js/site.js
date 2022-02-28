@@ -4,7 +4,7 @@ w.jQuery = $;
 w.$ = $;
 function TSButton() {
     var name = "Fred";
-    var ыname = "Smit";
+    var ыname = "Smittt";
     $('.ts-example').html(greeter(user));
 }
 var Student = /** @class */ (function () {

@@ -14,5 +14,8 @@ $(function () {
             event.preventDefault();
         }
     });
+    function DoSometh() {
+        alert('do');
+    }
 });
 //# sourceMappingURL=Save.js.map

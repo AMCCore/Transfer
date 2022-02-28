@@ -16,5 +16,9 @@
             event.preventDefault();
         }
     });
+
+    function DoSometh() {
+        alert('do');
+    }
 });
 
