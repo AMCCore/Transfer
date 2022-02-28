@@ -12,6 +12,6 @@
     "scripts/**/*"
   ],
   "exclude": [
-    "wwwroot/js/**/*"
+    "wwwroot/js"
   ]
 }
