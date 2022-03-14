@@ -23,8 +23,8 @@ namespace Transfer.Dal
             uw.SetTripOptions();
 
 
-            uw.SetTestOrganisations();
-            uw.SetTestRequestTrips();
+            //uw.SetTestOrganisations();
+            //uw.SetTestRequestTrips();
         }
 
         private static void SetAccounts(this IUnitOfWork uw)
