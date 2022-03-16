@@ -24,6 +24,13 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => "evgen6654@mail.ru"))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => "+7 916 789 58 98"));
 
+        CreateMap<DbOrganisation, TripRequestSearchOrganisationDto>()
+            .ForMember(x => x.OrganisationId, opt => opt.MapFrom(o => o.Id))
+            .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Name))
+            .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
+            .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
+            .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));
+
         CreateMap<DbTripOption, TripOption>();
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()

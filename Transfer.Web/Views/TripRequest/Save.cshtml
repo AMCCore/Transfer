@@ -1,6 +1,26 @@
 ﻿@model Transfer.Bl.Dto.TripRequest.TripRequestDto
 @using Transfer.Common.Extensions
 
+@*@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(() => {
+        $('.basicAutoComplete').autocomplete({
+            source: "/api/Values/TripRequestOrganisationSearch",
+            minLength: 2,
+            select: function( event, ui ) {
+                console.log(ui);
+            }
+        });
+    });
+</script>
+}*@
+
+
 <div class="container">
     <div class="row blank-row"></div>
     <div class="row blank-row"></div>
@@ -52,7 +72,7 @@
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-search input-group-text"></i>
-                                <input asp-for="СhartererName" class="form-control" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
+                                <input asp-for="СhartererName" class="form-control basicAutoComplete" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
                             </div>
                         </div>
                     </div>

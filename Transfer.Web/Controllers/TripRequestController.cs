@@ -16,6 +16,7 @@ using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
 using Transfer.Common.Enums;
 using Transfer.Common.Extensions;
+using Transfer.Bl.Dto.Driver;
 
 namespace Transfer.Web.Controllers;
 
@@ -85,16 +86,16 @@ public class TripRequestController : BaseController
     [Route("TripRequest/{requestId}")]
     public async Task<IActionResult> TripRequest(Guid requestId)
     {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).Include(x => x.TripOptions).FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
         if (entity == null)
             return NotFound();
-        
-        throw new NotImplementedException();
+
+        return View("Save", Mapper.Map<TripRequestDto>(entity));
     }
 
     [HttpGet]
     [Route("TripRequest/New")]
-    public async Task<IActionResult> NewTripRequest()
+    public IActionResult NewTripRequest()
     {
         return View("Save", new TripRequestDto
         {

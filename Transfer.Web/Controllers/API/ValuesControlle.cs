@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Transfer.Bl.Dto;
+using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 
@@ -40,32 +41,6 @@ namespace Transfer.Web.Controllers.API
         {
             var res = await Task.Run(() => someData * 2);
             return res;
-        }
-
-        [HttpPost]
-        [Route("two-files")]
-        public async Task<string> Upload(IFormFile file1)
-        {
-            // validate the files, scan virus, save them to a file storage
-            //var folder = $"{_appEnvironment.WebRootPath}{_transferSettings.FileStoragePath}/{DateTime.Now.Year}/";
-
-            var fileId = Guid.NewGuid();
-            var fileDate = DateTime.Now;
-            var fileExtention = GetFileExtention(file1.FileName);
-
-            var folder = Path.GetFullPath($"{_appEnvironment.WebRootPath}{_transferSettings.FileStoragePath}/{fileDate.Year}/");
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-            string path = $"{folder}{fileId}.{fileExtention}";
-            using var fileStream = new FileStream(path, FileMode.Create);
-
-
-            await file1.CopyToAsync(fileStream);
-
-
-            return folder;
         }
 
         [HttpPost]
@@ -116,6 +91,16 @@ namespace Transfer.Web.Controllers.API
                 return _mapper.Map<FileDto>(entity);
             }
             throw new FileNotFoundException();
+        }
+
+        [HttpGet]
+        [Route(nameof(TripRequestOrganisationSearch))]
+        public async Task<TripRequestSearchOrganisationDto[]> TripRequestOrganisationSearch([Required] [FromQuery] string term)
+        {
+            var entites = await _unitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
+                .Where(x => x.FullName.ToLower().Contains(term.ToLower()) || x.INN.Contains(term))
+                .ToListAsync();
+            return _mapper.Map<TripRequestSearchOrganisationDto[]>(entites);
         }
     }
 }
