@@ -28,7 +28,7 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
-            .ForMember(x => x.Name, opt => opt.MapFrom(o => !o.СhartererId.IsNullOrEmpty() ? o.Сharterer.Name : o.СhartererName))
+            .ForMember(x => x.Name, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => "Евгений"))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => "evgen6654@mail.ru"))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => "+7 916 789 58 98"));

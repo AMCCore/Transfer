@@ -29,11 +29,11 @@ public class TripRequestController : BaseController
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
-        var query = UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Сharterer).Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
+        var query = UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
 
         if (filter.OrderByName)
         {
-            query = query.OrderBy(x => x.СhartererName).ThenBy(x => x.Сharterer.Name);
+            query = query.OrderBy(x => x.СhartererName).ThenBy(x => x.Charterer.Name);
         }
 
         if (filter.OrderByRating)
@@ -50,7 +50,7 @@ public class TripRequestController : BaseController
         {
             query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid()))
                 .ThenBy(x => x.СhartererName)
-                .ThenBy(x => x.Сharterer.Name);
+                .ThenBy(x => x.Charterer.Name);
         }
 
         var totalCount = await query.CountAsync(CancellationToken.None);
@@ -83,8 +83,12 @@ public class TripRequestController : BaseController
 
     [HttpGet]
     [Route("TripRequest/{requestId}")]
-    public IActionResult TripRequest(Guid requestId)
+    public async Task<IActionResult> TripRequest(Guid requestId)
     {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+        
         throw new NotImplementedException();
     }
 

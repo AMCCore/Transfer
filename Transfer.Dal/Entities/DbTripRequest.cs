@@ -42,10 +42,10 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public virtual ICollection<DbTripRequestOption> TripOptions { get; set; }
 
-    public virtual DbOrganisation? Сharterer { get; set; }
+    public virtual DbOrganisation? Charterer { get; set; }
 
-    [ForeignKey(nameof(Сharterer))]
-    public Guid? СhartererId { get; set; }
+    [ForeignKey(nameof(Charterer))]
+    public Guid? ChartererId { get; set; }
 
     public string? Description { get; set; }
 }
