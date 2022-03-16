@@ -92,9 +92,11 @@ public class TripRequestController : BaseController
     [Route("TripRequest/New")]
     public async Task<IActionResult> NewTripRequest()
     {
-        var options = await UnitOfWork.GetSet<DbTripOption>().Where(x => !x.IsDeleted).ToListAsync(CancellationToken.None);
-
-        return View("Save", new TripRequestDto { });
+        return View("Save", new TripRequestDto
+        {
+            TripDate = DateTime.Now.AddDays(1).ChangeTime(9, 0),
+            PaymentType = (int)PaymentType.Card
+        });
     }
 
     [HttpPost]

@@ -26,8 +26,16 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public int Passengers { get; set; }
 
+        public int? LuggageVolume { get; set; }
+
         public string? Description { get; set; }
 
         public string? СhartererId { get; set; }
+
+        public bool ChildTrip { get; set; }
+
+        public bool StandTrip { get; set; }
+
+        public int PaymentType { get; set; }
     }
 }

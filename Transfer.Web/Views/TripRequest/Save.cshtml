@@ -137,9 +137,113 @@
                     </div>
                 </div>
             </div>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-3 form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">
+                            Дата и время подачи: <span class="red-text">*</span>
+                        </div>
+                        <div class="col-12 white-text">
+                            <div class="input-group input-group-icon">
+                                <input asp-for="TripDate" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-6 form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">&nbsp;</div>
+                        <div class="col-12 white-text text-end">
+                            Желаемый размер багажного отделения
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-3 form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">&nbsp;</div>
+                        <div class="col-12 white-text">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="LuggageVolume" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-3 form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">
+                            Посадочных мест: <span class="red-text">*</span>
+                        </div>
+                        <div class="col-12 white-text">
+                            <div class="input-group input-group-icon">
+                                <input asp-for="Passengers" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-2 chk-label form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">&nbsp;</div>
+                        <div class="col-12 white-text text-end">
+                            <input asp-for="ChildTrip" class="form-check-input" />
+                            <label for="ChildTrip">Перевозка детей</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-2 chk-label form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">&nbsp;</div>
+                        <div class="col-12 white-text text-end">
+                            <input asp-for="StandTrip" class="form-check-input" />
+                            <label for="StandTrip">Поездка с простоем</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-6 chk-label form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">Форма оплаты:</div>
+                        <div class="col-12 white-text">
+                            <div class="form-check form-check-inline">
+                                <input asp-for="PaymentType" class="form-check-input" type="radio" id="PaymentType1" value="1">
+                                <label for="PaymentType1"><i class="fas fa-credit-card white-text"></i>&nbsp;&nbsp;Картой</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input asp-for="PaymentType" class="form-check-input" type="radio" id="PaymentType0" value="0">
+                                <label for="PaymentType0"><i class="fas fa-money-bill white-text"></i>&nbsp;&nbsp;Наличными</label>
+                            </div>
 
-        </div>
-        <div class="row blank-row"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-6 chk-label form-group">
+                    <div class="row">
+                        <div class="col-12 white-text">Комментарий к заказу:</div>
+                        <div class="col-12 white-text">
+                            <textarea asp-for="Description" rows="6" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row blank-row"></div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row form-row">
+                <div class="t-col the-error col-10">
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
+                    {
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
+                    }
+                </div>
+                <div class="t-col col-2 text-end">
+                    <button type="submit" class="button-one">Сохранить</button>
+                </div>
+            </div>
+
+            <div class="row blank-row"></div>
     </form>
     <div class="row blank-row"></div>
 </div>
+<div class="row blank-row"></div>

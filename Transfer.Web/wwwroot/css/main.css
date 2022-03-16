@@ -437,6 +437,10 @@ a.link-light-yellow-du {
         color: #007896;
     }
 
+    .the-form .form-row i.white-text {
+        color: #fff;
+    }
+
         .the-form .form-row i.fa-question-circle:hover {
             color: #ecbf54;
             cursor: pointer;
@@ -446,7 +450,8 @@ a.link-light-yellow-du {
         color: #fff;
     }
 
-        .the-form .form-row .chk-label input[type=checkbox] {
+        .the-form .form-row .chk-label input[type=checkbox],
+        .the-form .form-row .chk-label input[type=radio] {
             border: solid 1px #007896;
             border-radius: 0.5em;
             margin-top: 0.6em;
