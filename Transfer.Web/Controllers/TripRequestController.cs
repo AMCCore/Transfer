@@ -94,7 +94,15 @@ public class TripRequestController : BaseController
     {
         var options = await UnitOfWork.GetSet<DbTripOption>().Where(x => !x.IsDeleted).ToListAsync(CancellationToken.None);
 
-        return PartialView("Save", new TripRequestDto { });
+        return View("Save", new TripRequestDto { });
+    }
+
+    [HttpPost]
+    [Route("TripRequests/Save")]
+    public async Task<IActionResult> Save(TripRequestDto model)
+    {
+
+        return View("Save", model);
     }
 
 }

@@ -27,5 +27,7 @@ namespace Transfer.Bl.Dto.TripRequest
         public int Passengers { get; set; }
 
         public string? Description { get; set; }
+
+        public string? СhartererId { get; set; }
     }
 }
