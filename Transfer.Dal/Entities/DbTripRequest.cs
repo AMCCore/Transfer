@@ -16,10 +16,10 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public bool IsDeleted { get; set; }
 
-    [MaxLength(1000)]
-    public string Name { get; set; }
-
     public DateTime DateCreated { get; set; }
+
+    [MaxLength(1000)]
+    public string? СhartererName { get; set; }
 
     [MaxLength(1000)]
     public string AddressFrom { get; set; }
@@ -28,17 +28,24 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public string AddressTo { get; set; }
 
     [MaxLength(1000)]
-    public string ContactFio { get; set; }
+    public string? ContactFio { get; set; }
 
     [MaxLength(1000)]
-    public string ContactPhone { get; set; }
+    public string? ContactPhone { get; set; }
 
     [MaxLength(1000)]
-    public string ContactEmail { get; set; }
+    public string? ContactEmail { get; set; }
 
     public DateTime TripDate { get; set; }
 
     public int Passengers { get; set; }
 
     public virtual ICollection<DbTripRequestOption> TripOptions { get; set; }
+
+    public virtual DbOrganisation? Сharterer { get; set; }
+
+    [ForeignKey(nameof(Сharterer))]
+    public Guid? СhartererId { get; set; }
+
+    public string? Description { get; set; }
 }

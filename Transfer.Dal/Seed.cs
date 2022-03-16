@@ -140,7 +140,6 @@ namespace Transfer.Dal
             var tr = new List<DbTripRequest> {
                 new DbTripRequest {
                     Id = Guid.Parse("911C29AC-A98D-4102-9410-DC03D1727D3A"),
-                    Name = "Запрос 1",
                     AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 36, стр 5",
                     AddressTo = "Россия, Краснодарский край, Майкоп, Улица Адмирала Проценко, дом 1",
                     ContactEmail = string.Empty,
@@ -151,7 +150,6 @@ namespace Transfer.Dal
                 },
                 new DbTripRequest {
                     Id = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    Name = "Запрос 2",
                     ContactEmail = string.Empty,
                     ContactFio = string.Empty,
                     ContactPhone = string.Empty,
@@ -165,7 +163,6 @@ namespace Transfer.Dal
                     ContactEmail = string.Empty,
                     ContactFio = string.Empty,
                     ContactPhone = string.Empty,
-                    Name = "Запрос 3",
                     AddressTo = "Россия, Крым, Ялта, Улица Сталина дом 2, стр 5",
                     AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 1",
                     TripDate = new DateTime(2022, 3, 6),
@@ -173,7 +170,6 @@ namespace Transfer.Dal
                 },
                 new DbTripRequest {
                     Id = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    Name = "Запрос 4",
                     ContactEmail = string.Empty,
                     ContactFio = string.Empty,
                     ContactPhone = string.Empty,
@@ -184,7 +180,6 @@ namespace Transfer.Dal
                 },
                 new DbTripRequest {
                     Id = Guid.Parse("64854EBF-A65D-410C-9988-F5F81399A88F"),
-                    Name = "Запрос 5",
                     ContactEmail = string.Empty,
                     ContactFio = string.Empty,
                     ContactPhone = string.Empty,

@@ -45,17 +45,15 @@
     </div>
 </div>
 <hr style="color: #007896; border: dashed 1px #007896;">
-@{
-    int counter = 0;
-}
+<div class="row">
+    <div class="t-col col-12 text-center">
+        <a asp-action="NewTripRequest" asp-controller="TripRequest"><div class="new-assert-link"><i class="fas fa-plus-circle"></i></div></a>
+    </div>
+</div>
+
 @foreach (var c in Model.Results)
 {
-    if (counter > 0)
-    {
-        <hr style="color: #fff; border: dashed 1px #007896;">
-    }
-    counter++;
-
+    <hr style="color: #fff; border: dashed 1px #007896;">
     <div class="row blank-row"></div>
     <div class="row">
         <div class="col-12">

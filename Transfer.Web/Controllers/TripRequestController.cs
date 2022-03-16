@@ -29,11 +29,11 @@ public class TripRequestController : BaseController
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
-        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
+        var query = UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Сharterer).Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
 
         if (filter.OrderByName)
         {
-            query = query.OrderBy(x => x.Name);
+            query = query.OrderBy(x => x.СhartererName).ThenBy(x => x.Сharterer.Name);
         }
 
         if (filter.OrderByRating)
@@ -48,9 +48,10 @@ public class TripRequestController : BaseController
 
         if (filter.OrderByChild)
         {
-            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())).ThenBy(x => x.Name);
+            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid()))
+                .ThenBy(x => x.СhartererName)
+                .ThenBy(x => x.Сharterer.Name);
         }
-
 
         var totalCount = await query.CountAsync(CancellationToken.None);
         var entity = await query.Skip(filter.StartRecord)
@@ -86,4 +87,14 @@ public class TripRequestController : BaseController
     {
         throw new NotImplementedException();
     }
+
+    [HttpGet]
+    [Route("TripRequest/New")]
+    public async Task<IActionResult> NewTripRequest()
+    {
+        var options = await UnitOfWork.GetSet<DbTripOption>().Where(x => !x.IsDeleted).ToListAsync(CancellationToken.None);
+
+        return PartialView("Save", new TripRequestDto { });
+    }
+
 }

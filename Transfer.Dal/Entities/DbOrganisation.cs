@@ -129,4 +129,6 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public virtual ICollection<DbBus> Buses { get; set; } = new List<DbBus>();
 
     public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
+
+    public virtual ICollection<DbTripRequest> TripRequests { get; set; } = new List<DbTripRequest>();
 }
