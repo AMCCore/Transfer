@@ -45,6 +45,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\dist\" />
+		<Folder Include="wwwroot\js\" />
 	</ItemGroup>
 
 	<ItemGroup>

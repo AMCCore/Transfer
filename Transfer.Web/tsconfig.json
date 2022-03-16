@@ -10,6 +10,5 @@
   },
   "include": [
     "scripts"
-  ],
-  "files": ["empty.ts"]
+  ]
 }

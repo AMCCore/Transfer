@@ -82,7 +82,7 @@
         </div>
     </div>
     <div class="row form-row">
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     Телефон: <span class="red-text">*</span>
@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     Email: <span class="red-text">*</span>
@@ -109,7 +109,7 @@
             </div>
 
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     ОГРН: <span class="red-text">*</span>
@@ -122,7 +122,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     ИНН: <span class="red-text">*</span>
@@ -155,7 +155,7 @@
         </div>
     </div>
     <div class="row form-row">
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     БИК: <span class="red-text">*</span>
@@ -168,7 +168,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     ИНН Банка: <span class="red-text">*</span>
@@ -181,7 +181,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     КПП: <span class="red-text">*</span>
@@ -194,7 +194,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     Кор. счет: <span class="red-text">*</span>
@@ -209,7 +209,7 @@
         </div>
     </div>
     <div class="row form-row">
-        <div class="t-col col-3 form-group">
+        <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     Номер счета: <span class="red-text">*</span>
@@ -222,7 +222,7 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-9 form-group">
+        <div class="t-col col-12 col-md-9 form-group">
             <div class="row">
                 <div class="col-12 white-text">
                     Наименование получателя: <span class="red-text">*</span>
@@ -259,18 +259,18 @@
     <div class="row form-row">
         <div class="t-col col-12 chk-label form-group">
             <input id="Agreement" asp-for="Agreement" class="form-check-input" />
-            <label for="Agreement">Согласие с условиями обработки персональных данных (<a href="#" target="_blank">Полные условия оферты</a>)</label>
+            <label for="Agreement">Согласие с условиями обработки персональных данных</label> <label>(<a href="#" target="_blank">Полные условия оферты</a>)</label>
         </div>
     </div>
     <div class="row blank-row"></div>
     <div class="row form-row">
-        <div class="t-col the-error col-10">
+        <div class="t-col the-error col-12 col-md-10">
             @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
             {
                 <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
             }
         </div>
-        <div class="t-col col-2 text-end">
+        <div class="t-col col-4 col-md-2 text-end">
             <button type="submit" class="button-one">Сохранить</button>
         </div>
     </div>
