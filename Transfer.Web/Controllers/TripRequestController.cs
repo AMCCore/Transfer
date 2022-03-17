@@ -105,12 +105,80 @@ public class TripRequestController : BaseController
         });
     }
 
+    [ValidateAntiForgeryToken]
     [HttpPost]
-    [Route("TripRequests/Save")]
-    public async Task<IActionResult> Save(TripRequestDto model)
+    public async Task<IActionResult> Save([FromForm] TripRequestDto model)
     {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return View("Save", model);
+        }
 
-        return View("Save", model);
+        if (model.Id.IsNullOrEmpty())
+        {
+            model.Id = Guid.NewGuid();
+            var entity = Mapper.Map<DbTripRequest>(model);
+            await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
+            await SetTripOptions(entity, model);
+        }
+        else
+        {
+            var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == model.Id, CancellationToken.None);
+
+            if (entity.LastUpdateTick != model.LastUpdateTick)
+                throw new InvalidOperationException();
+
+            Mapper.Map(model, entity);
+            await SetTripOptions(entity, model);
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        }
+
+        return RedirectToAction(nameof(TripRequest), new { requestId = model.Id });
+    }
+
+    private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model)
+    {
+        foreach(var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
+        {
+            await UnitOfWork.DeleteAsync(to, CancellationToken.None);
+        }
+        if(model.ChildTrip)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption { 
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
+            }, CancellationToken.None);
+        }
+        if (model.StandTrip)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptions.IdleTrip.GetEnumGuid()
+            }, CancellationToken.None);
+        }
+        if (model.PaymentType == (int)PaymentType.Card)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptions.CardPayment.GetEnumGuid()
+            }, CancellationToken.None);
+
+        }
+        else if (model.PaymentType == (int)PaymentType.Cash)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptions.CashPayment.GetEnumGuid()
+            }, CancellationToken.None);
+        }
     }
 
 }

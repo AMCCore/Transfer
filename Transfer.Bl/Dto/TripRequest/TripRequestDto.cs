@@ -37,5 +37,7 @@ namespace Transfer.Bl.Dto.TripRequest
         public bool StandTrip { get; set; }
 
         public int PaymentType { get; set; }
+
+        public long LastUpdateTick { get; set; }
     }
 }

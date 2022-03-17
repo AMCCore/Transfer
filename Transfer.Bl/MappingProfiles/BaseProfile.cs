@@ -42,7 +42,6 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone));
 
         CreateMap<DbTripRequest, TripRequestDto>()
-            //.ForMember(x => x.LuggageVolume, opt => opt.MapFrom(o => o.))
             .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
             .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.IdleTrip.GetEnumGuid())))
             .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))
@@ -55,6 +54,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactPhone))
+            .ForMember(x => x.СhartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ChartererName))
             .ForMember(x => x.TripOptions, opt => opt.Ignore());
 
         CreateMap<DbFile, FileDto>()

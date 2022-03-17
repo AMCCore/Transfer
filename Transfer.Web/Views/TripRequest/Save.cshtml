@@ -19,7 +19,7 @@
             }
             else
             {
-                <a class="top-button-a" asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName</a>
+                <a class="top-button-a" asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
             }
         </div>
     </div>
@@ -43,6 +43,7 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
         @Html.HiddenFor(x => x.ChartererId)
+        @Html.HiddenFor(x => x.LastUpdateTick)
 
         <div class="container the-form">
             <div class="row blank-row"></div>
