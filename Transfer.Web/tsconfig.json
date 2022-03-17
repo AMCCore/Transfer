@@ -9,6 +9,7 @@
     "outDir": "wwwroot/js"
   },
   "include": [
-    "scripts"
-  ]
+    "Scripts"
+  ],
+  "files": [ "Scripts/empty.ts" ]
 }
