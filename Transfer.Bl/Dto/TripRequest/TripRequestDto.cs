@@ -10,17 +10,17 @@ namespace Transfer.Bl.Dto.TripRequest
     {
         public Guid Id { get; set; }
 
-        public string? СhartererName { get; set; }
+        public string ChartererName { get; set; }
 
         public string AddressFrom { get; set; }
 
         public string AddressTo { get; set; }
 
-        public string? ContactFio { get; set; }
+        public string ContactFio { get; set; }
 
-        public string? ContactPhone { get; set; }
+        public string ContactPhone { get; set; }
 
-        public string? ContactEmail { get; set; }
+        public string ContactEmail { get; set; }
 
         public DateTime TripDate { get; set; }
 
@@ -30,7 +30,7 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public string? Description { get; set; }
 
-        public string? СhartererId { get; set; }
+        public Guid? ChartererId { get; set; }
 
         public bool ChildTrip { get; set; }
 

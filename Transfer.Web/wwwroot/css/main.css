@@ -437,9 +437,9 @@ a.link-light-yellow-du {
         color: #007896;
     }
 
-    .the-form .form-row i.white-text {
-        color: #fff;
-    }
+        .the-form .form-row i.white-text {
+            color: #fff;
+        }
 
         .the-form .form-row i.fa-question-circle:hover {
             color: #ecbf54;
@@ -476,6 +476,16 @@ a.link-light-yellow-du {
         text-align: center;
     }
 
+    .the-form .button-one-empty {
+        border-radius: 18px;
+        line-height: 34px;
+        width: 100%;
+        border: 1px solid #0f4c71;
+        text-align: center;
+        background-color: #0f4c71;
+        color: #fff;
+    }
+
     .the-form input.input-validation-error {
         border: 1px solid #b94a48;
     }
@@ -487,6 +497,12 @@ a.link-light-yellow-du {
         .the-form .the-error i {
             color: #007896;
         }
+
+    /*.the-form .form-row .form-control[readonly] {*/
+        /*background-color: #e9ecef;*/
+        /*background-color: #f00;
+        opacity: 1;
+    }*/
 
 a.dwn-link {
     border-bottom: 1px dashed #fff;

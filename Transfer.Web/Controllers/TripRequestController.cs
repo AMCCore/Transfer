@@ -90,7 +90,8 @@ public class TripRequestController : BaseController
         if (entity == null)
             return NotFound();
 
-        return View("Save", Mapper.Map<TripRequestDto>(entity));
+        var model = Mapper.Map<TripRequestDto>(entity);
+        return View("Save", model);
     }
 
     [HttpGet]

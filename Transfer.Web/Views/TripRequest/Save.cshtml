@@ -1,24 +1,10 @@
 ﻿@model Transfer.Bl.Dto.TripRequest.TripRequestDto
 @using Transfer.Common.Extensions
 
-@*@section Styles {
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+@section Styles {
 }
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>
-    $(() => {
-        $('.basicAutoComplete').autocomplete({
-            source: "/api/Values/TripRequestOrganisationSearch",
-            minLength: 2,
-            select: function( event, ui ) {
-                console.log(ui);
-            }
-        });
-    });
-</script>
-}*@
+}
 
 
 <div class="container">
@@ -26,14 +12,14 @@
     <div class="row blank-row"></div>
     <div class="row">
         <div class="t-col col-12 crumbs">
-            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripReques" asp-action="Search">Поездки</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripRequest" asp-action="Search">Поездки</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;
             @if (Model.Id.IsNullOrEmpty())
             {
                 @:Новая перевозка
             }
             else
             {
-                <a class="top-button-a" asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.СhartererName</a>
+                <a class="top-button-a" asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName</a>
             }
         </div>
     </div>
@@ -56,7 +42,7 @@
     <form asp-controller="TripRequest" asp-action="Save" method="post" id="mainSaveForm">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
-        @Html.HiddenFor(x => x.СhartererId)
+        @Html.HiddenFor(x => x.ChartererId)
 
         <div class="container the-form">
             <div class="row blank-row"></div>
@@ -72,7 +58,7 @@
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-search input-group-text"></i>
-                                <input asp-for="СhartererName" class="form-control basicAutoComplete" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
+                                <input asp-for="ChartererName" class="form-control basicAutoComplete" readonly="@(!Model.ChartererId.IsNullOrEmpty())" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
                             </div>
                         </div>
                     </div>
@@ -87,7 +73,7 @@
                         <div class="col-12">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-user-alt input-group-text"></i>
-                                <input type="tel" asp-for="ContactFio" class="form-control" />
+                                <input type="tel" asp-for="ContactFio" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -100,7 +86,7 @@
                         <div class="col-12">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-envelope input-group-text"></i>
-                                <input type="email" asp-for="ContactEmail" class="form-control" />
+                                <input type="email" asp-for="ContactEmail" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -113,7 +99,7 @@
                         <div class="col-12">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-phone-alt input-group-text"></i>
-                                <input asp-for="ContactPhone" class="form-control" />
+                                <input asp-for="ContactPhone" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
                     </div>
@@ -251,11 +237,14 @@
             </div>
             <div class="row blank-row"></div>
             <div class="row form-row">
-                <div class="t-col the-error col-10">
+                <div class="t-col the-error col-8">
                     @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
                     {
                         <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
                     }
+                </div>
+                <div class="t-col col-2 text-end">
+                    <button type="button" class="button-one-empty">Завершить</button>
                 </div>
                 <div class="t-col col-2 text-end">
                     <button type="submit" class="button-one">Сохранить</button>

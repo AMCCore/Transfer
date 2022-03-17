@@ -48,4 +48,6 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public Guid? ChartererId { get; set; }
 
     public string? Description { get; set; }
+
+    public int? LuggageVolume { get; set; }
 }
