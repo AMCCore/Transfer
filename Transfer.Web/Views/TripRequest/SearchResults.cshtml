@@ -3,6 +3,7 @@
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 @using Transfer.Bl.Dto;
+@using Transfer.Common.Extensions
 
 <div class="row blank-row"></div>
 @Html.HiddenFor(x => x.PageNumber)
@@ -67,7 +68,16 @@
                         <div class="row">
                             <div class="col-3">
                                 <div class="row">
-                                    <div class="col-12 r-logo text-center"><img alt="" src="~/images/20000968.png" style="margin: 18px 0;" /></div>
+                                    @if(c.Picture.IsNullOrEmpty())
+                                    {
+                                        <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" style="margin: 18px 0;" /></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 144px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
+                                        <div class="row blank-row"></div>
+                                    }
+
                                     <div class="col-12 t-col text-center go"><a asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@c.Id"><span>перейти</span></a></div>
                                 </div>
                             </div>

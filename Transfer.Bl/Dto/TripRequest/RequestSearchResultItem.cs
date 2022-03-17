@@ -27,5 +27,7 @@ namespace Transfer.Bl.Dto.TripRequest
         public IList<TripOption> TripOptions { get; set; }
 
         public bool Checked { get; set; }
+
+        public Guid? Picture { get; set; }
     }
 }

@@ -36,6 +36,7 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => GetCarrierLogoId(o) ))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
@@ -119,10 +120,10 @@ public class BaseProfile : Profile
 
         CreateMap<DbDriver, DriverDto>()
             .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
-            .ForMember(x => x.License1, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.DriverFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.License2, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.DriverFileType.LicenseBack).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.DriverFileType.TahografCard).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Avatar, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == Common.Enums.DriverFileType.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()));
+            .ForMember(x => x.License1, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.License2, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.LicenseBack).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.TahografCard).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Avatar, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()));
 
         CreateMap<DriverDto, DbDriver>()
             .ForMember(x => x.OrganisationId, opt => opt.Ignore())
@@ -175,5 +176,10 @@ public class BaseProfile : Profile
         }
 
         return (int)PaymentType.Cash;
+    }
+
+    private static Guid? GetCarrierLogoId(DbTripRequest tr)
+    {
+        return tr.Charterer?.Files?.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault() ?? null;
     }
 }

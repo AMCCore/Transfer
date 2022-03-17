@@ -30,7 +30,7 @@ public class TripRequestController : BaseController
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
-        var query = UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
+        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
 
         if (filter.OrderByName)
         {
@@ -86,7 +86,7 @@ public class TripRequestController : BaseController
     [Route("TripRequest/{requestId}")]
     public async Task<IActionResult> TripRequest(Guid requestId)
     {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Charterer).Include(x => x.TripOptions).FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
         if (entity == null)
             return NotFound();
 
