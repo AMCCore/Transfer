@@ -178,6 +178,15 @@ public class CarrierController : BaseController
             await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
         }
 
+        //лтцензия
+        await SetCarrierFile(model.Id, model.LicenceFileId.Value, Common.Enums.OrganisationFileType.License);
+
+        if (!model.LogoFileId.IsNullOrEmpty())
+        {
+            //логотип
+            await SetCarrierFile(model.Id, model.LogoFileId.Value, Common.Enums.OrganisationFileType.Logo);
+        }
+
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
 
@@ -228,6 +237,30 @@ public class CarrierController : BaseController
         var result = await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, filter);
 
         return PartialView("/Views/Carrier/Assets.cshtml", result);
+    }
+
+    private async Task SetCarrierFile(Guid carrierId, Guid fileId, Common.Enums.OrganisationFileType fileType)
+    {
+        var files = await UnitOfWork.GetSet<DbOrganisationFile>().Where(x => x.OrganisationId == carrierId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        if (files.All(x => x.FileId != fileId))
+        {
+            foreach (var f in files)
+            {
+                f.IsDeleted = true;
+            }
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+
+            await UnitOfWork.AddEntityAsync(new DbOrganisationFile
+            {
+                OrganisationId = carrierId,
+                FileId = fileId,
+                IsDeleted = false,
+                FileType = fileType,
+                UploaderId = Security.CurrentAccountId
+            }, CancellationToken.None);
+        }
+
     }
 }
 

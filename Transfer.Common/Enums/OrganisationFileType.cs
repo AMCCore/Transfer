@@ -14,14 +14,14 @@ public enum OrganisationFileType
     /// Логотип компании
     /// </summary>
     [Description("Логотип компании")]
-    [EnumGuid("87384A8C-DAFD-4CF1-AB55-8E8315A122BA")]
+    [EnumGuid("448D23E0-3FAA-46E5-BD07-ACE51937850B")]
     Logo,
 
     /// <summary>
     /// Скан лицензии на осуществление перевозок
     /// </summary>
     [Description("Скан лицензии на осуществление перевозок")]
-    [EnumGuid("87384A8C-DAFD-4CF1-AB55-8E8315A122BA")]
+    [EnumGuid("2BDABBB7-49E3-423E-9DD8-25FF46D28342")]
     License,
 
 }

@@ -64,6 +64,8 @@ public class BaseProfile : Profile
         CreateMap<OrganisationDto, DbOrganisation>();
 
         CreateMap<DbOrganisation, CarrierDto>()
+            .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.DirectorFio) ? "Контактное лицо" : $"{o.DirectorFio} ({o.DirectorPosition})"));
         CreateMap<CarrierDto, DbOrganisation>();
 
@@ -163,7 +165,7 @@ public class BaseProfile : Profile
 
     private static int TripPaymentConvert(ICollection<DbTripRequestOption> options)
     {
-        if(options.Any(x => x.TripOptionId == TripOptions.CardPayment.GetEnumGuid()))
+        if (options.Any(x => x.TripOptionId == TripOptions.CardPayment.GetEnumGuid()))
         {
             return (int)PaymentType.Card;
         }
