@@ -59,10 +59,6 @@ public class CarrierDto : OrganisationDto
     [Required]
     public string NameAccount { get; set; }
 
-    public IFormFile? LogoFile { get; set; }
-
-    public IFormFile? LicenceFile { get; set; }
-
     public Guid? LogoFileId { get; set; }
 
     public Guid? LicenceFileId { get; set; }
