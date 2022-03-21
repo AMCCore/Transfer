@@ -50,12 +50,6 @@ namespace Transfer.Bl.Dto.Bus
         [Required]
         public int PeopleCopacity { get; set; }
 
-
-        /// <summary>
-        /// Объём багажа
-        /// </summary>
-        public int? LuggageVolume { get; set; }
-
         /// <summary>
         /// Наличие телевизора
         /// </summary>
@@ -72,11 +66,6 @@ namespace Transfer.Bl.Dto.Bus
         public bool SaftyBelts { get; set; }
 
         /// <summary>
-        /// Наличие аудиостсиемы
-        /// </summary>
-        public bool Audio { get; set; }
-
-        /// <summary>
         /// Наличие туалета
         /// </summary>
         public bool WC { get; set; }
@@ -85,11 +74,6 @@ namespace Transfer.Bl.Dto.Bus
         /// Наличие микрофона
         /// </summary>
         public bool Microphone { get; set; }
-
-        /// <summary>
-        /// Наличие WiFi
-        /// </summary>
-        public bool Wifi { get; set; }
 
         public Guid? OsagoFileId { get; set; }
 
@@ -112,6 +96,42 @@ namespace Transfer.Bl.Dto.Bus
         public Guid? Photo5 { get; set; }
 
         public Guid? Photo6 { get; set; }
+
+        /// <summary>
+        /// Серия СТС
+        /// </summary>
+        [Required]
+        public string RegSeries { get; set; }
+
+        /// <summary>
+        /// Номер СТС
+        /// </summary>
+        [Required]
+        public string RegNumber { get; set; }
+
+        /// <summary>
+        /// Серия ОСАГО
+        /// </summary>
+        [Required]
+        public string OSAGOSeries { get; set; }
+
+        /// <summary>
+        /// Номер ОСАГО
+        /// </summary>
+        [Required]
+        public string OSAGONumber { get; set; }
+
+        /// <summary>
+        /// Срок действия диагностической карты
+        /// </summary>
+        [Required]
+        public DateTime ToDate { get; set; }
+
+        /// <summary>
+        /// Номер диагностической карты
+        /// </summary>
+        [Required]
+        public string ToNumber { get; set; }
     }
 
 }

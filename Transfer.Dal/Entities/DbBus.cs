@@ -100,5 +100,41 @@ public class DbBus : IEntityBase, ISoftDeleteEntity
     /// </summary>
     public bool Wifi { get; set; }
 
+    /// <summary>
+    /// Серия СТС
+    /// </summary>
+    [Required]
+    public string RegSeries { get; set; }
+
+    /// <summary>
+    /// Номер СТС
+    /// </summary>
+    [Required]
+    public string RegNumber { get; set; }
+
+    /// <summary>
+    /// Серия ОСАГО
+    /// </summary>
+    [Required]
+    public string OSAGOSeries { get; set; }
+
+    /// <summary>
+    /// Номер ОСАГО
+    /// </summary>
+    [Required]
+    public string OSAGONumber { get; set; }
+
+    /// <summary>
+    /// Срок действия диагностической карты
+    /// </summary>
+    [Required]
+    public DateTime ToDate { get; set; }
+
+    /// <summary>
+    /// Номер диагностической карты
+    /// </summary>
+    [Required]
+    public string ToNumber { get; set; }
+
 }
 

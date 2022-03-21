@@ -141,15 +141,6 @@
             </div>
             <div class="row blank-row"></div>
             <div class="row form-row">
-                <div class="t-col col-12 col-md-2 white-text">
-                    Объём багажа:
-                </div>
-                <div class="t-col col-12 col-md-2 white-text">
-                    <div class="input-group input-group-icon">
-                        <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="LuggageVolume" class="form-control" />
-                    </div>
-                </div>
                 <div class="t-col col-12 col-md-4 chk-label form-group">
                     <input asp-for="SaftyBelts" class="form-check-input" />
                     <label for="SaftyBelts">Ремни безопасности</label>
@@ -158,44 +149,60 @@
                     <input asp-for="Microphone" class="form-check-input" />
                     <label for="Microphone">Наличие микрофона</label>
                 </div>
-            </div>
-            <div class="row blank-row"></div>
-            <div class="row form-row">
                 <div class="t-col col-12 col-md-4 chk-label form-group">
                     <input asp-for="TV" class="form-check-input" />
                     <label for="TV">Наличие телевизора</label>
-                </div>
-                <div class="t-col col-12 col-md-4 chk-label form-group">
-                    <input asp-for="Audio" class="form-check-input" />
-                    <label for="Audio">Аудио-система</label>
-                </div>
-                <div class="t-col col-12 col-md-4 chk-label form-group">
-                    <input asp-for="Wifi" class="form-check-input" />
-                    <label for="Wifi">Наличие WiFi</label>
                 </div>
             </div>
             <div class="row blank-row"></div>
             <h2 class="white-text">Копии документов:</h2>
             <div class="row form-row">
                 <input asp-for="RegFileId" type="hidden" class="form-control file-result-id">
-                <div class="t-col file-upl col-12 col-md-8 @(!Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                <div class="t-col file-upl col-12 col-md-6 @(!Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
                             СТС: <span class="red-text">*</span>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="t-col col-10 form-group">
+                        <div class="t-col col-9 form-group">
                             <input type="text" class="form-control file-result-name" readonly="readonly" />
                         </div>
-                        <div class="t-col col-2 form-group">
+                        <div class="t-col col-3 form-group">
                             <input type="file" class="form-control input-file">
                         </div>
                     </div>
                 </div>
-                <div class="t-col file-dwn white-text col-12 form-group @(Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                <div class="t-col file-dwn white-text col-12 col-md-6 form-group @(Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     СТС: <a href="/File/GetFile?fileId=@Model.RegFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
                 </div>
+                <div class="t-col col-12 col-md-3 form-group">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Серия: <span class="red-text">*</span>
+                        </div>
+                        <div class="t-col col-12 white-text">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="PeopleCopacity" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-3 form-group">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Номер: <span class="red-text">*</span>
+                        </div>
+                        <div class="t-col col-12 white-text">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="PeopleCopacity" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="row form-row">
                 <input asp-for="OsagoFileId" type="hidden" class="form-control file-result-id">
@@ -236,7 +243,7 @@
                     </div>
                 </div>
                 <div class="t-col file-dwn white-text col-12 form-group @(Model.ToFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                    Талон техосмотра: <a href="/File/GetFile?fileId=@Model.ToFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                    Диагностическая карта: <a href="/File/GetFile?fileId=@Model.ToFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
                 </div>
             </div>
             <div class="row form-row">
