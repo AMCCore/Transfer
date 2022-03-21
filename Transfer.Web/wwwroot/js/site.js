@@ -47,5 +47,13 @@ function DisableCheckboxes(e) {
     }
 }
 $(function () {
+    $(".phone_mask").mask('+7 (000) 000-0000', { placeholder: "+7 (___) ___-____" });
+    $(".bik_mask").mask('000000000');
+    $(".numaccount_mask").mask('00000000000000000000');
+    $('.email_mask').mask("A", {
+        translation: {
+            "A": { pattern: /[\w@\-.+]/, recursive: true }
+        }
+    });
 });
 //# sourceMappingURL=site.js.map

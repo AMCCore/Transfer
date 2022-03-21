@@ -35,15 +35,13 @@ public class OrganisationDto
     ///     ОГРН
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string OGRN { get; set; }
+    public string? OGRN { get; set; }
 
     /// <summary>
     ///     Адрес
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string Address { get; set; }
+    public string? Address { get; set; }
 
     /// <summary>
     ///     Город
@@ -72,7 +70,8 @@ public class OrganisationDto
     ///     Фактический адрес
     /// </summary>
     [MaxLength(1000)]
-    public string? FactAddress { get; set; }
+    [Required]
+    public string FactAddress { get; set; }
 
     /// <summary>
     ///     Email

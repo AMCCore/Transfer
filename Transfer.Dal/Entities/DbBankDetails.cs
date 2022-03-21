@@ -37,22 +37,19 @@ public class DbBankDetails : IEntityBase, ISoftDeleteEntity
     ///     ИНН
     /// </summary>
     [MaxLength(100)]
-    [Required]
-    public string Inn { get; set; }
+    public string? Inn { get; set; }
 
     /// <summary>
     ///     КПП
     /// </summary>
     [MaxLength(100)]
-    [Required]
-    public string Kpp { get; set; }
+    public string? Kpp { get; set; }
 
     /// <summary>
     ///     Кор. счет
     /// </summary>
     [MaxLength(100)]
-    [Required]
-    public string KorAccount { get; set; }
+    public string? KorAccount { get; set; }
 
     /// <summary>
     ///     Лицевой счет
@@ -65,8 +62,7 @@ public class DbBankDetails : IEntityBase, ISoftDeleteEntity
     ///     Наименование получателя
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string NameAccount { get; set; }
+    public string? NameAccount { get; set; }
 
     public virtual DbOrganisation? Organisation { get; set; }
 

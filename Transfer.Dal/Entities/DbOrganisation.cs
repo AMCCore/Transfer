@@ -44,15 +44,13 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     ///     ОГРН
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string OGRN { get; set; }
+    public string? OGRN { get; set; }
 
     /// <summary>
     ///     Адрес
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string Address { get; set; }
+    public string? Address { get; set; }
 
     /// <summary>
     ///     Регион
@@ -103,7 +101,8 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     ///     Фактический адрес
     /// </summary>
     [MaxLength(1000)]
-    public string? FactAddress { get; set; }
+    [Required]
+    public string FactAddress { get; set; }
 
     /// <summary>
     ///     Email

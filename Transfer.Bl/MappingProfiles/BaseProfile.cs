@@ -71,11 +71,9 @@ public class BaseProfile : Profile
         CreateMap<CarrierDto, DbOrganisation>();
 
         CreateMap<DbBankDetails, CarrierDto>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForMember(x => x.BankInn, opt => opt.MapFrom(o => o.Inn));
+            .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<CarrierDto, DbBankDetails>()
-            .ForMember(x => x.Id, opt => opt.Ignore())
-            .ForMember(x => x.Inn, opt => opt.MapFrom(o => o.BankInn));
+            .ForMember(x => x.Id, opt => opt.Ignore());
 
 
         CreateMap<DbDriver, OrganisationAssetDto>()

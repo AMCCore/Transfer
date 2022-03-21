@@ -25,39 +25,11 @@ public class CarrierDto : OrganisationDto
     public string Bik { get; set; }
 
     /// <summary>
-    ///     ИНН
-    /// </summary>
-    [MaxLength(100)]
-    [Required]
-    public string BankInn { get; set; }
-
-    /// <summary>
-    ///     КПП
-    /// </summary>
-    [MaxLength(100)]
-    [Required]
-    public string Kpp { get; set; }
-
-    /// <summary>
-    ///     Кор. счет
-    /// </summary>
-    [MaxLength(100)]
-    [Required]
-    public string KorAccount { get; set; }
-
-    /// <summary>
     ///     Лицевой счет
     /// </summary>
     [MaxLength(100)]
     [Required]
     public string NumAccount { get; set; }
-
-    /// <summary>
-    ///     Наименование получателя
-    /// </summary>
-    [MaxLength(1000)]
-    [Required]
-    public string NameAccount { get; set; }
 
     public Guid? LogoFileId { get; set; }
 
