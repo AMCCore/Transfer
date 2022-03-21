@@ -69,7 +69,7 @@
     <div class="row form-row"></div>
     <div class="row form-row">
         <div class="t-col col-12 white-text">
-            Фактический адрес:
+            Фактический адрес: <span class="red-text">*</span>
         </div>
     </div>
 
@@ -112,12 +112,12 @@
         <div class="t-col col-12 col-md-3 form-group">
             <div class="row">
                 <div class="col-12 white-text">
-                    ОГРН: <span class="red-text">*</span>
+                    ОГРН:
                 </div>
                 <div class="col-12">
                     <div class="input-group input-group-icon">
                         <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="OGRN" class="form-control" />
+                        <input asp-for="OGRN" class="form-control ogrn_mask" />
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
                 <div class="col-12 white-text">
                     <div class="input-group input-group-icon">
                         <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="INN" class="form-control" />
+                        <input asp-for="INN" class="form-control inn_mask" />
                     </div>
                 </div>
             </div>
