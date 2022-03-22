@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Enums;
 
 namespace Transfer.Dal.Entities
 {
@@ -70,5 +71,7 @@ namespace Transfer.Dal.Entities
         [MaxLength(1000)]
         [Required]
         public string Phone { get; set; }
+
+        public DriverStateEnum State { get; set; } = DriverStateEnum.Checked;
     }
 }

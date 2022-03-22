@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Enums;
 
 namespace Transfer.Dal.Entities;
 
@@ -130,4 +131,6 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
 
     public virtual ICollection<DbTripRequest> TripRequests { get; set; } = new List<DbTripRequest>();
+
+    public OrganisationStateEnum State { get; set; } = OrganisationStateEnum.Checked;
 }

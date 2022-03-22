@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Enums;
 
 namespace Transfer.Dal.Entities;
 
@@ -136,5 +137,6 @@ public class DbBus : IEntityBase, ISoftDeleteEntity
     [Required]
     public string ToNumber { get; set; }
 
+    public BusStateEnum State { get; set; } = BusStateEnum.Checked;
 }
 

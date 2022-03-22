@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Transfer.Common;
+using Transfer.Common.Enums;
 
 namespace Transfer.Dal.Entities;
 
@@ -50,4 +51,6 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public string? Description { get; set; }
 
     public int? LuggageVolume { get; set; }
+
+    public TripRequestStateEnum State { get; set; } = TripRequestStateEnum.New;
 }
