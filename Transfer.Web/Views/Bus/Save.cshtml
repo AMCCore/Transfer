@@ -174,7 +174,14 @@
                     </div>
                 </div>
                 <div class="t-col file-dwn white-text col-12 col-md-6 form-group @(Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                    СТС: <a href="/File/GetFile?fileId=@Model.RegFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                    <div class="row">
+                        <div class="t-col col-12 white-text">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            СТС: <a href="/File/GetFile?fileId=@Model.RegFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
@@ -220,8 +227,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="t-col file-dwn white-text col-12 form-group @(Model.OsagoFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                    Полис ОСАГО: <a href="/File/GetFile?fileId=@Model.OsagoFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                <div class="t-col file-dwn white-text col-12 col-md-6 form-group @(Model.OsagoFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Полис ОСАГО: <a href="/File/GetFile?fileId=@Model.OsagoFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
@@ -256,7 +270,7 @@
                 <div class="t-col file-upl col-12 col-md-6 @(!Model.ToFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Талон техосмотра: <span class="red-text">*</span>
+                            Диагностическая карта: <span class="red-text">*</span>
                         </div>
                     </div>
                     <div class="row">
@@ -268,8 +282,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="t-col file-dwn white-text col-12 form-group @(Model.ToFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
-                    Диагностическая карта: <a href="/File/GetFile?fileId=@Model.ToFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                <div class="t-col file-dwn white-text col-12 col-md-6 form-group @(Model.ToFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">&nbsp;</div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Диагностическая карта: <a href="/File/GetFile?fileId=@Model.ToFileId" target="_blank" class="dwn-link"><i class="fas fa-cloud-download-alt"></i> скачать</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="DeleteFile(this)" class="dwn-link"><i class="fas fa-times"></i> удалить</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
