@@ -71,7 +71,10 @@ public class BusController : BaseController
         {
             busModel.Id = Guid.NewGuid();
             busModel.IsDeleted = false;
-            await UnitOfWork.AddEntityAsync(Mapper.Map<DbBus>(busModel), CancellationToken.None);
+            var bus = Mapper.Map<DbBus>(busModel);
+            bus.OrganisationId = busModel.OrganisationId;
+
+            await UnitOfWork.AddEntityAsync(bus, CancellationToken.None);
         }
         else
         {
