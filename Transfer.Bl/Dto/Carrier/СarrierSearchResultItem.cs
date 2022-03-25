@@ -19,5 +19,7 @@ namespace Transfer.Bl.Dto.Carrier
         public double Rating { get; set; }
         
         public bool Checked { get; set; }
+
+        public Guid? Picture { get; set; }
     }
 }

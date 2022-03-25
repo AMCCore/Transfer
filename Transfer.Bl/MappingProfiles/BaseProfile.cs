@@ -21,6 +21,7 @@ public class BaseProfile : Profile
     {
         CreateMap<DbOrganisation, CarrierSearchResultItem>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => string.IsNullOrEmpty(o.Name) ? o.FullName : o.Name))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));

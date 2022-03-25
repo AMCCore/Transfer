@@ -1,5 +1,6 @@
 ﻿@model Transfer.Web.Models.Carrier.CarrierSearchFilter
 
+@using Transfer.Common.Extensions
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 
@@ -38,7 +39,7 @@
     </div>
 </div>
 <div class="row blank-row"></div>
-        @Html.HiddenFor(x => x.PageNumber)
+@Html.HiddenFor(x => x.PageNumber)
 <div class="row blank-row"></div>
 <div class="row ordering">
     <div class="t-col col-3">
@@ -81,32 +82,49 @@
 {
     <hr style="color: #fff; border: dashed 1px #007896;">
     <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-12">
-            @if (c.Checked)
-            {
-                <i class="fas fa-lock-open"></i>
-            }
-            else
-            {
-                <i class="fas fa-lock"></i>
-            }
-            <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.Id" class="dark-link-basic"><span style="font-size: 1.2rem;">@c.Name</span></a> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i>
+    <div class="row">
+        <div class="col-2">
+            <div class="row">
+                @if (c.Picture.IsNullOrEmpty())
+                {
+                    <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
+                }
+                else
+                {
+                    <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
+                }
+            </div>
+
         </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-12">
-            <i class="fas fa-map-marked"></i> <span style="color: #000;">@c.Address</span>
-        </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row carrier">
-        <div class="t-col col-md-10 col-12 contacts">
-            <i class="far fa-user-circle"></i> @c.ContactFio, <a href="#">@c.ContactPhone</a>, <a href="#">@c.ContactEmail</a>
-        </div>
-        <div class="t-col col-md-2 col-12 contacts go text-center">
-            <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.Id"><span>перейти</span></a>
+        <div class="col-10">
+            <div class="row carrier">
+                <div class="t-col col-12">
+                    @if (c.Checked)
+                    {
+                        <i class="fas fa-lock-open"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-lock"></i>
+                    }
+                    <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.Id" class="dark-link-basic"><span style="font-size: 1.2rem;">@c.Name</span></a> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row carrier">
+                <div class="t-col col-12">
+                    <i class="fas fa-map-marked"></i> <span style="color: #000;">@c.Address</span>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row carrier">
+                <div class="t-col col-md-10 col-12 contacts">
+                    <i class="far fa-user-circle"></i> @c.ContactFio, <a href="#">@c.ContactPhone</a>, <a href="#">@c.ContactEmail</a>
+                </div>
+                <div class="t-col col-md-2 col-12 contacts go text-center">
+                    <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.Id"><span>перейти</span></a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row blank-row"></div>
