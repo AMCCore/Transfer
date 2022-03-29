@@ -6,12 +6,16 @@ using Transfer.Common;
 namespace Transfer.Dal.Entities;
 
 [Table("TripRequestReplays")]
-public class DbTripRequestReplay : IEntityBase
+public class DbTripRequestReplay : IEntityBase, IEntityWithDateCreated, ISoftDeleteEntity
 {
     [Key]
     public Guid Id { get; set; }
 
     public long LastUpdateTick { get; set; }
+
+    public bool IsDeleted { get; set; }
+
+    public DateTime DateCreated { get; set; }
 
     public virtual DbTripRequest TripRequest { get; set; }
 
