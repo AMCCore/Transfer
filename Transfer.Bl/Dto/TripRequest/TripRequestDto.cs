@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.TripRequest
 {
-    public sealed class TripRequestDto
+    public sealed class TripRequestDto : StateMachineDto
     {
         public Guid Id { get; set; }
 
@@ -39,5 +40,9 @@ namespace Transfer.Bl.Dto.TripRequest
         public int PaymentType { get; set; }
 
         public long LastUpdateTick { get; set; }
+
+        [Required]
+        public override Guid State { get; set; }
+
     }
 }

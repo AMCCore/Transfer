@@ -17,21 +17,26 @@ namespace Transfer.Dal.Helpers
 
         protected static Expression<Func<Guid, TEnum>> ToEnum() => v => ConvertToEnum(v);
 
-        private static TEnum ConvertToEnum(Guid value)
-        {
-            var names = Enum.GetNames(typeof(TEnum));
-            foreach (var name in names)
-            {
-                var val = typeof(TEnum).GetField(name).GetCustomAttributes(true).OfType<EnumGuidAttribute>()
-                    .Select(ss => ss.Guid)
-                    .FirstOrDefault();
-                if (val == value)
-                {
-                    return (TEnum)Enum.Parse(typeof(TEnum), name);
-                }
-            }
+        //public static TEnum ConvertToEnum(Guid value)
+        //{
+        //    var names = Enum.GetNames(typeof(TEnum));
+        //    foreach (var name in names)
+        //    {
+        //        var val = typeof(TEnum).GetField(name).GetCustomAttributes(true).OfType<EnumGuidAttribute>()
+        //            .Select(ss => ss.Guid)
+        //            .FirstOrDefault();
+        //        if (val == value)
+        //        {
+        //            return (TEnum)Enum.Parse(typeof(TEnum), name);
+        //        }
+        //    }
 
-            throw new InvalidOperationException();
+        //    throw new InvalidOperationException();
+        //}
+
+        public static TEnum ConvertToEnum(Guid value)
+        {
+            return value.ConvertGuidToEnum<TEnum>();
         }
     }
 }

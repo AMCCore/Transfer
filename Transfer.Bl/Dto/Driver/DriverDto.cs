@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.Driver
 {
-    public class DriverDto
+    public class DriverDto : StateMachineDto
     {
         public Guid Id { get; set; }
 
@@ -44,5 +45,8 @@ namespace Transfer.Bl.Dto.Driver
         public Guid? License2 { get; set; }
 
         public Guid? TahografFileId { get; set; }
+
+        [Required]
+        public override Guid State { get; set; }
     }
 }

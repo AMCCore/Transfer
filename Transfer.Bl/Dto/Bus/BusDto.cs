@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.Bus
 {
-    public class BusDto
+    public class BusDto : StateMachineDto
     {
         public Guid Id { get; set; }
 
@@ -132,6 +132,9 @@ namespace Transfer.Bl.Dto.Bus
         /// </summary>
         [Required]
         public string ToNumber { get; set; }
+
+        [Required]
+        public override Guid State { get; set; }
     }
 
 }

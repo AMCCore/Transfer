@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto;
-public class OrganisationDto
+public class OrganisationDto : StateMachineDto
 {
     public Guid Id { get; set; } = Guid.Empty;
 
@@ -91,5 +91,8 @@ public class OrganisationDto
     ///     Согласие на оброаботку данных
     /// </summary>
     public bool Agreement { get; set; } = false;
+
+    [Required]
+    public override Guid State { get; set; }
 }
 
