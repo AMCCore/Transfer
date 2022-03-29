@@ -13,5 +13,7 @@ namespace Transfer.Bl.Dto
         public IDictionary<Guid, string> NextStates { get; set; } = new Dictionary<Guid, string>();
 
         public abstract Guid State { get; set; }
+
+        public bool NeedSaveButton { get; set; } = true;
     }
 }

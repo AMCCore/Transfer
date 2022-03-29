@@ -17,6 +17,7 @@ using Transfer.Web.Models.TripRequest;
 using Transfer.Common.Enums;
 using Transfer.Common.Extensions;
 using Transfer.Bl.Dto.Driver;
+using Transfer.Common.Enums.AccessRights;
 
 namespace Transfer.Web.Controllers;
 
@@ -182,4 +183,20 @@ public class TripRequestController : BaseStateController
         }
     }
 
+    public override IDictionary<Guid, string> GetPossibleStatets(Guid currentState)
+    {
+        var res = new Dictionary<Guid, string>();
+        var isTripRequestAdmin = HasRight(TripRequestRights.TripRequestAdmin);
+
+
+        if (currentState == TripRequestStateEnum.New.GetEnumGuid())
+        {
+            if(isTripRequestAdmin)
+            {
+                res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Отменить");
+                res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Закрыть сбор предложений");
+            }
+        }
+        return res;
+    }
 }
