@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Dal.Migrations
 {
@@ -12,28 +13,28 @@ namespace Transfer.Dal.Migrations
                 table: "TripRequests",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("D18D3114-582F-4E30-A1E2-8E84A9F7F31B"));
+                defaultValue: Common.Enums.TripRequestStateEnum.New.GetEnumGuid());
 
             migrationBuilder.AddColumn<Guid>(
                 name: "State",
                 table: "Organisations",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("9AEC0B81-230D-4137-B4DD-A1B51B5EB467"));
+                defaultValue: Common.Enums.OrganisationStateEnum.Checked.GetEnumGuid());
 
             migrationBuilder.AddColumn<Guid>(
                 name: "State",
                 table: "Drivers",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("5EC8CDBD-9681-4E4B-BE96-541E0C4F4703"));
+                defaultValue: Common.Enums.DriverStateEnum.Checked.GetEnumGuid());
 
             migrationBuilder.AddColumn<Guid>(
                 name: "State",
                 table: "Buses",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("24554358-C796-4355-A9FD-34052A66A8CD"));
+                defaultValue: Common.Enums.BusStateEnum.Checked.GetEnumGuid());
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
