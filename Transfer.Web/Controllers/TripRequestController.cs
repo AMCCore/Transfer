@@ -21,7 +21,7 @@ using Transfer.Bl.Dto.Driver;
 namespace Transfer.Web.Controllers;
 
 [Authorize]
-public class TripRequestController : BaseController
+public class TripRequestController : BaseStateController
 {
     public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper)
     {
@@ -91,6 +91,7 @@ public class TripRequestController : BaseController
             return NotFound();
 
         var model = Mapper.Map<TripRequestDto>(entity);
+        SetNextStates(model);
         return View("Save", model);
     }
 

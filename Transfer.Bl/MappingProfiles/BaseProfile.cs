@@ -58,7 +58,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactPhone))
             .ForMember(x => x.СhartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ChartererName))
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.ConvertGuidToEnum<TripRequestStateEnum>()))
+            .ForMember(x => x.State, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.Ignore());
 
         CreateMap<DbFile, FileDto>()
@@ -67,7 +67,7 @@ public class BaseProfile : Profile
         CreateMap<DbOrganisation, OrganisationDto>()
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
         CreateMap<OrganisationDto, DbOrganisation>()
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.ConvertGuidToEnum<OrganisationStateEnum>()));
+            .ForMember(x => x.State, opt => opt.Ignore());
 
         CreateMap<DbOrganisation, CarrierDto>()
             .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
@@ -108,7 +108,7 @@ public class BaseProfile : Profile
 
         CreateMap<BusDto, DbBus>()
             .ForMember(x => x.OrganisationId, opt => opt.Ignore())
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.ConvertGuidToEnum<BusStateEnum>()))
+            .ForMember(x => x.State, opt => opt.Ignore())
             .ForMember(x => x.BusFiles, opt => opt.Ignore());
 
 
@@ -134,7 +134,7 @@ public class BaseProfile : Profile
 
         CreateMap<DriverDto, DbDriver>()
             .ForMember(x => x.OrganisationId, opt => opt.Ignore())
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.ConvertGuidToEnum<DriverStateEnum>()))
+            .ForMember(x => x.State, opt => opt.Ignore())
             .ForMember(x => x.DriverFiles, opt => opt.Ignore());
     }
 
