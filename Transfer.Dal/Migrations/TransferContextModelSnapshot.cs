@@ -878,33 +878,6 @@ namespace Transfer.Dal.Migrations
                     b.ToTable("TripRequestOptions");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestReplay", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("money");
-
-                    b.Property<Guid>("CarrierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("LastUpdateTick")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("TripRequestId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CarrierId");
-
-                    b.HasIndex("TripRequestId");
-
-                    b.ToTable("TripRequestReplays");
-                });
-
             modelBuilder.Entity("Transfer.Dal.Entities.DbAccount", b =>
                 {
                     b.HasOne("Transfer.Dal.Entities.DbPersonData", "PersonData")
@@ -1142,25 +1115,6 @@ namespace Transfer.Dal.Migrations
                     b.Navigation("TripRequest");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestReplay", b =>
-                {
-                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Carrier")
-                        .WithMany("TripRequestReplays")
-                        .HasForeignKey("CarrierId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Transfer.Dal.Entities.DbTripRequest", "TripRequest")
-                        .WithMany("TripRequestReplays")
-                        .HasForeignKey("TripRequestId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Carrier");
-
-                    b.Navigation("TripRequest");
-                });
-
             modelBuilder.Entity("Transfer.Dal.Entities.DbAccount", b =>
                 {
                     b.Navigation("AccountRights");
@@ -1201,8 +1155,6 @@ namespace Transfer.Dal.Migrations
 
                     b.Navigation("Files");
 
-                    b.Navigation("TripRequestReplays");
-
                     b.Navigation("TripRequests");
 
                     b.Navigation("WorkingArea");
@@ -1235,8 +1187,6 @@ namespace Transfer.Dal.Migrations
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequest", b =>
                 {
                     b.Navigation("TripOptions");
-
-                    b.Navigation("TripRequestReplays");
                 });
 #pragma warning restore 612, 618
         }

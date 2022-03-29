@@ -30,5 +30,7 @@ public partial class TransferContext
     public virtual DbSet<DbBus> DbBuses { get; set; }
     public virtual DbSet<DbBusFile> DbBusFiles { get; set; }
     public virtual DbSet<DbDriverFile> DbDriverFiles { get; set; }
+    public virtual DbSet<DbTripRequestReplay> DbTripRequestReplays { get; set; }
 }
+
 
