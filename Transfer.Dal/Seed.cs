@@ -84,6 +84,7 @@ namespace Transfer.Dal
         {
             var rights = new List<DbRight>();
             rights.AddRange(Enum.GetValues(typeof(AdminAccessRights)).Cast<AdminAccessRights>().Select(r => DbRight.CreateForSeed(r)));
+            rights.AddRange(Enum.GetValues(typeof(TripRequestRights)).Cast<TripRequestRights>().Select(r => DbRight.CreateForSeed(r)));
             uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
         }
 
