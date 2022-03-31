@@ -1,19 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Transfer.Web.Models
+namespace Transfer.Web.Models;
+
+public class LoginModel
 {
-    public class LoginModel
-    {
-        [Required]
-        [Display(Name = "Username")]
-        public string UserName { get; set; }
-        
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-        
-        public bool RememberLogin { get; set; }
-        
-        public string ReturnUrl { get; set; }
-    }
+    [Required]
+    [Display(Name = "Username")]
+    public string UserName { get; set; }
+
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+
+    public bool RememberLogin { get; set; }
+
+    public string ReturnUrl { get; set; }
 }
