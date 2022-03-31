@@ -18,77 +18,76 @@ using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace Transfer.Web.Controllers
+namespace Transfer.Web.Controllers;
+
+[Authorize]
+public class AuthController : BaseController
 {
-    [Authorize]
-    public class AuthController : BaseController
+    public AuthController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<AuthController> logger, IMapper mapper)
+        : base(transferSettings, unitOfWork, logger, mapper)
     {
-        public AuthController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<AuthController> logger, IMapper mapper)
-            : base(transferSettings, unitOfWork, logger, mapper)
-        {
 
-        }
+    }
 
-        [AutoValidateAntiforgeryToken]
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
+    [AutoValidateAntiforgeryToken]
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> Login([FromForm] LoginModel objLoginModel)
+    {
+        if (!string.IsNullOrWhiteSpace(objLoginModel.UserName) && !string.IsNullOrWhiteSpace(objLoginModel.Password))
         {
-            if (!string.IsNullOrWhiteSpace(objLoginModel.UserName) && !string.IsNullOrWhiteSpace(objLoginModel.Password))
+            var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)
+                .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
+                .FirstOrDefaultAsync(CancellationToken.None);
+
+            if (BCrypt.Net.BCrypt.Verify(objLoginModel.Password, account.Password))
             {
-                var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)
-                    .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
-                    .FirstOrDefaultAsync(CancellationToken.None);
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(GetAccountRoles(account.AccountRights))));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()));
+                //claims.Add(new Claim(ClaimTypes.Locality, account.OrganisationId.ToString()));
 
-                if (BCrypt.Net.BCrypt.Verify(objLoginModel.Password, account.Password))
-                {
-                    var claims = new List<Claim>();
-                    claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(GetAccountRoles(account.AccountRights))));
-                    claims.Add(new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()));
-                    //claims.Add(new Claim(ClaimTypes.Locality, account.OrganisationId.ToString()));
+                var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(userIdentity),
+                    new AuthenticationProperties
+                    {
+                        ExpiresUtc = DateTime.UtcNow.AddHours(10),
+                        IsPersistent = objLoginModel.RememberLogin,
+                        AllowRefresh = true
+                    });
 
-                    var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(userIdentity),
-                        new AuthenticationProperties
-                        {
-                            ExpiresUtc = DateTime.UtcNow.AddHours(10),
-                            IsPersistent = objLoginModel.RememberLogin,
-                            AllowRefresh = true
-                        });
-
-                    //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };
-                    return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
-                }
+                //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };
+                return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
             }
-
-            return StatusCode(StatusCodes.Status403Forbidden, "Неверный логин или пароль");
         }
-        
-        [HttpGet]
-        [Route("Logout")]
-        public async Task<IActionResult> LogOut()
+
+        return StatusCode(StatusCodes.Status403Forbidden, "Неверный логин или пароль");
+    }
+
+    [HttpGet]
+    [Route("Logout")]
+    public async Task<IActionResult> LogOut()
+    {
+        Security.CurrentUserClearCache();
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return LocalRedirect("/");
+    }
+
+    /// <summary>
+    /// Группируем права из БД по организациям
+    /// </summary>
+    private static Dictionary<Guid, List<Guid>> GetAccountRoles(IEnumerable<DbAccountRight> roles)
+    {
+        if (roles == null || !roles.Any())
         {
-            Security.CurrentUserClearCache();
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return LocalRedirect("/");
+            return new Dictionary<Guid, List<Guid>>();
         }
-        
-        /// <summary>
-        /// Группируем права из БД по организациям
-        /// </summary>
-        private static Dictionary<Guid, List<Guid>> GetAccountRoles(IEnumerable<DbAccountRight> roles)
-        {
-            if (roles == null || !roles.Any())
-            {
-                return new Dictionary<Guid, List<Guid>>();
-            }
 
-            var res = roles.GroupBy(sr => sr.OrganisationId ?? Guid.Empty)
-                .ToDictionary(g => g.Key,
-                    g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId.Value).ToList());
+        var res = roles.GroupBy(sr => sr.OrganisationId ?? Guid.Empty)
+            .ToDictionary(g => g.Key,
+                g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId.Value).ToList());
 
-            return res;
-        }
+        return res;
     }
 }

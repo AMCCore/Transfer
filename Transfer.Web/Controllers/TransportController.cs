@@ -6,27 +6,25 @@ using Transfer.Common;
 using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Transfer.Web.Controllers
+namespace Transfer.Web.Controllers;
+[Authorize]
+public class TransportController : BaseController
 {
-    [Authorize]
-    public class TransportController : BaseController
+    public TransportController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TransportController> logger, IMapper mapper)
+        : base(transferSettings, unitOfWork, logger, mapper)
+
     {
-        public TransportController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TransportController> logger, IMapper mapper)
-            : base(transferSettings, unitOfWork, logger, mapper)
-
-        {
-        }
-
-        [Route("Transports")]
-        public IActionResult Index()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IActionResult Search()
-        {
-            throw new NotImplementedException();
-        }
-
     }
+
+    [Route("Transports")]
+    public IActionResult Index()
+    {
+        throw new NotImplementedException();
+    }
+
+    public IActionResult Search()
+    {
+        throw new NotImplementedException();
+    }
+
 }

@@ -103,8 +103,8 @@ public class BusController : BaseController
         await SetBusFile(busModel.Id, busModel.TahografFileId.Value, Common.Enums.BusFileType.Tahograf);
 
         var photos = new List<Guid>();
-        //if (!busModel.Photo1.IsNullOrEmpty())
-        //    photos.Add(busModel.Photo1.Value);
+        if (!busModel.Photo1.IsNullOrEmpty())
+            photos.Add(busModel.Photo1.Value);
         if (!busModel.Photo2.IsNullOrEmpty())
             photos.Add(busModel.Photo2.Value);
         if (!busModel.Photo3.IsNullOrEmpty())
@@ -116,54 +116,61 @@ public class BusController : BaseController
         if (!busModel.Photo6.IsNullOrEmpty())
             photos.Add(busModel.Photo6.Value);
 
-        var osagoFilesMain = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.PhotoMain).ToListAsync(CancellationToken.None);
-        foreach (var e in osagoFilesMain.Where(x => x.FileId != busModel.Photo1))
+        foreach (var dp in await UnitOfWork.GetSet<DbBusFile>()
+            .Where(x => x.BusId == busModel.Id && !x.IsDeleted && (x.FileType == Common.Enums.BusFileType.Photo || x.FileType == Common.Enums.BusFileType.PhotoMain))
+            .Where(x => !photos.Contains(x.Id))
+            .ToListAsync(CancellationToken.None))
         {
-            e.IsDeleted = true;
-        }
-        await UnitOfWork.SaveChangesAsync(CancellationToken.None);
-        if(!busModel.Photo1.IsNullOrEmpty() && !osagoFilesMain.Any(x => x.FileId == busModel.Photo1.Value))
-        {
-            await UnitOfWork.AddEntityAsync(new DbBusFile
-            {
-                BusId = busModel.Id,
-                FileId = busModel.Photo1.Value,
-                IsDeleted = false,
-                FileType = Common.Enums.BusFileType.PhotoMain,
-                UploaderId = Security.CurrentAccountId
-            }, CancellationToken.None);
-        }
-        else if(photos.Any())
-        {
-            var pId = photos.First();
-            await UnitOfWork.AddEntityAsync(new DbBusFile
-            {
-                BusId = busModel.Id,
-                FileId = pId,
-                IsDeleted = false,
-                FileType = Common.Enums.BusFileType.PhotoMain,
-                UploaderId = Security.CurrentAccountId
-            }, CancellationToken.None);
-            photos.Remove(pId);
-        }
-
-        var osagoFiles = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Photo).ToListAsync(CancellationToken.None);
-        foreach(var e in osagoFiles.Where(x => !photos.Contains(x.FileId)))
-        {
-            e.IsDeleted = true;
+            dp.IsDeleted = true;
         }
         await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
-        foreach(var p in photos)
+        var i = 0;
+        foreach (var p in photos)
         {
-            await UnitOfWork.AddEntityAsync(new DbBusFile
+            var currentFileId = photos.Skip(i).FirstOrDefault();
+            //avatar add
+            if(i == 0)
             {
-                BusId = busModel.Id,
-                FileId = p,
-                IsDeleted = false,
-                FileType = Common.Enums.BusFileType.Photo,
-                UploaderId = Security.CurrentAccountId
-            }, CancellationToken.None);
+                var avatars = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.PhotoMain).ToListAsync(CancellationToken.None);
+                foreach (var e in avatars.Where(x => x.FileId != currentFileId))
+                {
+                    e.IsDeleted = true;
+                }
+                await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+                if(!currentFileId.IsNullOrEmpty())
+                {
+                    await UnitOfWork.AddEntityAsync(new DbBusFile
+                    {
+                        BusId = busModel.Id,
+                        FileId = busModel.Photo1.Value,
+                        IsDeleted = false,
+                        FileType = Common.Enums.BusFileType.PhotoMain,
+                        UploaderId = Security.CurrentAccountId
+                    }, CancellationToken.None);
+                }
+            }
+            else
+            {
+                var photo = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busModel.Id && !x.IsDeleted && x.FileType == Common.Enums.BusFileType.Photo).OrderBy(x => x.DateCreated).Skip(i-1).FirstOrDefaultAsync(CancellationToken.None);
+                if(photo != null && photo.Id != p)
+                {
+                    photo.IsDeleted = true;
+                }
+                await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+                if (!currentFileId.IsNullOrEmpty())
+                {
+                    await UnitOfWork.AddEntityAsync(new DbBusFile
+                    {
+                        BusId = busModel.Id,
+                        FileId = busModel.Photo1.Value,
+                        IsDeleted = false,
+                        FileType = Common.Enums.BusFileType.Photo,
+                        UploaderId = Security.CurrentAccountId
+                    }, CancellationToken.None);
+                }
+            }
+            i++;
         }
 
         return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
