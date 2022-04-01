@@ -34,7 +34,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddControllersWithViews();
+        services.AddControllersWithViews().AddNewtonsoftJson();
         services.AddMvc();
         services.AddSwaggerGen(c =>
         {
@@ -77,8 +77,6 @@ public class Startup
             => new TelegramBotClient(_transferSettings.TGBotToken, httpClient));
 
         services.AddScoped<HandleUpdateService>();
-
-        //services.AddControllers().AddNewtonsoftJson();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,16 +101,10 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
-            var token = _transferSettings.TGBotToken;
-
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            endpoints.MapControllerRoute(
-                name: "tgwebhook",
-                pattern: $"api/bot/{token}",
-                new { controller = "TgBot", action = "Post" });
 
             endpoints.MapSwagger();
 
