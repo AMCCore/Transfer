@@ -14,9 +14,9 @@ namespace Transfer.Bot
 {
     public static class UsageInfo
     {
-        public static async Task<Message> SendUsageInfo(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger Logger = null)
+        public static async Task<Message> SendUsageInfo(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null)
         {
-            await unitOfWork.SetState(message.Chat.Id);
+            await unitOfWork.SetState(Sender);
             
             var sb = new StringBuilder();
             sb.AppendLine("Доступные команды:");
@@ -24,7 +24,7 @@ namespace Transfer.Bot
             sb.AppendLine($"{Actions.SetActive.ActionActiveEnableName} - Включить уведомления");
             sb.AppendLine($"{Actions.SetActive.ActionActiveDisableName} - Временно отключить уведомления");
 
-            return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
+            return await bot.SendTextMessageAsync(chatId: Sender,
                                                   text: sb.ToString(),
                                                   replyMarkup: BaseMenu.GetBasicManuInline());
         }

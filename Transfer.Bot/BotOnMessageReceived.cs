@@ -10,6 +10,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Transfer.Bot.Actions;
+using Transfer.Bot.Menu;
 using Transfer.Common;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
@@ -84,10 +85,11 @@ namespace Transfer.Bot
             {
                 var action = message.Text!.Split(' ')[0] switch
                 {
-                    SetActive.ActionActiveEnableName => bot.SetState(message, unitOfWork, true, logger),
-                    SetActive.ActionActiveDisableName => bot.SetState(message, unitOfWork, false, logger),
-                    RequestList.ActionName => bot.GetRequestList(message, unitOfWork, logger),
-                    _ => bot.SendUsageInfo(message, unitOfWork, logger)
+                    "/menu" => bot.GetMainMenuWithInlineMenu(message.Chat.Id, unitOfWork, logger),
+                    SetActive.ActionActiveEnableName => bot.SetState(message.Chat.Id, unitOfWork, true, logger),
+                    SetActive.ActionActiveDisableName => bot.SetState(message.Chat.Id, unitOfWork, false, logger),
+                    RequestList.ActionName => bot.GetRequestList(message.Chat.Id, unitOfWork, logger),
+                    _ => bot.SendUsageInfo(message.Chat.Id, unitOfWork, logger)
                 };
 
                 Message sentMessage = await action;

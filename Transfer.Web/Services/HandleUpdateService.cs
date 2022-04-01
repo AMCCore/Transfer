@@ -39,7 +39,7 @@ public class HandleUpdateService
             // UpdateType.Poll:
             UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _unitOfWork!, _logger),
             //UpdateType.EditedMessage => BotOnMessageReceived(update.EditedMessage!),
-            UpdateType.CallbackQuery => _botClient.OnCallbackQueryReceived(update.CallbackQuery!, _logger),
+            UpdateType.CallbackQuery => _botClient.OnCallbackQueryReceived(update.CallbackQuery!, _unitOfWork!, _logger),
             //UpdateType.InlineQuery => BotOnInlineQueryReceived(update.InlineQuery!),
             //UpdateType.ChosenInlineResult => BotOnChosenInlineResultReceived(update.ChosenInlineResult!),
             _ => UnknownUpdateHandlerAsync(update)

@@ -19,14 +19,14 @@ internal static class RequestList
     public const string ActionName = "/requests";
     public const string ActionInlineName = "Requests";
 
-    public async static Task<Message> GetRequestList(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger Logger = null)
+    public async static Task<Message> GetRequestList(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null)
     {
-        var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
+        //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
         var requests = await unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted && x.State == Common.Enums.TripRequestStateEnum.Active && x.TripDate > DateTime.Now).OrderByDescending(x => x.DateCreated).Take(100).ToListAsync();
         if(!requests.Any())
         {
             return await bot.SendTextMessageAsync(
-                chatId: message.Chat.Id,
+                chatId: Sender,
                 text: "Актуальных заказов не найдено",
                 replyMarkup: BaseMenu.backtomenu);
         }
@@ -40,11 +40,11 @@ internal static class RequestList
             sb.AppendLine($"Кол-во пассажиров: {r.Passengers}");
 
             await bot.SendTextMessageAsync(
-                chatId: message.Chat.Id,
+                chatId: Sender,
                 text: sb.ToString());
         }
         return await bot.SendTextMessageAsync(
-            chatId: message.Chat.Id,
+            chatId: Sender,
             text: "Это все актуальные заказы на данный момент",
             replyMarkup: BaseMenu.backtomenu);
     }
