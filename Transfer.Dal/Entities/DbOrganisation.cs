@@ -31,8 +31,7 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     ///     Полное наименование
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
     /// <summary>
     ///     ИНН
@@ -68,7 +67,7 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     ///     Город
     /// </summary>
     [MaxLength(1000)]
-    public string City { get; set; }
+    public string? City { get; set; }
 
     /// <summary>
     ///     ФИО директора

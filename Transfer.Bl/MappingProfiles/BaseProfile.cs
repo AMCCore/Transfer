@@ -21,6 +21,7 @@ public class BaseProfile : Profile
     {
         CreateMap<DbOrganisation, CarrierSearchResultItem>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => string.IsNullOrEmpty(o.Name) ? o.FullName : o.Name))
+            .ForMember(x => x.Address, opt => opt.MapFrom(o => o.FactAddress))
             .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
@@ -71,14 +72,18 @@ public class BaseProfile : Profile
 
         CreateMap<DbOrganisation, CarrierDto>()
             .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
             .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.DirectorFio) ? "Контактное лицо" : $"{o.DirectorFio} ({o.DirectorPosition})"));
-        CreateMap<CarrierDto, DbOrganisation>();
+        CreateMap<CarrierDto, DbOrganisation>()
+            .ForMember(x => x.State, opt => opt.Ignore());
 
 
         CreateMap<DbBankDetails, CarrierDto>()
+            .ForMember(x => x.INN, opt => opt.Ignore())
             .ForMember(x => x.Id, opt => opt.Ignore());
         CreateMap<CarrierDto, DbBankDetails>()
+            .ForMember(x => x.Inn, opt => opt.Ignore())
             .ForMember(x => x.Id, opt => opt.Ignore());
 
 

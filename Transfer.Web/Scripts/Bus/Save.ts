@@ -1,7 +1,7 @@
 ﻿$(() => {
     $("#mainSaveForm").submit(function (event) {
         let notValid = false;
-        $(".input-file").each(function () {
+        $(".input-file.file-required").each(function () {
             let $el1 = $(this).closest('.form-row').find('.file-result-id');
             let $el2 = $(this).closest('.form-row').find('.file-result-name');
 

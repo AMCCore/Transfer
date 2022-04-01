@@ -14,22 +14,19 @@ public class CarrierDto : OrganisationDto
     ///     Наименование банка
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string BankName { get; set; }
+    public string? BankName { get; set; }
 
     /// <summary>
     ///     БИК
     /// </summary>
     [MaxLength(100)]
-    [Required]
-    public string Bik { get; set; }
+    public string? Bik { get; set; }
 
     /// <summary>
     ///     Лицевой счет
     /// </summary>
     [MaxLength(100)]
-    [Required]
-    public string NumAccount { get; set; }
+    public string? NumAccount { get; set; }
 
     public Guid? LogoFileId { get; set; }
 

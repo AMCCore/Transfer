@@ -21,8 +21,7 @@ public class OrganisationDto : StateMachineDto
     ///     Полное наименование
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
     /// <summary>
     ///     ИНН
@@ -47,8 +46,7 @@ public class OrganisationDto : StateMachineDto
     ///     Город
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string City { get; set; }
+    public string? City { get; set; }
 
     /// <summary>
     ///     ФИО директора
