@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using Transfer.Bot.Menu;
 using Transfer.Common;
 
 namespace Transfer.Bot
@@ -25,7 +26,7 @@ namespace Transfer.Bot
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
                                                   text: sb.ToString(),
-                                                  replyMarkup: new ReplyKeyboardRemove());
+                                                  replyMarkup: BaseMenu.GetBasicManuInline());
         }
     }
 }

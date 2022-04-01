@@ -9,6 +9,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Transfer.Bot.Actions;
 using Transfer.Common;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
@@ -83,7 +84,7 @@ namespace Transfer.Bot
             {
                 var action = message.Text!.Split(' ')[0] switch
                 {
-
+                    RequestList.ActionName => bot.GetRequestList(message, unitOfWork, logger),
                     _ => bot.SendUsageInfo(message, unitOfWork, logger)
                 };
 
