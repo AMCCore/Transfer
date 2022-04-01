@@ -26,4 +26,6 @@ public class DbTgActionState : IEntityBase
 
     [MaxLength(2000)]
     public string? StateProps { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }
