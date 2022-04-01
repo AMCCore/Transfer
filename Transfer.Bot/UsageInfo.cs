@@ -21,8 +21,8 @@ namespace Transfer.Bot
             var sb = new StringBuilder();
             sb.AppendLine("Доступные команды:");
             sb.AppendLine($"{Actions.RequestList.ActionName} - Список актуальных заказов");
-            //sb.AppendLine("/enable - Включить уведомления");
-            //sb.AppendLine("/disable - Временно отключить уведомления");
+            sb.AppendLine($"{Actions.SetActive.ActionActiveEnableName} - Включить уведомления");
+            sb.AppendLine($"{Actions.SetActive.ActionActiveDisableName} - Временно отключить уведомления");
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
                                                   text: sb.ToString(),

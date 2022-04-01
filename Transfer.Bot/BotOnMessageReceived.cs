@@ -84,6 +84,8 @@ namespace Transfer.Bot
             {
                 var action = message.Text!.Split(' ')[0] switch
                 {
+                    SetActive.ActionActiveEnableName => bot.SetState(message, unitOfWork, true, logger),
+                    SetActive.ActionActiveDisableName => bot.SetState(message, unitOfWork, false, logger),
                     RequestList.ActionName => bot.GetRequestList(message, unitOfWork, logger),
                     _ => bot.SendUsageInfo(message, unitOfWork, logger)
                 };
