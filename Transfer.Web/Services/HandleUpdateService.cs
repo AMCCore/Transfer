@@ -6,6 +6,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using Transfer.Bot;
 
 namespace Transfer.Web.Services;
 
@@ -30,9 +31,9 @@ public class HandleUpdateService
             // UpdateType.ShippingQuery:
             // UpdateType.PreCheckoutQuery:
             // UpdateType.Poll:
-            UpdateType.Message => BotOnMessageReceived(update.Message!),
+            UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _logger),
             //UpdateType.EditedMessage => BotOnMessageReceived(update.EditedMessage!),
-            UpdateType.CallbackQuery => BotOnCallbackQueryReceived(update.CallbackQuery!),
+            UpdateType.CallbackQuery => _botClient.OnCallbackQueryReceived(update.CallbackQuery!, _logger),
             //UpdateType.InlineQuery => BotOnInlineQueryReceived(update.InlineQuery!),
             //UpdateType.ChosenInlineResult => BotOnChosenInlineResultReceived(update.ChosenInlineResult!),
             _ => UnknownUpdateHandlerAsync(update)
@@ -47,44 +48,6 @@ public class HandleUpdateService
             await HandleErrorAsync(exception);
         }
     }
-
-    private async Task BotOnMessageReceived(Message message)
-    {
-        _logger.LogInformation("Receive message type: {messageType}", message.Type);
-        if (message.Type != MessageType.Text)
-            return;
-
-        var action = message.Text!.Split(' ')[0] switch
-        {
-            _ => Usage(_botClient, message)
-        };
-    }
-
-    static async Task<Message> Usage(ITelegramBotClient bot, Message message)
-    {
-        const string usage = "Usage:\n" +
-                             "/inline   - send inline keyboard\n" +
-                             "/keyboard - send custom keyboard\n" +
-                             "/remove   - remove custom keyboard\n" +
-                             "/photo    - send a photo\n" +
-                             "/request  - request location or contact";
-
-        return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
-                                              text: usage,
-                                              replyMarkup: new ReplyKeyboardRemove());
-    }
-
-    private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery)
-    {
-        await _botClient.AnswerCallbackQueryAsync(
-            callbackQueryId: callbackQuery.Id,
-            text: $"Received {callbackQuery.Data}");
-
-        await _botClient.SendTextMessageAsync(
-            chatId: callbackQuery.Message.Chat.Id,
-            text: $"Received {callbackQuery.Data}");
-    }
-
 
     private Task UnknownUpdateHandlerAsync(Update update)
     {

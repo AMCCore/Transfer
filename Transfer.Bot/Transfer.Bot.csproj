@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transfer.Bl\Transfer.Bl.csproj" />
+    <ProjectReference Include="..\Transfer.Common\Transfer.Common.csproj" />
+    <ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -36,6 +36,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Transfer.Bl\Transfer.Bl.csproj" />
+		<ProjectReference Include="..\Transfer.Bot\Transfer.Bot.csproj" />
 		<ProjectReference Include="..\Transfer.Common\Transfer.Common.csproj" />
 		<ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
 	</ItemGroup>
