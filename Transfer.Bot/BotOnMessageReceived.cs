@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Transfer.Common;
 
 namespace Transfer.Bot
 {
     public static class BotOnMessageReceived
     {
-        public static async Task OnMessageReceived(this ITelegramBotClient bot, Message message, ILogger logger = null)
+        public static async Task OnMessageReceived(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger logger = null)
         {
             logger?.LogInformation("Receive message type: {messageType}", message.Type);
             if (message.Type != MessageType.Text)

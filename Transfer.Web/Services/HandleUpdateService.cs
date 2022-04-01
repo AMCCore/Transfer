@@ -7,6 +7,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Transfer.Bot;
+using Transfer.Common;
 
 namespace Transfer.Web.Services;
 
@@ -14,11 +15,16 @@ public class HandleUpdateService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public HandleUpdateService(ITelegramBotClient botClient, ILogger<HandleUpdateService> logger)
+    public HandleUpdateService(
+        ITelegramBotClient botClient,
+        ILogger<HandleUpdateService> logger,
+        IUnitOfWork unitOfWork)
     {
         _botClient = botClient;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task EchoAsync(Update update)
@@ -31,7 +37,7 @@ public class HandleUpdateService
             // UpdateType.ShippingQuery:
             // UpdateType.PreCheckoutQuery:
             // UpdateType.Poll:
-            UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _logger),
+            UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _unitOfWork!, _logger),
             //UpdateType.EditedMessage => BotOnMessageReceived(update.EditedMessage!),
             UpdateType.CallbackQuery => _botClient.OnCallbackQueryReceived(update.CallbackQuery!, _logger),
             //UpdateType.InlineQuery => BotOnInlineQueryReceived(update.InlineQuery!),
