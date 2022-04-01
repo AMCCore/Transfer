@@ -54,5 +54,5 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public int? LuggageVolume { get; set; }
 
-    public TripRequestStateEnum State { get; set; } = TripRequestStateEnum.New;
+    public TripRequestStateEnum State { get; set; } = TripRequestStateEnum.Active;
 }

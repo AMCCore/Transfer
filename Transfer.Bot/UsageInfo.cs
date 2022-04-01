@@ -7,23 +7,26 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using Transfer.Common;
 
 namespace Transfer.Bot
 {
     public static class UsageInfo
     {
-        public static async Task<Message> SendUsageInfo(this ITelegramBotClient bot, Message message, ILogger Logger = null)
+        public static async Task<Message> SendUsageInfo(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger Logger = null)
         {
-            const string usage = "Usage:\n" +
-                     "/inline   - send inline keyboard\n" +
-                     "/keyboard - send custom keyboard\n" +
-                     "/remove   - remove custom keyboard\n" +
-                     "/photo    - send a photo\n" +
-                     "/request  - request location or contact";
+            await unitOfWork.SetState(message.Chat.Id);
+            
+            var sb = new StringBuilder();
+            sb.AppendLine("Доступные команды:");
+            sb.AppendLine($"{Actions.RequestList.ActionName} - Список актуальных заказов");
+            //sb.AppendLine("/enable - Включить уведомления");
+            //sb.AppendLine("/disable - Временно отключить уведомления");
 
             return await bot.SendTextMessageAsync(chatId: message.Chat.Id,
-                                                  text: usage,
+                                                  text: sb.ToString(),
                                                   replyMarkup: new ReplyKeyboardRemove());
         }
     }
 }
+;

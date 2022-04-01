@@ -6,11 +6,19 @@ namespace Transfer.Common.Enums;
 public enum TripRequestStateEnum
 {
     /// <summary>
-    /// Новый
+    /// Новый/черновик
     /// </summary>
-    [Description("Новый")]
+    [Description("Новый/черновик")]
     [EnumGuid("D18D3114-582F-4E30-A1E2-8E84A9F7F31B")]
     New,
+
+
+    /// <summary>
+    /// Действующий
+    /// </summary>
+    [Description("Действующий")]
+    [EnumGuid("C2BD98B2-CA6E-4C3C-BD75-8D10FD804DA4")]
+    Active,
     
     /// <summary>
     /// Завершен сбор предложений

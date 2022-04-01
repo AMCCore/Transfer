@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Transactions;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Common;
 
@@ -113,7 +114,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
 
     public T AddEntity<T>(T entity, bool saveChanges = true) where T : class, IEntityBase
     {
-        if (entity.Id == Guid.Empty)
+        if (entity.Id.IsNullOrEmpty())
         {
             entity.Id = Guid.NewGuid();
         }
@@ -132,7 +133,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
 
     async Task<T> IUnitOfWork.AddEntityAsync<T>(T entity, CancellationToken token)
     {
-        if (entity.Id == Guid.Empty)
+        if (entity.Id.IsNullOrEmpty())
         {
             entity.Id = Guid.NewGuid();
         }
@@ -149,7 +150,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
     public async Task<T> AddEntityWithoutSaveAsync<T>(T entity, CancellationToken token)
         where T : class, IEntityBase
     {
-        if (entity.Id == Guid.Empty)
+        if (entity.Id.IsNullOrEmpty())
         {
             entity.Id = Guid.NewGuid();
         }
