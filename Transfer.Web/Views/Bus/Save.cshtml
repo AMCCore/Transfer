@@ -48,6 +48,7 @@
     <form asp-controller="Bus" asp-action="Save" method="post" id="mainSaveForm">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.State)
         @Html.HiddenFor(x => x.LastUpdateTick)
         @Html.HiddenFor(x => x.OrganisationId)
 
@@ -161,7 +162,7 @@
                 <div class="t-col file-upl col-12 col-md-6 @(!Model.RegFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            СТС: <span class="red-text">*</span>
+                            СТС:
                         </div>
                     </div>
                     <div class="row">
@@ -186,7 +187,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Серия: <span class="red-text">*</span>
+                            Серия:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -199,7 +200,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Номер: <span class="red-text">*</span>
+                            Номер:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -215,7 +216,7 @@
                 <div class="t-col file-upl col-12 col-md-6 @(!Model.OsagoFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            ОСАГО: <span class="red-text">*</span>
+                            ОСАГО:
                         </div>
                     </div>
                     <div class="row">
@@ -240,7 +241,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Серия: <span class="red-text">*</span>
+                            Серия:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -253,7 +254,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Номер: <span class="red-text">*</span>
+                            Номер:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -270,7 +271,7 @@
                 <div class="t-col file-upl col-12 col-md-6 @(!Model.ToFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Диагностическая карта: <span class="red-text">*</span>
+                            Диагностическая карта:
                         </div>
                     </div>
                     <div class="row">
@@ -295,7 +296,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Номер: <span class="red-text">*</span>
+                            Номер:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -308,7 +309,7 @@
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Срок действия: <span class="red-text">*</span>
+                            Срок действия:
                         </div>
                         <div class="t-col col-12 white-text">
                             <div class="input-group input-group-icon">
@@ -324,7 +325,7 @@
                 <div class="t-col file-upl col-12 col-md-8 @(!Model.OsgopFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            ОСГОП: <span class="red-text">*</span>
+                            ОСГОП:
                         </div>
                     </div>
                     <div class="row">
@@ -345,7 +346,7 @@
                 <div class="t-col file-upl col-12 col-md-8 @(!Model.TahografFileId.IsNullOrEmpty() ? "d-none" : string.Empty)">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Калибровка тахографа: <span class="red-text">*</span>
+                            Калибровка тахографа:
                         </div>
                     </div>
                     <div class="row">

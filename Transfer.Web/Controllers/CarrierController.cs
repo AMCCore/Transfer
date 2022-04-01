@@ -237,13 +237,9 @@ public class CarrierController : BaseController
         var files = await UnitOfWork.GetSet<DbOrganisationFile>().Where(x => x.OrganisationId == carrierId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
         if (files.All(x => x.FileId != fileId))
         {
-            foreach (var f in files)
-            {
-                f.IsDeleted = true;
-            }
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.DeleteListAsync(files, CancellationToken.None);
 
-            if(!fileId.IsNullOrEmpty())
+            if (!fileId.IsNullOrEmpty())
             {
                 await UnitOfWork.AddEntityAsync(new DbOrganisationFile
                 {

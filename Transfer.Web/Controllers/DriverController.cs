@@ -98,11 +98,7 @@ public class DriverController : BaseController
         var files = await UnitOfWork.GetSet<DbDriverFile>().Where(x => x.DriverId == driverId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
         if (files.All(x => x.FileId != fileId))
         {
-            foreach (var file in files)
-            {
-                file.IsDeleted = true;
-            }
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.DeleteListAsync(files, CancellationToken.None);
 
             await UnitOfWork.AddEntityAsync(new DbDriverFile
             {

@@ -100,38 +100,32 @@ namespace Transfer.Bl.Dto.Bus
         /// <summary>
         /// Серия СТС
         /// </summary>
-        [Required]
-        public string RegSeries { get; set; }
+        public string? RegSeries { get; set; }
 
         /// <summary>
         /// Номер СТС
         /// </summary>
-        [Required]
-        public string RegNumber { get; set; }
+        public string? RegNumber { get; set; }
 
         /// <summary>
         /// Серия ОСАГО
         /// </summary>
-        [Required]
-        public string OSAGOSeries { get; set; }
+        public string? OSAGOSeries { get; set; }
 
         /// <summary>
         /// Номер ОСАГО
         /// </summary>
-        [Required]
-        public string OSAGONumber { get; set; }
+        public string? OSAGONumber { get; set; }
 
         /// <summary>
         /// Срок действия диагностической карты
         /// </summary>
-        [Required]
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
 
         /// <summary>
         /// Номер диагностической карты
         /// </summary>
-        [Required]
-        public string ToNumber { get; set; }
+        public string? ToNumber { get; set; }
 
         [Required]
         public override Guid State { get; set; }
