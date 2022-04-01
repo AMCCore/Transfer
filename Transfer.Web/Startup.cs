@@ -13,6 +13,9 @@ using Transfer.Common.Cache;
 using Transfer.Common.Security;
 using Transfer.Dal.Context;
 using Transfer.Web.Models;
+using Newtonsoft.Json;
+using Telegram.Bot;
+using Transfer.Web.Services;
 
 namespace Transfer.Web;
 
@@ -21,9 +24,12 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
+        _transferSettings = Configuration.GetSection("appSettings").Get<TransferSettings>();
     }
 
     public IConfiguration Configuration { get; }
+
+    private TransferSettings _transferSettings { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -54,6 +60,8 @@ public class Startup
 
         services.TransferBlConfigue();
 
+        services.AddHostedService<ConfigureWebhook>();
+
         //автлоризация через Cookie (Claims)
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, x =>
@@ -63,6 +71,14 @@ public class Startup
                 x.SlidingExpiration = true;
                 x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
+
+        services.AddHttpClient("tgwebhook")
+        .AddTypedClient<ITelegramBotClient>(httpClient
+            => new TelegramBotClient(_transferSettings.TGBotToken, httpClient));
+
+        services.AddScoped<HandleUpdateService>();
+
+        //services.AddControllers().AddNewtonsoftJson();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,9 +103,16 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
+            var token = _transferSettings.TGBotToken;
+
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            endpoints.MapControllerRoute(
+                name: "tgwebhook",
+                pattern: $"api/bot/{token}",
+                new { controller = "TgBot", action = "Post" });
 
             endpoints.MapSwagger();
 
