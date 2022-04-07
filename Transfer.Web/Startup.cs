@@ -60,8 +60,6 @@ public class Startup
 
         services.TransferBlConfigue();
 
-        services.AddHostedService<ConfigureWebhook>();
-
         //автлоризация через Cookie (Claims)
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, x =>
@@ -71,6 +69,8 @@ public class Startup
                 x.SlidingExpiration = true;
                 x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
+
+        services.AddHostedService<ConfigureWebhook>();
 
         services.AddHttpClient("tgwebhook")
         .AddTypedClient<ITelegramBotClient>(httpClient
