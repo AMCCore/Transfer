@@ -43,7 +43,6 @@
     @foreach (var c in Model.Results)
     {
         <hr style="color: #fff; border: dashed 1px #007896;">
-        <div class="row blank-row"></div>
         <div class="row">
             <div class="col-2">
                 <div class="row">
@@ -53,12 +52,13 @@
                     }
                     else
                     {
-                        <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
+                        <div class="col-12 text-center">
+                            <div class="r-logo" style="margin: auto; border: solid 1px #0f4c71; height: 140px; width: 135px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
+                        </div>
                     }
                 </div>
             </div>
             <div class="col-10 assert-info">
-                <div class="row blank-row"></div>
                 <div class="row">
                     <div class="col-12"><strong>@c.Name</strong></div>
                 </div>
@@ -94,7 +94,6 @@
 
                 @if (Model.AssetType == OrganisationAssetType.Bus)
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
                         <div class="col-12 offset-md-10 col-md-2 go">
                             <a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@Model.OrganisationId" asp-route-busId="@c.Id"><span>Подробнее</span></a>
@@ -103,7 +102,6 @@
                 }
                 else if (Model.AssetType == OrganisationAssetType.Driver)
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
                         <div class="col-12 offset-md-10 col-md-2 go">
                             <a asp-action="DriverItem" asp-controller="Driver" asp-route-carrierId="@Model.OrganisationId" asp-route-driverId="@c.Id"><span>Подробнее</span></a>
@@ -112,7 +110,6 @@
                 }
             </div>
         </div>
-        <div class="row blank-row"></div>
     }
     <hr style="color: #007896; border: dashed 1px #007896;">
     <div class="row blank-row"></div>
