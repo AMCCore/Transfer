@@ -151,7 +151,6 @@
 @foreach (var c in Model.Results)
 {
     <hr style="color: #fff; border: dashed 1px #007896;">
-    <div class="row blank-row"></div>
     <div class="row">
         <div class="col-2">
             <div class="row">
@@ -161,7 +160,7 @@
                 }
                 else
                 {
-                    <div class="col-12 r-logo text-center"><img alt="" src='@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )' /></div>
+                    <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
                 }
             </div>
         </div>
@@ -186,13 +185,6 @@
             }
         </div>
         <div class="col-3 assert-info">
-            @if (!string.IsNullOrWhiteSpace(c.TransportClass))
-            {
-                <div class="row blank-row"></div>
-                <div class="row">
-                    <div class="col-12"><i class="fas fa-truck"></i> @c.TransportClass</div>
-                </div>
-            }
             @if (c.PeopleCopacity > 0)
             {
                 <div class="row blank-row"></div>
@@ -212,7 +204,6 @@
 
         </div>
     </div>
-    <div class="row blank-row"></div>
 }
 <hr style="color: #007896; border: dashed 1px #007896;">
 <div class="row blank-row"></div>
