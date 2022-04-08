@@ -9,6 +9,8 @@ namespace Transfer.Web.Controllers.API;
 [Route("api/[controller]")]
 public class TgBotController : ControllerBase
 {
+    #if DEBUG
+
     [HttpPost]
     [Route(nameof(Post))]
     public async Task<IActionResult> Post([FromServices] HandleUpdateService handleUpdateService, [FromBody] Update update)
@@ -16,4 +18,6 @@ public class TgBotController : ControllerBase
         await handleUpdateService.EchoAsync(update);
         return Ok();
     }
+
+    #endif
 }
