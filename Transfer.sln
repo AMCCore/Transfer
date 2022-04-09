@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Bl", "Transfer.Bl\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Web", "Transfer.Web\Transfer.Web.csproj", "{C396697E-6306-4A6C-A75D-1BD58C17E86A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfer.Bot", "Transfer.Bot\Transfer.Bot.csproj", "{C1036229-EFAD-472C-90B3-758F9A4211EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Bot", "Transfer.Bot\Transfer.Bot.csproj", "{C1036229-EFAD-472C-90B3-758F9A4211EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfer.Console", "Transfer.Console\Transfer.Console.csproj", "{E903E497-098C-40AB-B10F-D081486B0F72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C1036229-EFAD-472C-90B3-758F9A4211EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1036229-EFAD-472C-90B3-758F9A4211EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1036229-EFAD-472C-90B3-758F9A4211EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E903E497-098C-40AB-B10F-D081486B0F72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E903E497-098C-40AB-B10F-D081486B0F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E903E497-098C-40AB-B10F-D081486B0F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E903E497-098C-40AB-B10F-D081486B0F72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

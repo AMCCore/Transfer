@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latestMajor</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transfer.Bl\Transfer.Bl.csproj" />
+    <ProjectReference Include="..\Transfer.Common\Transfer.Common.csproj" />
+    <ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
+  </ItemGroup>
+
+</Project>
