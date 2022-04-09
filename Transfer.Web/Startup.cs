@@ -81,6 +81,8 @@ public class Startup
         services.AddScoped<HandleUpdateService>();
 
         #endif
+
+        services.AddControllers().AddNewtonsoftJson();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
