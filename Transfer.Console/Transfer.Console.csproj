@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.8.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Transfer.Bl\Transfer.Bl.csproj" />
     <ProjectReference Include="..\Transfer.Common\Transfer.Common.csproj" />
     <ProjectReference Include="..\Transfer.Dal\Transfer.Dal.csproj" />
