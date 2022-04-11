@@ -39,8 +39,19 @@ public abstract class BaseController : Controller
         return await UnitOfWork.GetSet<DbAccountRight>().AnyAsync(x => x.AccountId == Security.CurrentAccountId && (x.RightId == t.GetEnumGuid() || x.RightId == Common.Enums.AccessRights.AdminAccessRights.IsAdmin.GetEnumGuid()));
     }
 
+    public async Task<IActionResult> RedirectToHomeAsync()
+    {
+        return await Task.FromResult<IActionResult>(Redirect("/"));
+    }
 
+    public IActionResult RedirectToHome()
+    {
+        return Redirect("/");
+    }
 
-
+    protected void WriteWrongWayToLog(string controller, string action)
+    {
+        Logger?.LogWarning($"Wrong way: {controller}-{action}");
+    }
 }
 

@@ -18,33 +18,39 @@ public class InfoController : BaseController
 
     public IActionResult About()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(About));
+        return RedirectToHome();
     }
 
     public IActionResult Normatives()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Normatives));
+        return RedirectToHome();
     }
 
     [Route("Contacts")]
     public IActionResult Contacts()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Contacts));
+        return RedirectToHome();
     }
 
     [Route("Specials")]
     public IActionResult Specials()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Specials));
+        return RedirectToHome();
     }
 
     public IActionResult Documents()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Documents));
+        return RedirectToHome();
     }
 
     public IActionResult Vacancy()
     {
-        throw new NotImplementedException();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Vacancy));
+        return RedirectToHome();
     }
 }
