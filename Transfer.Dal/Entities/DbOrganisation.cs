@@ -53,17 +53,6 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public string? Address { get; set; }
 
     /// <summary>
-    ///     Регион
-    /// </summary>
-    [ForeignKey(nameof(Region))]
-    public Guid? RegionId { get; set; }
-
-    /// <summary>
-    ///     Регион
-    /// </summary>
-    public virtual DbRegion? Region { get; set; }
-
-    /// <summary>
     ///     Город
     /// </summary>
     [MaxLength(1000)]
