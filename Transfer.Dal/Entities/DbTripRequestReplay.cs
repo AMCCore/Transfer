@@ -17,20 +17,19 @@ public class DbTripRequestReplay : IEntityBase, IEntityWithDateCreated, ISoftDel
 
     public DateTime DateCreated { get; set; }
 
-    public virtual DbTripRequest TripRequest { get; set; }
-
     [ForeignKey(nameof(TripRequest))]
     [Required]
     public Guid TripRequestId { get; set; }
+
+    public virtual DbTripRequest TripRequest { get; set; }
 
     [Column(TypeName = "money")]
     [Required]
     public decimal Amount { get; set; } = 0;
 
-    public virtual DbOrganisation Carrier { get; set; }
-
     [ForeignKey(nameof(Carrier))]
     [Required]
     public Guid CarrierId { get; set; }
 
+    public virtual DbOrganisation Carrier { get; set; }
 }
