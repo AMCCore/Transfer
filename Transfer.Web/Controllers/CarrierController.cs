@@ -59,6 +59,7 @@ public class CarrierController : BaseController
         }
 
         var totalCount = await query.CountAsync(CancellationToken.None);
+
         var entity = await query.Skip(filter.StartRecord)
             .Take(filter.PageSize).ToListAsync(CancellationToken.None);
 
@@ -80,7 +81,7 @@ public class CarrierController : BaseController
 
     [HttpPost]
     [Route("Carrier/Search")]
-    public async Task<IActionResult> SearchCarrier([FromForm] CarrierSearchFilter filter)
+    public async Task<IActionResult> SearchCarrier(CarrierSearchFilter filter)
     {
         var result = await GetDataFromDb(filter);
 
