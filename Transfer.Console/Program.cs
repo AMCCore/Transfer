@@ -13,25 +13,27 @@ internal class Program
     {
         System.Console.WriteLine("Hello World!");
 
-        using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u0283737_trs;Integrated Security=False;User Id=u0283737_trs;Password=7bcB8$1y;");
-        //using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u1617627_trs;Integrated Security=False;User Id=u1617627_trs;Password=1Ov8b@o9;");
+        //using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u0283737_trs;Integrated Security=False;User Id=u0283737_trs;Password=7bcB8$1y;");
+        using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u1617627_trs;Integrated Security=False;User Id=u1617627_trs;Password=1Ov8b@o9;");
 
         using var transaction = uc.Context.Database.BeginTransaction();
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-        var existingFile = new FileInfo(@"E:\temp\PlatformTransports.xlsx");
+        
+        var existingFile = new FileInfo(@"C:\Temp\pppf.xlsx");
         using var package = new ExcelPackage(existingFile);
         var sheet1 = package.Workbook.Worksheets[2];
         int rowCount = sheet1.Dimension.End.Row;
-        for (int row = 2; row <= rowCount; row++)
+        for (int row = 1; row <= rowCount; row++)
         {
-            var regionName = sheet1.Cells[row, 2].Value?.ToString();
+            var regionName = sheet1.Cells[row, 1].Value?.ToString();
             if (string.IsNullOrWhiteSpace(regionName))
                 continue;
 
             if (uc.GetSet<DbRegion>().Any(x => x.Name.ToLower() == regionName.ToLower().Trim()))
                 continue;
+
+            System.Console.WriteLine($"{row}, Region:{regionName}");
 
             uc.AddEntity(new DbRegion { 
                 Name = regionName.Trim(),
@@ -51,8 +53,12 @@ internal class Program
                 continue;
 
             var regions = sheet1.Cells[row, 2].Value?.ToString();
-            var regNames = regions.ToLower().Split(" и ").Select(ss => ss.Trim());
+            var regNames = regions.ToLower().Split(new string[] { " и ", "," }, StringSplitOptions.TrimEntries).Select(ss => ss.Trim());
             var regs = uc.GetSet<DbRegion>().Where(x => regNames.Contains(x.Name.ToLower().Trim())).ToList();
+            if(!regs.Any())
+            {
+                continue;
+            }
             var phone = sheet1.Cells[row, 5].Value?.ToString().Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace(" ", string.Empty).Replace("+", string.Empty);
             if(!string.IsNullOrWhiteSpace(phone))
             {
@@ -60,16 +66,24 @@ internal class Program
             }
             else
             {
-                phone = "unknown";
+                continue;
             }
 
+            var email = sheet1.Cells[row, 6].Value?.ToString().Trim();
+            if (string.IsNullOrWhiteSpace(email))
+                continue;
+
+            var cname = sheet1.Cells[row, 1].Value?.ToString().Trim();
+
+            System.Console.WriteLine($"{row}, Org:{cname} | {inn}");
+
             var o = uc.AddEntity(new DbOrganisation { 
-                Name = sheet1.Cells[row, 1].Value?.ToString().Trim(),
+                Name = cname,
                 FullName = sheet1.Cells[row, 3].Value?.ToString().Trim(),
                 Address = sheet1.Cells[row, 4].Value?.ToString().Trim(),
-                FactAddress = " ",
+                FactAddress = sheet1.Cells[row, 4].Value?.ToString().Trim(),
                 Phone = phone,
-                Email = sheet1.Cells[row, 6].Value?.ToString().Trim() ?? "unknown",
+                Email = email,
                 INN = inn.Trim(),
                 DirectorFio = "Неизвестен",
                 DirectorPosition = "Директор",
@@ -85,8 +99,14 @@ internal class Program
                 });
             }
 
+            var u = uc.DoAddUser(new AddUser.AUser { 
+                CompanyName = cname,
+                FirstName = "Неизвестен",
+                Phone = phone,
+                Email = email
+            });
 
-
+            uc.AddEntity(new DbOrganisationAccount { Organisation = o, AccountType = Common.Enums.OrganisationAccountType.Director, AccountId = u });
         }
 
         sheet1 = package.Workbook.Worksheets[1];
@@ -104,7 +124,7 @@ internal class Program
 
             var model = sheet1.Cells[row, 3].Value?.ToString();
             if (string.IsNullOrWhiteSpace(model))
-                continue;
+                model = "Неизвестная";
 
             var number = sheet1.Cells[row, 4].Value?.ToString();
             if (string.IsNullOrWhiteSpace(number))
@@ -121,6 +141,7 @@ internal class Program
             var capacity = sheet1.Cells[row, 6].Value?.ToString();
             int.TryParse(capacity, out int capacityNum);
 
+            System.Console.WriteLine($"{row}, tc:{make} | {number.ToUpper()}");
 
             uc.AddEntity(new DbBus { 
                 Make = make,
@@ -136,32 +157,11 @@ internal class Program
         }
 
 
-        transaction.Commit();
+        transaction.Rollback();
         return;
 
         var admin = uc.GetSet<DbAccount>().FirstOrDefault(x => x.Id == Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76"));
         admin.Password = BCrypt.Net.BCrypt.HashString("jopa");
         uc.SaveChanges();
-
-        
-
-        var u = new DbAccount
-        {
-            Email = "sonarv@mail.ru",
-            Password = BCrypt.Net.BCrypt.HashString("jopashnik"),
-            PersonData = new DbPersonData { 
-                FirstName = "Виктор",
-                LastName = "Бирюков (Админ)",
-                MiddleName = "Сергеевич",
-                DocumentSeries = " ",
-                DocumentNumber = " ",
-                DocumentIssurer = " ",
-                DocumentSubDivisionCode = " ",
-                DocumentDateOfIssue = DateTime.MinValue,
-                RegistrationAddress = " ",
-            }
-        };
-
-        uc.AddEntity(u);
     }
 }
