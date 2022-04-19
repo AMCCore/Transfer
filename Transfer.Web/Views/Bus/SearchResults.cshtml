@@ -24,50 +24,6 @@
         <div class="t-col col-12 col-md-5">
             <div class="row">
                 <div class="t-col col-12 white-text">
-                    Марка:
-                </div>
-            </div>
-            <div class="row">
-                <div class="t-col col-12 form-group">
-                    <div class="input-group input-group-icon">
-                        <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="Make" class="form-control" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="t-col col-12 col-md-5">
-            <div class="row">
-                <div class="t-col col-12 white-text">
-                    Модель:
-                </div>
-            </div>
-            <div class="row">
-                <div class="t-col col-12 form-group">
-                    <div class="input-group input-group-icon">
-                        <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="Model" class="form-control" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="t-col col-12 col-md-2">
-            <div class="row">
-                <div class="t-col col-12 white-text">
-                    Год (не старше):
-                </div>
-            </div>
-            <div class="row">
-                <div class="t-col col-12 form-group">
-                    @Html.DropDownListFor(x => x.Year, years, null, new { @class = "form-select form-select-sm" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row form-row">
-        <div class="t-col col-12 col-md-5">
-            <div class="row">
-                <div class="t-col col-12 white-text">
                     Регион:
                 </div>
             </div>
@@ -111,6 +67,50 @@
             </div>
         </div>
     </div>
+    <div class="row form-row">
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Марка:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Make" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-5">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Модель:
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    <div class="input-group input-group-icon">
+                        <i class="fas fa-pencil-alt input-group-text"></i>
+                        <input asp-for="Model" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="t-col col-12 col-md-2">
+            <div class="row">
+                <div class="t-col col-12 white-text">
+                    Год (не старше):
+                </div>
+            </div>
+            <div class="row">
+                <div class="t-col col-12 form-group">
+                    @Html.DropDownListFor(x => x.Year, years, null, new { @class = "form-select form-select-sm" })
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row blank-row"></div>
     <div class="row form-row">
         <div class="t-col the-error col-10">
@@ -141,18 +141,18 @@
 {
     <hr style="color: #fff; border: dashed 1px #007896;">
     <div class="row">
-@*        <div class="col-2">
+        @*        <div class="col-2">
             <div class="row">
-                @if (c.Picture.IsNullOrEmpty())
-                {
-                    <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
-                }
-                else
-                {
-                    <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
-                }
+            @if (c.Picture.IsNullOrEmpty())
+            {
+            <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
+            }
+            else
+            {
+            <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
+            }
             </div>
-        </div>*@
+            </div>*@
         <div class="col-12 assert-info">
             <div class="row blank-row"></div>
             <div class="row">
@@ -175,25 +175,25 @@
                 </div>
             }
         </div>
-@*        <div class="col-3 assert-info">
+        @*        <div class="col-3 assert-info">
             @if (c.PeopleCopacity > 0)
             {
-                <div class="row blank-row"></div>
-                <div class="row">
-                    <div class="col-12">Вместимость: @c.PeopleCopacity чел.</div>
-                </div>
+            <div class="row blank-row"></div>
+            <div class="row">
+            <div class="col-12">Вместимость: @c.PeopleCopacity чел.</div>
+            </div>
             }
-        </div>
-        <div class="col-3 assert-info">
+            </div>
+            <div class="col-3 assert-info">
             @if (c.OptionsInstalled.Any())
             {
-                <div class="row blank-row"></div>
-                <div class="row">
-                    <div class="col-12"><strong>Установленое дополнительное оборудование:</strong> @(string.Join(", ", c.OptionsInstalled))</div>
-                </div>
+            <div class="row blank-row"></div>
+            <div class="row">
+            <div class="col-12"><strong>Установленое дополнительное оборудование:</strong> @(string.Join(", ", c.OptionsInstalled))</div>
+            </div>
             }
 
-        </div>*@
+            </div>*@
     </div>
 }
 <hr style="color: #007896; border: dashed 1px #007896;">

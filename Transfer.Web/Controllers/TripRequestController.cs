@@ -121,6 +121,11 @@ public class TripRequestController : BaseStateController
         {
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
+            if(string.IsNullOrWhiteSpace(entity.ContactFio))
+            {
+                entity.ContactFio = entity.СhartererName;
+            }
+
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
             await SetTripOptions(entity, model);
         }

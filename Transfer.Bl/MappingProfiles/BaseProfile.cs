@@ -77,6 +77,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition));
         CreateMap<CarrierDto, DbOrganisation>()
+            .ForMember(x => x.DirectorFio, opt => opt.MapFrom(o => o.ContactFio))
+            .ForMember(x => x.DirectorPosition, opt => opt.MapFrom(o => o.ContactPosition))
             .ForMember(x => x.State, opt => opt.Ignore());
 
 

@@ -17,11 +17,11 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public string AddressTo { get; set; }
 
-        public string ContactFio { get; set; }
+        public string? ContactFio { get; set; }
 
         public string ContactPhone { get; set; }
 
-        public string ContactEmail { get; set; }
+        public string? ContactEmail { get; set; }
 
         public DateTime TripDate { get; set; }
 
