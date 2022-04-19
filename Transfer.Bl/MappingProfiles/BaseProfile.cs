@@ -126,6 +126,9 @@ public class BaseProfile : Profile
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
             .ForMember(x => x.CompanyId, opt => opt.MapFrom(o => o.OrganisationId))
             .ForMember(x => x.CompanyName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
+            .ForMember(x => x.CompanyContactPhone, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Phone : null))
+            .ForMember(x => x.CompanyContactFio, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.DirectorFio : null))
+            .ForMember(x => x.CompanyContactEmail, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Email : null))
             .ForMember(x => x.OptionsInstalled, opt => opt.MapFrom(o => BusOptionsConvert(o)))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 

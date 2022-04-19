@@ -54,7 +54,7 @@
         <div class="t-col col-12 col-md-2">
             <div class="row">
                 <div class="t-col col-12 white-text">
-                    Год:
+                    Год (не старше):
                 </div>
             </div>
             <div class="row">
@@ -68,14 +68,14 @@
         <div class="t-col col-12 col-md-5">
             <div class="row">
                 <div class="t-col col-12 white-text">
-                    Класс транспортного средства:
+                    Регион:
                 </div>
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
                     <div class="input-group input-group-icon">
                         <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="TransportClass" class="form-control" readonly="readonly" />
+                        <input asp-for="City" disabled="disabled" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -83,14 +83,14 @@
         <div class="t-col col-12 col-md-5">
             <div class="row">
                 <div class="t-col col-12 white-text">
-                    Город:
+                    Организация перевозчик:
                 </div>
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
                     <div class="input-group input-group-icon">
                         <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="City" class="form-control" />
+                        <input asp-for="OrganisationName" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -108,17 +108,6 @@
                         <input asp-for="PeopleCopacity" class="form-control" />
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row form-row">
-        <div class="t-col col-12 col-md-12 white-text">
-            Организация перевозчик:
-        </div>
-        <div class="t-col col-12 col-md-12 white-text">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="OrganisationName" class="form-control" />
             </div>
         </div>
     </div>
@@ -164,16 +153,18 @@
                 }
             </div>
         </div>*@
-        <div class="col-6 assert-info">
+        <div class="col-12 assert-info">
             <div class="row blank-row"></div>
             <div class="row">
-                <div class="col-12"><strong>@c.Name</strong></div>
+                <div class="col-12"><a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@c.CompanyId" asp-route-busId="@c.Id" class="link-light-yellow-du">@c.Name</a> (Вместимость: @c.PeopleCopacity чел.)</div>
             </div>
             @if (!string.IsNullOrWhiteSpace(c.CompanyName) && !c.CompanyId.IsNullOrEmpty())
             {
                 <div class="row blank-row"></div>
                 <div class="row">
-                    <div class="col-12">Перевозчик: <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.CompanyId" class="link-light-yellow-du">@c.CompanyName</a></div>
+                    <div class="col-12">
+                        Перевозчик: <a asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@c.CompanyId" class="link-light-yellow-du">@c.CompanyName</a>, <i class="far fa-user-circle"></i> @c.CompanyContactFio, <a href="tel:@c.CompanyContactPhone">@c.CompanyContactPhone</a>, <a href="mailto:@c.CompanyContactEmail">@c.CompanyContactEmail</a>
+                    </div>
                 </div>
             }
             @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
@@ -184,7 +175,7 @@
                 </div>
             }
         </div>
-        <div class="col-3 assert-info">
+@*        <div class="col-3 assert-info">
             @if (c.PeopleCopacity > 0)
             {
                 <div class="row blank-row"></div>
@@ -202,7 +193,7 @@
                 </div>
             }
 
-        </div>
+        </div>*@
     </div>
 }
 <hr style="color: #007896; border: dashed 1px #007896;">
@@ -214,13 +205,16 @@
         Model.Results = null;
         Model.PageNumber = page;
         return Url.Action("SearchBus", "Bus", Model);
-        }, new PagedListRenderOptions {
+        }, PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+        new PagedListRenderOptions {
         DisplayItemSliceAndTotal = false,
         ItemSliceAndTotalFormat = "Всего записей: {2} ",
         DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
         DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
         LinkToPreviousPageFormat = "Назад",
         LinkToNextPageFormat = "Вперед"
-        })
+
+        },
+        new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "SearchBus", InsertionMode = InsertionMode.Replace }))
     </div>
 </div>

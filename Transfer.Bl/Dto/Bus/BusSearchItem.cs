@@ -12,6 +12,12 @@ namespace Transfer.Bl.Dto.Bus
 
         public Guid? CompanyId { get; set; }
 
+        public string CompanyContactFio { get; set; }
+
+        public string CompanyContactPhone { get; set; }
+
+        public string CompanyContactEmail { get; set; }
+
         public Guid Id { get; set; }
 
         public string Name { get; set; }

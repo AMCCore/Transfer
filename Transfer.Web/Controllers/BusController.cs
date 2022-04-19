@@ -227,9 +227,8 @@ public class BusController : BaseController
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     [Route("Bus/Search")]
-    public async Task<IActionResult> SearchBus([FromForm] BusSearchFilter filter)
+    public async Task<IActionResult> SearchBus(BusSearchFilter filter)
     {
         var result = await GetDataFromDb(filter);
         return PartialView("SearchResults", result);
