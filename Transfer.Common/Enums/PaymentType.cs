@@ -9,6 +9,7 @@ namespace Transfer.Common.Enums
     public enum PaymentType : int
     {
         Card = 1,
-        Cash = 0
+        Cash = 0,
+        Checking = 2,
     }
 }

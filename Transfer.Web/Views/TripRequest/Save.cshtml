@@ -158,27 +158,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="t-col col-12 col-md-6 form-group">
-                    <div class="row">
-                        <div class="col-12 white-text">&nbsp;</div>
-                        <div class="col-12 white-text text-end">
-                            Желаемый размер багажного отделения
-                        </div>
-                    </div>
-                </div>
-                <div class="t-col col-12 col-md-3 form-group">
-                    <div class="row">
-                        <div class="col-12 white-text">&nbsp;</div>
-                        <div class="col-12 white-text">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-pencil-alt input-group-text"></i>
-                                <input asp-for="LuggageVolume" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row form-row">
                 <div class="t-col col-12 col-md-3 form-group">
                     <div class="row">
                         <div class="col-12 white-text">
@@ -223,7 +202,10 @@
                                 <input asp-for="PaymentType" class="form-check-input" type="radio" id="PaymentType0" value="0">
                                 <label for="PaymentType0"><i class="fas fa-money-bill white-text"></i>&nbsp;&nbsp;Наличными</label>
                             </div>
-
+                            <div class="form-check form-check-inline">
+                                <input asp-for="PaymentType" class="form-check-input" type="radio" id="PaymentType2" value="2">
+                                <label for="PaymentType2"><i class="fas fa-university white-text"></i>&nbsp;&nbsp;На расчётный счет</label>
+                            </div>
                         </div>
                     </div>
                 </div>

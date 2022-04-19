@@ -191,6 +191,10 @@ public class BaseProfile : Profile
         {
             return (int)PaymentType.Cash;
         }
+        else if (options.Any(x => x.TripOptionId == TripOptions.RSPayment.GetEnumGuid()))
+        {
+            return (int)PaymentType.Checking;
+        }
 
         return (int)PaymentType.Cash;
     }

@@ -40,4 +40,11 @@ public enum TripOptions
     [Description("Перевозка детей")]
     [EnumGuid("B7119E8D-08F6-4182-9025-77F158A2B0E3")]
     ChildTrip,
+
+    /// <summary>
+    /// Оплата на РС
+    /// </summary>
+    [Description("Оплата на РС")]
+    [EnumGuid("8EB9492A-3E67-4B5E-8E35-C2878D113F56")]
+    RSPayment,
 }
