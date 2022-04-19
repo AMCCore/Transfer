@@ -55,6 +55,12 @@ public class OrganisationDto : StateMachineDto
     public string? ContactFio { get; set; }
 
     /// <summary>
+    ///     Должность директора (sic)
+    /// </summary>
+    [MaxLength(1000)]
+    public string? ContactPosition { get; set; } = "Директор";
+
+    /// <summary>
     ///     Рэйтинг
     /// </summary>
     public double Rating { get; set; } = 0;

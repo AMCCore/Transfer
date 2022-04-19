@@ -53,7 +53,7 @@ $(function () {
             "A": { pattern: /[\w@\-.+]/, recursive: true }
         }
     });
-    $(".inn_mask").mask('0000000000');
+    $(".inn_mask").mask('000000000000');
     $(".ogrn_mask").mask('0000000000000');
     $(".bik_mask").mask('000000000');
     $(".numaccount_mask").mask('00000000000000000000');

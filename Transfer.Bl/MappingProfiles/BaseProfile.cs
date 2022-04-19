@@ -74,7 +74,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
             .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.DirectorFio) ? "Контактное лицо" : $"{o.DirectorFio} ({o.DirectorPosition})"));
+            .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
+            .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition));
         CreateMap<CarrierDto, DbOrganisation>()
             .ForMember(x => x.State, opt => opt.Ignore());
 
