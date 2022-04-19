@@ -12,7 +12,7 @@ namespace Transfer.Common
 
         public string TGBotHost { get; set; }
 
-        public int TablePageSize { get; set; } = 25;
+        public int TablePageSize { get; set; } = 50;
 
         public string FileStoragePath { get; set; } = "/Files";
     }

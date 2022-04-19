@@ -42,7 +42,7 @@
         Выводить по:
     </div>
     <div class="t-col col-1 text-end form-group">
-        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("1", "1"), new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
+        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("1", "1"), new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
 </div>
 <hr style="color: #007896; border: dashed 1px #007896;">

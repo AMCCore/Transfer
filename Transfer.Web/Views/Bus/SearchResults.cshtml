@@ -145,14 +145,14 @@
         Выводить по:
     </div>
     <div class="t-col col-1 text-end form-group">
-        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
+        @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
 </div>
 @foreach (var c in Model.Results)
 {
     <hr style="color: #fff; border: dashed 1px #007896;">
     <div class="row">
-        <div class="col-2">
+@*        <div class="col-2">
             <div class="row">
                 @if (c.Picture.IsNullOrEmpty())
                 {
@@ -163,8 +163,8 @@
                     <div class="col-12 r-logo text-center" style="border: solid 1px #0f4c71; height: 224px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
                 }
             </div>
-        </div>
-        <div class="col-4 assert-info">
+        </div>*@
+        <div class="col-6 assert-info">
             <div class="row blank-row"></div>
             <div class="row">
                 <div class="col-12"><strong>@c.Name</strong></div>
