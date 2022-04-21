@@ -2,8 +2,11 @@
 @using Transfer.Common.Extensions
 
 @section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 }
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/js/TripRequest/Save.js" crossorigin="anonymous"></script>
 }
 
 
@@ -60,7 +63,29 @@
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-search input-group-text"></i>
-                                <input asp-for="ChartererName" class="form-control basicAutoComplete" readonly="@(!Model.ChartererId.IsNullOrEmpty())" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
+                                @Html.Hidden("Data.FiasId", System.Guid.NewGuid(), 
+                                new { 
+                                    @class = "form-control basicAutoComplete",
+                                    @autocomplete="off",
+                                    @placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО",
+                                })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-row">
+                <div class="t-col col-12">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Заказчик: <span class="red-text">*</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-search input-group-text"></i>
+                                <input asp-for="ChartererName" class="form-control" readonly="@(!Model.ChartererId.IsNullOrEmpty())" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
                             </div>
                         </div>
                     </div>
