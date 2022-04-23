@@ -17,6 +17,5 @@ namespace Transfer.Bl.Dto.TripRequest
         public string ContactPhone { get; set; }
 
         public string ContactEmail { get; set; }
-
     }
 }

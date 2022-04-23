@@ -34,6 +34,10 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));
 
+        CreateMap<DbOrganisation, BasicValueDto>()
+            .ForMember(x => x.Id, opt => opt.MapFrom(o => o.Id))
+            .ForMember(x => x.Text, opt => opt.MapFrom(o => o.Name));
+
         CreateMap<DbTripOption, TripOption>();
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()

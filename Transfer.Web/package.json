@@ -6,7 +6,7 @@
     "@types/jquery": "^3.5.11",
     "@types/bootstrap-fileinput": "5.0.3",
     "@types/jquery-mask-plugin": "1.14.4",
-    "@types/select2": "4.0.55"
+    "@types/select2": "4.0.55",
   },
   "devDependencies": {}
 }
