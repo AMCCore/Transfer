@@ -59,19 +59,14 @@
                 <div class="t-col col-12">
                     <div class="row">
                         <div class="t-col col-12 white-text">
-                            Заказчик: <span class="red-text">*</span>
+                            Хуерыга: <span class="red-text">*</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-search input-group-text"></i>
-                                @Html.TextBox("Data.FiasId", "", 
-                                new { 
-                                    @class = "form-control basicAutoComplete",
-                                    @autocomplete="off",
-                                    @placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО",
-                                })
+                                <select name="Data.FiasId" id="Data.FiasId" class="form-control input-addr" autocomplete="off"></select>
                             </div>
                         </div>
                     </div>
