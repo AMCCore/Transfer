@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dadata;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -15,7 +16,10 @@ namespace Transfer.Web.Controllers.API;
 [Route("api/[controller]")]
 public class FIASController : ControllerBase
 {
-    private static readonly string BasicUrl = "https://papi.mos.ru/api/fias/7.0";
+    private const string BasicUrl = "https://papi.mos.ru/api/fias/7.0";
+
+    private const string token = "221296ccd7fcf17178d405383d1b5ed9004e25ea";
+    private const string secret = "276ef12486de64a6ad36929fc1b1c82356af9e63";
 
     /// <summary>
     /// поиск адреса в ФИАС (прокси класс)
@@ -24,6 +28,12 @@ public class FIASController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> SearchHome(string Query)
     {
+        var api = new SuggestClientAsync(token);
+        var result = await api.SuggestAddress(Query);
+
+        return new JsonResult(result);
+
+
         var req = new FIASRequest()
         {
             Query = Query,
