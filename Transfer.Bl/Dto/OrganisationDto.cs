@@ -81,8 +81,7 @@ public class OrganisationDto : StateMachineDto
     ///     Email
     /// </summary>
     [MaxLength(1000)]
-    [Required]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
     /// <summary>
     ///     Телефон
