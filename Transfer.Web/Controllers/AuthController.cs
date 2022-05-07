@@ -96,6 +96,7 @@ public class AuthController : BaseController
 
     [HttpGet]
     [Route("TgAccept/{userId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> TgAccept(Guid userId)
     {
         var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)

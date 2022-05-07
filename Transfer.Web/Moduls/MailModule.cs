@@ -29,6 +29,8 @@ public class MailModule : IMailModule
             Sender = MailboxAddress.Parse(_mailSettings.Mail)
         };
         email.To.Add(MailboxAddress.Parse(recipient));
+        email.Sender.Name = _mailSettings.DisplayName;
+        email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
         email.Subject = subject;
         email.Body = new TextPart(TextFormat.Html) { Text = body };
         using var smtp = new SmtpClient();

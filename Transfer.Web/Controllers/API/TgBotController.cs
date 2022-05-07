@@ -29,7 +29,7 @@ public class TgBotController : ControllerBase
     [Route(nameof(SendTestEmail))]
     public async Task<IActionResult> SendTestEmail()
     {
-        await _mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br>Чтобы подтвердить перейдите по ссылке</br><a href=\"https://nexttripto.ru/TgAccept/df50d6f9-65b3-453e-a292-7b49da2fd01f\" target=\"self\">перейти</a>", "Запрос на подтверждение использования телеграм бота", "markin.nikolai@gmail.com");
+        await _mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br>Чтобы подтвердить перейдите по ссылке</br><a href=\"https://nexttripto.ru/TgAccept/df50d6f9-65b3-453e-a292-7b49da2fd01f\" target=\"self\">перейти</a>", "Запрос на подтверждение использования телеграм бота", "admoto@yandex.ru");
         return Ok();
     }
 }

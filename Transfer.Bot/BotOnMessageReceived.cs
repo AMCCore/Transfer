@@ -57,7 +57,7 @@ namespace Transfer.Bot
                 //registration 2
                 else if(!ruser.AccountRights.Any(x => x.RightId == AccountAccessRights.TelegramBotUsage.GetEnumGuid()))
                 {
-                    await mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br>Чтобы подтвердить перейдите по ссылке</br><a href=\"https://nexttripto.ru/TgAccept/{ruser.Id}\" target=\"self\">перейти</a>", "Запрос на подтверждение использования телеграм бота", ruser.Email);
+                    await mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br></br> Чтобы подтвердить перейдите по ссылке</br></br> <a href=\"https://nexttripto.ru/TgAccept/{ruser.Id}\" target=\"self\">перейти</a>", "Запрос на подтверждение использования телеграм бота", ruser.Email);
 
                     await bot.SendTextMessageAsync(
                         chatId: message.From.Id,
