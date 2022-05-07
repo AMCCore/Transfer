@@ -4,14 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Transfer.Bl.Dto;
 using Transfer.Common;
-using Transfer.Common.Security;
-using Transfer.Dal.Entities;
+using Transfer.Common.Settings;
 using Transfer.Web.Models;
 
 namespace Transfer.Web.Controllers;

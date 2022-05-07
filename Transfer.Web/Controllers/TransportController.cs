@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Transfer.Common;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Transfer.Common.Settings;
 
 namespace Transfer.Web.Controllers;
 [Authorize]

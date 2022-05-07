@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using Transfer.Common;
+using Transfer.Common.Settings;
 
 namespace Transfer.Web.Controllers;
 

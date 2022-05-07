@@ -7,14 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using Telegram.Bot;
 using Transfer.Bl;
 using Transfer.Common;
 using Transfer.Common.Cache;
 using Transfer.Common.Security;
+using Transfer.Common.Settings;
 using Transfer.Dal.Context;
 using Transfer.Web.Models;
-using Newtonsoft.Json;
-using Telegram.Bot;
+using Transfer.Web.Moduls;
 using Transfer.Web.Services;
 
 namespace Transfer.Web;
@@ -46,6 +47,8 @@ public class Startup
         //var settings = Configuration.GetSection("appSettings").Get<TransferSettings>();
         services.Configure<TransferSettings>(Configuration.GetSection("appSettings"));
 
+        //параметры почты
+        services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
 
         //подключение к БД
         services.AddDbContext<TransferContext>(options =>
@@ -57,6 +60,8 @@ public class Startup
 
         services.AddHttpContextAccessor();
         services.AddTransient<ISecurityService, SecurityService>();
+
+        services.AddTransient<IMailModule, MailModule>();
 
         services.TransferBlConfigue();
 

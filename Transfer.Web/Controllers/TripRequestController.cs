@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
+using Transfer.Common.Enums;
+using Transfer.Common.Enums.AccessRights;
+using Transfer.Common.Extensions;
+using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
-using Transfer.Common.Enums;
-using Transfer.Common.Extensions;
-using Transfer.Bl.Dto.Driver;
-using Transfer.Common.Enums.AccessRights;
 
 namespace Transfer.Web.Controllers;
 

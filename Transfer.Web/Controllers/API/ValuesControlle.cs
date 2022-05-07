@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Transfer.Bl.Dto;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
+using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Web.Controllers.API;
