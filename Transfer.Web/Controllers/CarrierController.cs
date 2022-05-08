@@ -39,7 +39,7 @@ public class CarrierController : BaseController
 
         if (!string.IsNullOrWhiteSpace(filter.City))
         {
-            query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()));
+            query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()) || x.FactAddress.ToLower().Contains(filter.City.ToLower()) || x.City.ToLower().Contains(filter.City.ToLower()));
         }
 
 
@@ -148,6 +148,11 @@ public class CarrierController : BaseController
             org.Id = Guid.NewGuid();
             org.DirectorFio = string.Empty;
             model.Id = org.Id;
+            //временно разрешить организации без email
+            if(string.IsNullOrWhiteSpace(org.Email))
+            {
+                org.Email = " ";
+            }
             await UnitOfWork.AddEntityAsync(org, CancellationToken.None);
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
@@ -160,6 +165,12 @@ public class CarrierController : BaseController
             if (org == null)
                 throw new KeyNotFoundException();
             Mapper.Map(model, org);
+
+            //временно разрешить организации без email
+            if (string.IsNullOrWhiteSpace(org.Email))
+            {
+                org.Email = " ";
+            }
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
             var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(CancellationToken.None);
