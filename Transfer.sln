@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Web", "Transfer.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Bot", "Transfer.Bot\Transfer.Bot.csproj", "{C1036229-EFAD-472C-90B3-758F9A4211EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfer.Console", "Transfer.Console\Transfer.Console.csproj", "{E903E497-098C-40AB-B10F-D081486B0F72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer.Console", "Transfer.Console\Transfer.Console.csproj", "{E903E497-098C-40AB-B10F-D081486B0F72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
