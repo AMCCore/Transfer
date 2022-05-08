@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -12,6 +9,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using Transfer.Bot.Actions;
 using Transfer.Bot.Menu;
 using Transfer.Common;
+using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
@@ -19,7 +17,7 @@ namespace Transfer.Bot
 {
     public static class BotOnMessageReceived
     {
-        public static async Task OnMessageReceived(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger logger = null)
+        public static async Task OnMessageReceived(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger logger = null, IMailModule mailModule = null)
         {
             logger?.LogInformation("Receive message type: {messageType}", message.Type);
             if (message.Type != MessageType.Text )
@@ -37,22 +35,33 @@ namespace Transfer.Bot
             if(user == null)
             {
                 //email
-                var ruser = await unitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(x => x.Email == message.Text);
+                var ruser = await unitOfWork.GetSet<DbAccount>().Include(x => x.AccountRights).FirstOrDefaultAsync(x => x.Email == message.Text);
+                //registration 1
                 if (ruser == null)
                 {
-                    //registration 1
                     await bot.SendTextMessageAsync(
                         chatId: message.From.Id,
                         text: "Для использования бота требуется зарегистрироваться. Направьте мне свой email под которым вы зарегестрированы на сайте.",
                         parseMode: ParseMode.Html,
                         replyMarkup: new ReplyKeyboardRemove());
                 }
-                else if(ruser.IsDeleted)
+                //user is blocked
+                else if (ruser.IsDeleted)
                 {
-                    //user is blocked
                     await bot.SendTextMessageAsync(
                         chatId: message.From.Id,
                         text: "Ваша учётная запись отключена. Обратитесь в службу поддержки.",
+                        parseMode: ParseMode.Html,
+                        replyMarkup: new ReplyKeyboardRemove());
+                }
+                //registration 2
+                else if(!ruser.AccountRights.Any(x => x.RightId == AccountAccessRights.TelegramBotUsage.GetEnumGuid()))
+                {
+                    await mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br></br> Чтобы подтвердить перейдите по ссылке</br></br> <a href=\"https://nexttripto.ru/TgAccept/{ruser.Id}\" target=\"self\">перейти</a>", "Запрос на подтверждение использования телеграм бота", ruser.Email);
+
+                    await bot.SendTextMessageAsync(
+                        chatId: message.From.Id,
+                        text: "На указанный вами email отправлено письмо для подтверждение доступа. Пожалуйста пройтите по ссылке в письме.",
                         parseMode: ParseMode.Html,
                         replyMarkup: new ReplyKeyboardRemove());
                 }

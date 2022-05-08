@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using Transfer.Common;
+using Transfer.Common.Settings;
 
 namespace Transfer.Web.Services;
 

@@ -17,6 +17,9 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Microsoft.AspNetCore.Http;
+using Transfer.Common.Settings;
+using Transfer.Common.Enums.AccessRights;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Web.Controllers;
 
@@ -89,5 +92,21 @@ public class AuthController : BaseController
                 g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId.Value).ToList());
 
         return res;
+    }
+
+    [HttpGet]
+    [Route("TgAccept/{userId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> TgAccept(Guid userId)
+    {
+        var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)
+            .Where(x => !x.IsDeleted && x.Id == userId).FirstOrDefaultAsync(CancellationToken.None);
+
+        if(!account.AccountRights.Any(x => x.RightId == AccountAccessRights.TelegramBotUsage.GetEnumGuid()))
+        {
+            await UnitOfWork.AddEntityAsync(new DbAccountRight { AccountId = userId, RightId = AccountAccessRights.TelegramBotUsage.GetEnumGuid() });
+        }
+
+        return Redirect("/");
     }
 }

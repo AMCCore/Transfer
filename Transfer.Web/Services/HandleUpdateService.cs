@@ -16,15 +16,18 @@ public class HandleUpdateService
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMailModule _mailModule;
 
     public HandleUpdateService(
         ITelegramBotClient botClient,
         ILogger<HandleUpdateService> logger,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMailModule mailModule)
     {
         _botClient = botClient;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _mailModule = mailModule;
     }
 
     public async Task EchoAsync(Update update)
