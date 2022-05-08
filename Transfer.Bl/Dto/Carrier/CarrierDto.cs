@@ -31,5 +31,7 @@ public class CarrierDto : OrganisationDto
     public Guid? LogoFileId { get; set; }
 
     public Guid? LicenceFileId { get; set; }
+
+    public string[] WorkingAreas { get; set; }
 }
 

@@ -5,10 +5,14 @@
 @Html.HiddenFor(x => x.Id)
 @Html.HiddenFor(x => x.State)
 
+@{
+    var slwa = (ViewBag.Regions as IDictionary<Guid, string>).OrderBy(x => x.Value).Select(s => new SelectListItem { Value = s.Key.ToString(), Text = s.Value }).ToList();
+}
+
 <div class="container the-form">
     <div class="row blank-row"></div>
     <div class="row form-row">
-        <div class="t-col col-12 col-md-6">
+        <div class="t-col col-12 col-md-4">
             <div class="row">
                 <div class="t-col col-12 white-text">
                     Краткое наименование компании: <span class="red-text">*</span>
@@ -23,17 +27,17 @@
                 </div>
             </div>
         </div>
-        <div class="t-col col-12 col-md-6">
+        <div class="t-col col-12 col-md-8">
             <div class="row">
                 <div class="t-col col-12 white-text">
-                    Регион:
+                    Полное наименование компании в соответствии с уставом:
                 </div>
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
                     <div class="input-group input-group-icon">
                         <i class="fas fa-pencil-alt input-group-text"></i>
-                        <input asp-for="City" class="form-control" />
+                        <input asp-for="FullName" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -42,14 +46,13 @@
     <div class="row form-row"></div>
     <div class="row form-row">
         <div class="t-col col-12 white-text">
-            Полное наименование компании в соответствии с уставом:
+            Регион(ы) работы:
         </div>
     </div>
     <div class="row form-row">
         <div class="t-col col-12 form-group">
-            <div class="input-group input-group-icon">
-                <i class="fas fa-pencil-alt input-group-text"></i>
-                <input asp-for="FullName" class="form-control" />
+            <div class="t-col col-12 form-group">
+                @Html.ListBoxFor(x => x.WorkingAreas, slwa, new { @class="form-control slwa", multiple="multiple" })
             </div>
         </div>
     </div>

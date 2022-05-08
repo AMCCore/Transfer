@@ -34,6 +34,10 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));
 
+        CreateMap<DbOrganisation, BasicValueDto>()
+            .ForMember(x => x.Id, opt => opt.MapFrom(o => o.Id))
+            .ForMember(x => x.Text, opt => opt.MapFrom(o => o.Name));
+
         CreateMap<DbTripOption, TripOption>();
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()
@@ -60,6 +64,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactPhone))
             .ForMember(x => x.СhartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ChartererName))
             .ForMember(x => x.State, opt => opt.Ignore())
+            .ForMember(x => x.RegionFromId, opt => opt.Ignore())
+            .ForMember(x => x.RegionToId, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.Ignore());
 
         CreateMap<DbFile, FileDto>()
@@ -71,6 +77,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.State, opt => opt.Ignore());
 
         CreateMap<DbOrganisation, CarrierDto>()
+            .ForMember(x => x.WorkingAreas, opt => opt.MapFrom(o => o.WorkingArea.Select(a => a.RegionId.ToString()).ToArray()))
             .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
             .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
@@ -80,7 +87,6 @@ public class BaseProfile : Profile
             .ForMember(x => x.DirectorFio, opt => opt.MapFrom(o => o.ContactFio))
             .ForMember(x => x.DirectorPosition, opt => opt.MapFrom(o => o.ContactPosition))
             .ForMember(x => x.State, opt => opt.Ignore());
-
 
         CreateMap<DbBankDetails, CarrierDto>()
             .ForMember(x => x.INN, opt => opt.Ignore())

@@ -96,11 +96,13 @@ public class ValuesController : ControllerBase
 
     [HttpGet]
     [Route(nameof(TripRequestOrganisationSearch))]
-    public async Task<TripRequestSearchOrganisationDto[]> TripRequestOrganisationSearch([Required][FromQuery] string term)
+    public async Task<string[]> TripRequestOrganisationSearch([Required][FromQuery] string term)
     {
         var entites = await _unitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
             .Where(x => x.FullName.ToLower().Contains(term.ToLower()) || x.INN.Contains(term))
             .ToListAsync();
-        return _mapper.Map<TripRequestSearchOrganisationDto[]>(entites);
+        //return _mapper.Map<BasicValueDto[]>(entites);
+
+        return entites.Select(x => x.Name).ToArray();
     }
 }

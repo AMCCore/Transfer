@@ -55,4 +55,15 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public int? LuggageVolume { get; set; }
 
     public TripRequestStateEnum State { get; set; } = TripRequestStateEnum.Active;
+
+    public virtual DbRegion? RegionFrom { get; set; }
+
+    [ForeignKey(nameof(RegionFrom))]
+    public Guid? RegionFromId { get; set; }
+
+    public virtual DbRegion? RegionTo { get; set; }
+
+    [ForeignKey(nameof(RegionTo))]
+    public Guid? RegionToId { get; set; }
+
 }

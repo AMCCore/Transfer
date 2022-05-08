@@ -121,6 +121,7 @@ public class CarrierController : BaseController
             var res = Mapper.Map<CarrierDto>(entity);
             Mapper.Map(entity.BankDetails.FirstOrDefault(x => !x.IsDeleted), res);
 
+            ViewBag.Regions = await GetRegionsAsync();
             return View("CarrierEdit", res);
         }
         return NotFound();
@@ -134,12 +135,14 @@ public class CarrierController : BaseController
         if (!ModelState.IsValid)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            ViewBag.Regions = await GetRegionsAsync();
             return View("Carrier", model);
         }
 
         if (!model.Agreement)
         {
             ViewBag.ErrorMsg = "Ошибка согласия перс данных";
+            ViewBag.Regions = await GetRegionsAsync();
             return View("Carrier", model);
         }
 
@@ -150,7 +153,7 @@ public class CarrierController : BaseController
             org.DirectorFio = string.Empty;
             model.Id = org.Id;
             //временно разрешить организации без email
-            if(string.IsNullOrWhiteSpace(org.Email))
+            if (string.IsNullOrWhiteSpace(org.Email))
             {
                 org.Email = " ";
             }
@@ -192,6 +195,9 @@ public class CarrierController : BaseController
 
         //логотип
         await SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileType.Logo);
+
+        //регионы работы
+        await SetCarrierWorkingArea(model.Id, model.WorkingAreas);
 
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
@@ -266,6 +272,28 @@ public class CarrierController : BaseController
             }
         }
 
+    }
+
+    private async Task<IDictionary<Guid, string>> GetRegionsAsync(params Guid[] exisitingRegs)
+    {
+        return await UnitOfWork.GetSet<DbRegion>().ToDictionaryAsync(x => x.Id, y => y.Name, CancellationToken.None);
+    }
+
+    private async Task SetCarrierWorkingArea(Guid carrierId, params string[] regions)
+    {
+        var eRegions = await UnitOfWork.GetSet<DbOrganisationWorkingArea>().Where(x => x.OrganisationId == carrierId).ToListAsync(CancellationToken.None);
+        await UnitOfWork.DeleteListAsync(eRegions, CancellationToken.None);
+
+        foreach (var region in regions)
+        {
+            if (Guid.TryParse(region, out var regId) && UnitOfWork.GetSet<DbRegion>().Any(x => x.Id == regId))
+            {
+                await UnitOfWork.AddEntityAsync(new DbOrganisationWorkingArea { 
+                    RegionId = regId,
+                    OrganisationId = carrierId
+                });
+            }
+        }
     }
 }
 

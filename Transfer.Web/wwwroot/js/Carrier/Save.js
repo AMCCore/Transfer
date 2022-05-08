@@ -13,5 +13,6 @@ $(function () {
             event.preventDefault();
         }
     });
+    $(".slwa").select2();
 });
 //# sourceMappingURL=Save.js.map
