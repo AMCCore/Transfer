@@ -2,14 +2,12 @@
 @using Transfer.Common.Extensions
 
 @section Styles {
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css" />
 }
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="~/js/TripRequest/Save.js" crossorigin="anonymous"></script>
-    <script src="~/vjs/autocomplete.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="~/js/TripRequest/Save.js" crossorigin="anonymous"></script>
 }
 
 
@@ -55,23 +53,6 @@
         <div class="container the-form">
             <div class="row blank-row"></div>
             <h2 class="white-text">Кто заказывает поездку:</h2>
-            <div class="row form-row">
-                <div class="t-col col-12">
-                    <div class="row">
-                        <div class="t-col col-12 white-text">
-                            Хуерыга: <span class="red-text">*</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="t-col col-12 form-group">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-search input-group-text"></i>
-                                <select name="Data.FiasId" id="Data.FiasId" class="form-control input-addr" autocomplete="off"></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row form-row">
                 <div class="t-col col-12">
                     <div class="row">
@@ -145,8 +126,16 @@
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-map-marked input-group-text"></i>
-                                <input asp-for="AddressFrom" class="form-control" />
+                                <select asp-for="AddressFromFias" class="form-control input-addr" autocomplete="off">
+                                    @if (!string.IsNullOrWhiteSpace(Model.AddressFrom))
+                                    {
+                                        <option value="@Guid.NewGuid()">@Model.AddressFrom</option>
+                                    }
+                                </select>
                             </div>
+                            @Html.HiddenFor(x => x.RegionFromId, new { @class = "r1"})
+                            @Html.HiddenFor(x => x.RegionFromName, new { @class = "r2"})
+                            @Html.HiddenFor(x => x.AddressFrom, new { @class = "r3"})
                         </div>
                     </div>
                 </div>
@@ -162,8 +151,16 @@
                         <div class="t-col col-12 form-group">
                             <div class="input-group input-group-icon">
                                 <i class="fas fa-map-marked-alt input-group-text"></i>
-                                <input asp-for="AddressTo" class="form-control" />
+                                <select asp-for="AddressToFias" class="form-control input-addr" autocomplete="off">
+                                    @if (!string.IsNullOrWhiteSpace(Model.AddressTo))
+                                    {
+                                        <option value="@Guid.NewGuid()">@Model.AddressTo</option>
+                                    }
+                                </select>
                             </div>
+                            @Html.HiddenFor(x => x.RegionToId, new { @class = "r1"})
+                            @Html.HiddenFor(x => x.RegionToName, new { @class = "r2"})
+                            @Html.HiddenFor(x => x.AddressTo, new { @class = "r3"})
                         </div>
                     </div>
                 </div>

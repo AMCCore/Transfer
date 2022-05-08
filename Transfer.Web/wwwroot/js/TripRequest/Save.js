@@ -10,10 +10,6 @@ $(function () {
             data: function (params) {
                 var query = {
                     query: params.term,
-                    //withParent: 1,
-                    //limit: 20,
-                    //contentType: 'street',
-                    //cityId: 7700000000000
                 };
                 return query;
             },
@@ -25,8 +21,7 @@ $(function () {
                         result.push({
                             id: data.suggestions[i].data.fias_id,
                             text: data.suggestions[i].value,
-                            district: data.suggestions[i].data.district,
-                            region: data.suggestions[i].data.adm_area
+                            region: data.suggestions[i].data.region
                         });
                     }
                 }
@@ -36,7 +31,11 @@ $(function () {
             },
             cache: true,
         }
-    }).on('change', function (e) {
+    }).on('select2:select', function (e) {
+        var edata = e.params.data;
+        $(this).closest(".form-group").find(".r1").val('');
+        $(this).closest(".form-group").find(".r2").val(edata.region);
+        $(this).closest(".form-group").find(".r3").val(edata.text);
     });
 });
 //# sourceMappingURL=Save.js.map

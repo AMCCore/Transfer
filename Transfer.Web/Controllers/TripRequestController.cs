@@ -128,6 +128,7 @@ public class TripRequestController : BaseStateController
 
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
             await SetTripOptions(entity, model);
+            await SetTripRegions(entity, model);
         }
         else
         {
@@ -138,6 +139,7 @@ public class TripRequestController : BaseStateController
 
             Mapper.Map(model, entity);
             await SetTripOptions(entity, model);
+            await SetTripRegions(entity, model);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
@@ -203,5 +205,38 @@ public class TripRequestController : BaseStateController
             }
         }
         return res;
+    }
+
+    /// <summary>
+    /// Установка регионов 
+    /// </summary>
+    private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model)
+    {
+        if(model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
+        {
+            var reg = await GetOrCreateRegion(model.RegionFromName);
+            entity.RegionFromId = reg.Id;
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        }
+        if (model.RegionToId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionToName))
+        {
+            var reg = await GetOrCreateRegion(model.RegionToName);
+            entity.RegionToId = reg.Id;
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        }
+    }
+
+    private async Task<DbRegion> GetOrCreateRegion(string regionName)
+    {
+        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), CancellationToken.None);
+        if (reg == null)
+        {
+            reg = new DbRegion
+            {
+                Name = regionName
+            };
+            await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
+        }
+        return reg;
     }
 }

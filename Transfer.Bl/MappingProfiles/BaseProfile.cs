@@ -64,6 +64,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactPhone))
             .ForMember(x => x.СhartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ChartererName))
             .ForMember(x => x.State, opt => opt.Ignore())
+            .ForMember(x => x.RegionFromId, opt => opt.Ignore())
+            .ForMember(x => x.RegionToId, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.Ignore());
 
         CreateMap<DbFile, FileDto>()

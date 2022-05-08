@@ -217,6 +217,10 @@ a.link-light-yellow-du {
     color: #ecbf54;
 }
 
+.central {
+    padding: 0;
+}
+
 .bottom {
     background: url("/images/768.png") left top no-repeat;
     color: #fff;
