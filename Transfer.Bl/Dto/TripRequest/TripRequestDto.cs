@@ -15,7 +15,11 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public string AddressFrom { get; set; }
 
+        public string? AddressFromFias { get; set; }
+
         public string AddressTo { get; set; }
+
+        public string? AddressToFias { get; set; }
 
         public string? ContactFio { get; set; }
 
@@ -44,5 +48,12 @@ namespace Transfer.Bl.Dto.TripRequest
         [Required]
         public override Guid State { get; set; }
 
+        public Guid? RegionToId { get; set; }
+
+        public Guid? RegionFromId { get; set; }
+
+        public string? RegionToName { get; set; }
+
+        public string? RegionFromName { get; set; }
     }
 }

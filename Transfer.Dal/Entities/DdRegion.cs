@@ -34,5 +34,11 @@ namespace Transfer.Dal.Entities
         public virtual DbRegion? ParrentRegion { get; set; }
 
         public virtual ICollection<DbRegion> ChildRegions { get; set; } = new List<DbRegion>();
+
+        [InverseProperty(nameof(DbTripRequest.RegionFrom))]
+        public virtual ICollection<DbTripRequest> TripRequestRegionsFrom { get; set; } = new List<DbTripRequest>();
+
+        [InverseProperty(nameof(DbTripRequest.RegionTo))]
+        public virtual ICollection<DbTripRequest> TripRequestRegionsTo { get; set; } = new List<DbTripRequest>();
     }
 }

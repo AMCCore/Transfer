@@ -70,6 +70,8 @@ public class Startup
                 x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
 
+        #if !DEBUG
+
         services.AddHostedService<ConfigureWebhook>();
 
         services.AddHttpClient("tgwebhook")
@@ -77,6 +79,8 @@ public class Startup
             => new TelegramBotClient(_transferSettings.TGBotToken, httpClient));
 
         services.AddScoped<HandleUpdateService>();
+
+        #endif
 
         services.AddControllers().AddNewtonsoftJson();
     }

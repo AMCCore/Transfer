@@ -14,4 +14,6 @@
             event.preventDefault();
         }
     });
+
+    $(".slwa").select2();
 });
