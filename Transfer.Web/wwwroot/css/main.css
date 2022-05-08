@@ -36,6 +36,11 @@ img {
     min-height: 36px;
 }
 
+    .t-col li {
+        line-height: 30px;
+        min-height: 30px;
+    }
+
 .t-col-half {
     line-height: 18px;
     min-height: 18px;
@@ -499,9 +504,9 @@ a.link-light-yellow-du {
             color: #007896;
         }
 
-    /*.the-form .form-row .form-control[readonly] {*/
-        /*background-color: #e9ecef;*/
-        /*background-color: #f00;
+/*.the-form .form-row .form-control[readonly] {*/
+/*background-color: #e9ecef;*/
+/*background-color: #f00;
         opacity: 1;
     }*/
 

@@ -75,6 +75,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.State, opt => opt.Ignore());
 
         CreateMap<DbOrganisation, CarrierDto>()
+            .ForMember(x => x.WorkingAreas, opt => opt.MapFrom(o => o.WorkingArea.Select(a => a.RegionId.ToString()).ToArray()))
             .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
             .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
@@ -84,7 +85,6 @@ public class BaseProfile : Profile
             .ForMember(x => x.DirectorFio, opt => opt.MapFrom(o => o.ContactFio))
             .ForMember(x => x.DirectorPosition, opt => opt.MapFrom(o => o.ContactPosition))
             .ForMember(x => x.State, opt => opt.Ignore());
-
 
         CreateMap<DbBankDetails, CarrierDto>()
             .ForMember(x => x.INN, opt => opt.Ignore())
