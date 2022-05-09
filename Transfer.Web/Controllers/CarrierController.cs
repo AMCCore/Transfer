@@ -91,8 +91,9 @@ public class CarrierController : BaseController
 
     [HttpGet]
     [Route("Carrier/New")]
-    public IActionResult NewCarrier()
+    public async Task<IActionResult> NewCarrier()
     {
+        ViewBag.Regions = await GetRegionsAsync();
         return View("CarrierEdit", new CarrierDto());
     }
 
