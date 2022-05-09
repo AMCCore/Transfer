@@ -29,5 +29,7 @@ namespace Transfer.Bl.Dto.TripRequest
         public bool Checked { get; set; }
 
         public Guid? Picture { get; set; }
+
+        public int ReplaysCount { get; set; } = 0;
     }
 }
