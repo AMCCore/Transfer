@@ -151,13 +151,23 @@ public class CarrierController : BaseController
         {
             var org = Mapper.Map<DbOrganisation>(model);
             org.Id = Guid.NewGuid();
-            org.DirectorFio = string.Empty;
             model.Id = org.Id;
             //временно разрешить организации без email
             if (string.IsNullOrWhiteSpace(org.Email))
             {
                 org.Email = " ";
             }
+            //временно разрешить организации без директора
+            if (string.IsNullOrWhiteSpace(org.DirectorFio))
+            {
+                org.DirectorFio = " ";
+            }
+            if (string.IsNullOrWhiteSpace(org.DirectorPosition))
+            {
+                org.DirectorPosition = " ";
+            }
+
+
             await UnitOfWork.AddEntityAsync(org, CancellationToken.None);
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
@@ -176,6 +186,17 @@ public class CarrierController : BaseController
             {
                 org.Email = " ";
             }
+
+            //временно разрешить организации без директора
+            if (string.IsNullOrWhiteSpace(org.DirectorFio))
+            {
+                org.DirectorFio = " ";
+            }
+            if (string.IsNullOrWhiteSpace(org.DirectorPosition))
+            {
+                org.DirectorPosition = " ";
+            }
+
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
             var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(CancellationToken.None);
