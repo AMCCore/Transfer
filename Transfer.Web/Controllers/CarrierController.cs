@@ -137,14 +137,14 @@ public class CarrierController : BaseController
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
             ViewBag.Regions = await GetRegionsAsync();
-            return View("Carrier", model);
+            return View("CarrierEdit", model);
         }
 
         if (!model.Agreement)
         {
             ViewBag.ErrorMsg = "Ошибка согласия перс данных";
             ViewBag.Regions = await GetRegionsAsync();
-            return View("Carrier", model);
+            return View("CarrierEdit", model);
         }
 
         if (model.Id.IsNullOrEmpty())
