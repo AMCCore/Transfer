@@ -25,6 +25,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
+            .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));
 
         CreateMap<DbOrganisation, TripRequestSearchOrganisationDto>()

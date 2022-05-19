@@ -15,7 +15,9 @@ namespace Transfer.Bl.Dto.Carrier
         public string ContactPhone { get; set; } 
         
         public string ContactEmail { get; set; }
-        
+
+        public string ContactPosition { get; set; }
+
         public double Rating { get; set; }
         
         public bool Checked { get; set; }
