@@ -18,14 +18,18 @@ using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
+using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers;
 
 [Authorize]
 public class TripRequestController : BaseStateController
 {
-    public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper)
+    private HandleUpdateService _handleUpdateService;
+
+    public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper, HandleUpdateService handleUpdateService) : base(transferSettings, unitOfWork, logger, mapper)
     {
+        _handleUpdateService = handleUpdateService;
     }
 
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
@@ -107,6 +111,30 @@ public class TripRequestController : BaseStateController
         });
     }
 
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/{requestId}")]
+    public async Task<IActionResult> MakeOffer(Guid requestId)
+    {
+        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
+        if(replay == null || replay.IsDeleted)
+        {
+            return NotFound();
+        }
+        if(replay.DateValid > DateTime.Now)
+        {
+            throw new ArgumentOutOfRangeException("TripRequestReplay");
+        }
+        if(await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
+        {
+            throw new ArgumentNullException("TripRequestOffer");
+        }
+        
+        var model = Mapper.Map<TripRequestDto>(replay.TripRequest);
+        SetNextStates(model);
+        return View("MakeOffer", model);
+    }
+
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Save([FromForm] TripRequestDto model)
@@ -121,7 +149,7 @@ public class TripRequestController : BaseStateController
         {
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
-            if(string.IsNullOrWhiteSpace(entity.ContactFio))
+            if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
                 entity.ContactFio = entity.СhartererName;
             }
@@ -132,14 +160,17 @@ public class TripRequestController : BaseStateController
 
             var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
                 .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(CancellationToken.None);
-            foreach(var orgId in appropriateOrgIds)
+            foreach (var orgId in appropriateOrgIds)
             {
-                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay { 
+                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+                {
                     TripRequestId = entity.Id,
                     CarrierId = orgId,
                     DateValid = DateTime.Now.AddDays(4),
                 }, CancellationToken.None);
             }
+
+
         }
         else
         {
@@ -159,13 +190,14 @@ public class TripRequestController : BaseStateController
 
     private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model)
     {
-        foreach(var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
+        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
         {
             await UnitOfWork.DeleteAsync(to, CancellationToken.None);
         }
-        if(model.ChildTrip)
+        if (model.ChildTrip)
         {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption { 
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
@@ -209,7 +241,7 @@ public class TripRequestController : BaseStateController
 
         if (currentState == TripRequestStateEnum.New.GetEnumGuid())
         {
-            if(isTripRequestAdmin)
+            if (isTripRequestAdmin)
             {
                 res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Отменить");
                 res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Закрыть сбор предложений");
@@ -223,7 +255,7 @@ public class TripRequestController : BaseStateController
     /// </summary>
     private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model)
     {
-        if(model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
+        if (model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
         {
             var reg = await GetOrCreateRegion(model.RegionFromName);
             entity.RegionFromId = reg.Id;
@@ -249,5 +281,32 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
         }
         return reg;
+    }
+
+    private async Task SendReplaysToUsers(Guid tripRequestId)
+    {
+        var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
+            .Select(x => x.Id).ToListAsync();
+
+        foreach (var replay in replays)
+        {
+            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginEnum.Telegram)).ToListAsync();
+
+            foreach(var orgUser in orgUsers)
+            {
+                //Convert.ToInt64(orgUser.Value)
+                if (long.TryParse(orgUser.Value, out long chatId))
+                {
+                    _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                    {
+                        ChatId = chatId,
+                        Message = "бла бла бла",
+                        Link = $"https://nexttripto.ru/MakeOffer/{replay}",
+                        LinkName = "Откликнуться"
+                    });
+                }
+            }
+        }
     }
 }

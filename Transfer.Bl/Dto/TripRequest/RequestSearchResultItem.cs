@@ -31,5 +31,7 @@ namespace Transfer.Bl.Dto.TripRequest
         public Guid? Picture { get; set; }
 
         public int ReplaysCount { get; set; } = 0;
+
+        public string? Description { get; set; }
     }
 }
