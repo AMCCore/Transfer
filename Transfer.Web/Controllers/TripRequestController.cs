@@ -130,9 +130,17 @@ public class TripRequestController : BaseStateController
             throw new ArgumentNullException("TripRequestOffer");
         }
         
-        var model = Mapper.Map<TripRequestDto>(replay.TripRequest);
+        var model = Mapper.Map<TripRequestOfferDto>(Mapper.Map<TripRequestDto>(replay.TripRequest));
         SetNextStates(model);
         return View("MakeOffer", model);
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    [Route("MakeOffer/Save")]
+    public async Task<IActionResult> OfferSave([FromForm] TripRequestOfferDto model)
+    {
+        throw new NotImplementedException();
     }
 
     [ValidateAntiForgeryToken]

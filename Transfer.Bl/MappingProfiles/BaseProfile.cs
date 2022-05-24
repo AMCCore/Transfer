@@ -60,6 +60,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
 
+        CreateMap<TripRequestDto, TripRequestOfferDto>();
+
         CreateMap<TripRequestDto, DbTripRequest>()
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactEmail))
