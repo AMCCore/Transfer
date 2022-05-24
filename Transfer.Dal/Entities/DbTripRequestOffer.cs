@@ -5,8 +5,8 @@ using Transfer.Common;
 
 namespace Transfer.Dal.Entities;
 
-[Table("TripRequestReplays")]
-public class DbTripRequestReplay : IEntityBase, IEntityWithDateCreated, ISoftDeleteEntity
+[Table("TripRequestOffers")]
+public class DbTripRequestOffer : IEntityBase, IEntityWithDateCreated, ISoftDeleteEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -29,5 +29,9 @@ public class DbTripRequestReplay : IEntityBase, IEntityWithDateCreated, ISoftDel
 
     public virtual DbOrganisation Carrier { get; set; }
 
-    public DateTime? DateValid { get; set; } = DateTime.Now.AddDays(3);
+    public string? Comment { get; set; }
+
+    [Column(TypeName = "money")]
+    [Required]
+    public decimal Amount { get; set; } = 0;
 }

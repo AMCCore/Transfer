@@ -45,6 +45,8 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public virtual ICollection<DbTripRequestReplay> TripRequestReplays { get; set; }
 
+    public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; }
+
     public virtual DbOrganisation? Charterer { get; set; }
 
     [ForeignKey(nameof(Charterer))]
