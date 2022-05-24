@@ -129,6 +129,17 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
             await SetTripOptions(entity, model);
             await SetTripRegions(entity, model);
+
+            var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
+                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(CancellationToken.None);
+            foreach(var orgId in appropriateOrgIds)
+            {
+                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay { 
+                    TripRequestId = entity.Id,
+                    CarrierId = orgId,
+                    DateValid = DateTime.Now.AddDays(4),
+                }, CancellationToken.None);
+            }
         }
         else
         {
