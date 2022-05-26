@@ -121,7 +121,7 @@ public class TripRequestController : BaseStateController
         {
             return NotFound();
         }
-        if(replay.DateValid > DateTime.Now)
+        if(replay.DateValid <= DateTime.Now)
         {
             throw new ArgumentOutOfRangeException("TripRequestReplay");
         }
@@ -178,7 +178,7 @@ public class TripRequestController : BaseStateController
                 }, CancellationToken.None);
             }
 
-
+            await SendReplaysToUsers(entity.Id);
         }
         else
         {
@@ -296,6 +296,8 @@ public class TripRequestController : BaseStateController
         var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
             .Select(x => x.Id).ToListAsync();
 
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+
         foreach (var replay in replays)
         {
             var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
@@ -303,15 +305,14 @@ public class TripRequestController : BaseStateController
 
             foreach(var orgUser in orgUsers)
             {
-                //Convert.ToInt64(orgUser.Value)
                 if (long.TryParse(orgUser.Value, out long chatId))
                 {
                     _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
                     {
                         ChatId = chatId,
-                        Message = "бла бла бла",
-                        Link = $"https://nexttripto.ru/MakeOffer/{replay}",
-                        LinkName = "Откликнуться"
+                        Message = $"Новый заказ на: {trip.TripDate:dd.MM.yyyy HH:mm}\nОткуда: {trip.AddressFrom}\nКуда:{trip.AddressTo}\nЧтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{replay}",
+                        //Link = $"https://nexttripto.ru/MakeOffer/{replay}",
+                        //LinkName = "Откликнуться"
                     });
                 }
             }

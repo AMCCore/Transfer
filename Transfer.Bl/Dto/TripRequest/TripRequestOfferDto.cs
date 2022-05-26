@@ -10,5 +10,5 @@ public class TripRequestOfferDto : TripRequestDto
 {
     public string? Comment { get; set; }
 
-    public decimal Amount { get; set; };
+    public decimal Amount { get; set; }
 }
