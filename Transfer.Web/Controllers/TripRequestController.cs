@@ -123,24 +123,47 @@ public class TripRequestController : BaseStateController
         }
         if(replay.DateValid <= DateTime.Now)
         {
-            throw new ArgumentOutOfRangeException("TripRequestReplay");
+            return BadRequest("Times up");
         }
         if(await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
         {
-            throw new ArgumentNullException("TripRequestOffer");
+            return BadRequest("Already offered");
         }
         
-        var model = Mapper.Map<TripRequestOfferDto>(Mapper.Map<TripRequestDto>(replay.TripRequest));
+        var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
         SetNextStates(model);
+        model.CarrierId = replay.CarrierId;
         return View("MakeOffer", model);
     }
 
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("MakeOffer/Save")]
+    [AllowAnonymous]
     public async Task<IActionResult> OfferSave([FromForm] TripRequestOfferDto model)
     {
-        throw new NotImplementedException();
+        if (model.Id.IsNullOrEmpty())
+        {
+            return BadRequest();
+        }
+        if(model.Amount < 1)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return View("MakeOffer", model);
+        }
+
+        var req = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == model.Id);
+
+        var offer = new DbTripRequestOffer {
+            CarrierId = model.CarrierId,
+            Amount = model.Amount,
+            Comment = model.Comment,
+            TripRequestId = model.Id
+        };
+
+        await UnitOfWork.AddEntityAsync(offer);
+
+        return await RedirectToHomeAsync();
     }
 
     [ValidateAntiForgeryToken]

@@ -28,7 +28,7 @@ public class TgBotController : ControllerBase
 
     [HttpPost]
     [Route(nameof(SendMessageToUser))]
-    public async Task<IActionResult> SendMessageToUser([FromServices] HandleUpdateService handleUpdateService, [FromBody] SendMsgToUserDto message)
+    private async Task<IActionResult> SendMessageToUser([FromServices] HandleUpdateService handleUpdateService, [FromBody] SendMsgToUserDto message)
     {
         await handleUpdateService.SendMessages(message);
         return Ok();

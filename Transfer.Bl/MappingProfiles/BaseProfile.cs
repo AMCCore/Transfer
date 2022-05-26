@@ -43,12 +43,12 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestSearchResultItem>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
-            .ForMember(x => x.Picture, opt => opt.MapFrom(o => GetCarrierLogoId(o) ))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => GetCarrierLogoId(o)))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
-            .ForMember(x => x.ReplaysCount, opt => opt.MapFrom(o => o.TripRequestReplays.Count()));
+            .ForMember(x => x.ReplaysCount, opt => opt.MapFrom(o => o.TripRequestOffers.Count()));
 
         CreateMap<DbTripRequest, TripRequestDto>()
             .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
@@ -60,7 +60,16 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
 
-        CreateMap<TripRequestDto, TripRequestOfferDto>();
+        CreateMap<DbTripRequest, TripRequestOfferDto>()
+            .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
+            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
+            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.IdleTrip.GetEnumGuid())))
+            .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))
+            .ForMember(x => x.ChartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
+            .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
+            .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
+            .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
 
         CreateMap<TripRequestDto, DbTripRequest>()
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactFio))
