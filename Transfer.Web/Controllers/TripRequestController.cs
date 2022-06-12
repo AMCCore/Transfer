@@ -89,7 +89,22 @@ public class TripRequestController : BaseStateController
 
     [HttpGet]
     [Route("TripRequest/{requestId}")]
-    public async Task<IActionResult> TripRequest(Guid requestId)
+    public async Task<IActionResult> TripRequestShow(Guid requestId)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+
+        var model = Mapper.Map<TripRequestWithOffersDto>(entity);
+        SetNextStates(model);
+
+        model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync();
+        return View("Show", model);
+    }
+
+    [HttpGet]
+    [Route("TripRequest/Edit/{requestId}")]
+    public async Task<IActionResult> TripRequestEdit(Guid requestId)
     {
         var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
         if (entity == null)
@@ -117,19 +132,19 @@ public class TripRequestController : BaseStateController
     public async Task<IActionResult> MakeOffer(Guid requestId)
     {
         var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
-        if(replay == null || replay.IsDeleted)
+        if (replay == null || replay.IsDeleted)
         {
             return NotFound();
         }
-        if(replay.DateValid <= DateTime.Now)
+        if (replay.DateValid <= DateTime.Now)
         {
             return BadRequest("Times up");
         }
-        if(await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
         {
             return BadRequest("Already offered");
         }
-        
+
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
         SetNextStates(model);
         model.CarrierId = replay.CarrierId;
@@ -146,7 +161,7 @@ public class TripRequestController : BaseStateController
         {
             return BadRequest();
         }
-        if(model.Amount < 1)
+        if (model.Amount < 1)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
             return View("MakeOffer", model);
@@ -154,7 +169,8 @@ public class TripRequestController : BaseStateController
 
         var req = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == model.Id);
 
-        var offer = new DbTripRequestOffer {
+        var offer = new DbTripRequestOffer
+        {
             CarrierId = model.CarrierId,
             Amount = model.Amount,
             Comment = model.Comment,
@@ -216,7 +232,7 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
-        return RedirectToAction(nameof(TripRequest), new { requestId = model.Id });
+        return RedirectToAction(nameof(TripRequestEdit), new { requestId = model.Id });
     }
 
     private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model)
@@ -326,7 +342,7 @@ public class TripRequestController : BaseStateController
             var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
                 .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginEnum.Telegram)).ToListAsync();
 
-            foreach(var orgUser in orgUsers)
+            foreach (var orgUser in orgUsers)
             {
                 if (long.TryParse(orgUser.Value, out long chatId))
                 {

@@ -55,4 +55,11 @@
 	  <None Include="wwwroot\images\768.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="Views\TripRequest\Show.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
 </Project>

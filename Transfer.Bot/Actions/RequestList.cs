@@ -33,7 +33,7 @@ internal static class RequestList
         foreach(var r in requests)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Заказ от компании {r.Charterer.Name}");
+            sb.AppendLine($"Заказ от: {r.Charterer?.Name ?? r.ContactFio}");
             sb.AppendLine($"Дата отправления: {r.TripDate:dd.MM.yyyy}");
             sb.AppendLine($"Место отправления: {r.AddressFrom}");
             sb.AppendLine($"Место прибытия: {r.AddressTo}");
