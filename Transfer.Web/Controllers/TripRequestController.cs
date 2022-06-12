@@ -118,6 +118,20 @@ public sealed class TripRequestController : BaseStateController
     }
 
     [HttpGet]
+    [Route("TripRequest/Delete/{requestId}")]
+    public async Task<IActionResult> TripRequestDelete(Guid requestId)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+
+        entity.IsDeleted = true;
+
+        await UnitOfWork.SaveChangesAsync();
+        return RedirectToAction(nameof(Search));
+    }
+
+    [HttpGet]
     [Route("TripRequest/New")]
     public IActionResult NewTripRequest()
     {
