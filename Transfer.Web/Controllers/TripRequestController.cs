@@ -23,8 +23,10 @@ using Transfer.Web.Services;
 namespace Transfer.Web.Controllers;
 
 [Authorize]
-public class TripRequestController : BaseStateController
+public sealed class TripRequestController : BaseStateController
 {
+    const string errMsgName = "errMsg";
+
     private HandleUpdateService _handleUpdateService;
 
     public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper, HandleUpdateService handleUpdateService) : base(transferSettings, unitOfWork, logger, mapper)
@@ -134,15 +136,21 @@ public class TripRequestController : BaseStateController
         var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
         if (replay == null || replay.IsDeleted)
         {
-            return NotFound();
+            TempData[errMsgName] = "Поездка не найдена";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return NotFound();
         }
         if (replay.DateValid <= DateTime.Now)
         {
-            return BadRequest("Times up");
+            TempData[errMsgName] = "Поездка уже прошла";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return BadRequest("Times up");
         }
         if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
         {
-            return BadRequest("Already offered");
+            TempData[errMsgName] = "Ваше предложение уже учтено";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return BadRequest("Already offered");
         }
 
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
@@ -179,7 +187,7 @@ public class TripRequestController : BaseStateController
 
         await UnitOfWork.AddEntityAsync(offer);
 
-        return await RedirectToHomeAsync();
+        return RedirectToAction(nameof(MakeOfferSuccess));
     }
 
     [ValidateAntiForgeryToken]
@@ -356,5 +364,27 @@ public class TripRequestController : BaseStateController
                 }
             }
         }
+    }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Success")]
+    public IActionResult MakeOfferSuccess()
+    {
+        return View("Success");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Error")]
+    public async Task<IActionResult> MakeOfferError()
+    {
+        var msg = TempData[errMsgName] as string;
+        if(string.IsNullOrWhiteSpace(msg))
+        {
+            return await RedirectToHomeAsync();
+        }
+        ViewBag.Message = msg;
+        return View("Error");
     }
 }
