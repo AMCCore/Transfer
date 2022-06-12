@@ -5,9 +5,10 @@ using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 using Transfer.Bot;
+using Transfer.Bot.Dtos;
 using Transfer.Common;
+using Transfer.Bot.Actions;
 
 namespace Transfer.Web.Services;
 
@@ -16,18 +17,21 @@ public class HandleUpdateService
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMailModule _mailModule;
 
     public HandleUpdateService(
         ITelegramBotClient botClient,
         ILogger<HandleUpdateService> logger,
-        IUnitOfWork unitOfWork,
-        IMailModule mailModule)
+        IUnitOfWork unitOfWork
+    )
     {
         _botClient = botClient;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _mailModule = mailModule;
+    }
+
+    public async Task SendMessages(SendMsgToUserDto message)
+    {
+        await _botClient.SendMessageToUser(message);
     }
 
     public async Task EchoAsync(Update update)
@@ -75,5 +79,4 @@ public class HandleUpdateService
         _logger.LogInformation("HandleError: {ErrorMessage}", ErrorMessage);
         return Task.CompletedTask;
     }
-
 }

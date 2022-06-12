@@ -18,14 +18,20 @@ using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
+using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers;
 
 [Authorize]
-public class TripRequestController : BaseStateController
+public sealed class TripRequestController : BaseStateController
 {
-    public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper)
+    const string errMsgName = "errMsg";
+
+    private HandleUpdateService _handleUpdateService;
+
+    public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper, HandleUpdateService handleUpdateService) : base(transferSettings, unitOfWork, logger, mapper)
     {
+        _handleUpdateService = handleUpdateService;
     }
 
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
@@ -85,7 +91,22 @@ public class TripRequestController : BaseStateController
 
     [HttpGet]
     [Route("TripRequest/{requestId}")]
-    public async Task<IActionResult> TripRequest(Guid requestId)
+    public async Task<IActionResult> TripRequestShow(Guid requestId)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+
+        var model = Mapper.Map<TripRequestWithOffersDto>(entity);
+        SetNextStates(model);
+
+        model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync();
+        return View("Show", model);
+    }
+
+    [HttpGet]
+    [Route("TripRequest/Edit/{requestId}")]
+    public async Task<IActionResult> TripRequestEdit(Guid requestId)
     {
         var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
         if (entity == null)
@@ -107,6 +128,68 @@ public class TripRequestController : BaseStateController
         });
     }
 
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/{requestId}")]
+    public async Task<IActionResult> MakeOffer(Guid requestId)
+    {
+        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
+        if (replay == null || replay.IsDeleted)
+        {
+            TempData[errMsgName] = "Поездка не найдена";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return NotFound();
+        }
+        if (replay.DateValid <= DateTime.Now)
+        {
+            TempData[errMsgName] = "Поездка уже прошла";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return BadRequest("Times up");
+        }
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
+        {
+            TempData[errMsgName] = "Ваше предложение уже учтено";
+            return RedirectToAction(nameof(MakeOfferError));
+            //return BadRequest("Already offered");
+        }
+
+        var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
+        SetNextStates(model);
+        model.CarrierId = replay.CarrierId;
+        return View("MakeOffer", model);
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    [Route("MakeOffer/Save")]
+    [AllowAnonymous]
+    public async Task<IActionResult> OfferSave([FromForm] TripRequestOfferDto model)
+    {
+        if (model.Id.IsNullOrEmpty())
+        {
+            return BadRequest();
+        }
+        if (model.Amount < 1)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return View("MakeOffer", model);
+        }
+
+        var req = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == model.Id);
+
+        var offer = new DbTripRequestOffer
+        {
+            CarrierId = model.CarrierId,
+            Amount = model.Amount,
+            Comment = model.Comment,
+            TripRequestId = model.Id
+        };
+
+        await UnitOfWork.AddEntityAsync(offer);
+
+        return RedirectToAction(nameof(MakeOfferSuccess));
+    }
+
     [ValidateAntiForgeryToken]
     [HttpPost]
     public async Task<IActionResult> Save([FromForm] TripRequestDto model)
@@ -121,7 +204,7 @@ public class TripRequestController : BaseStateController
         {
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
-            if(string.IsNullOrWhiteSpace(entity.ContactFio))
+            if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
                 entity.ContactFio = entity.СhartererName;
             }
@@ -129,6 +212,20 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
             await SetTripOptions(entity, model);
             await SetTripRegions(entity, model);
+
+            var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
+                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(CancellationToken.None);
+            foreach (var orgId in appropriateOrgIds)
+            {
+                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+                {
+                    TripRequestId = entity.Id,
+                    CarrierId = orgId,
+                    DateValid = DateTime.Now.AddDays(4),
+                }, CancellationToken.None);
+            }
+
+            await SendReplaysToUsers(entity.Id);
         }
         else
         {
@@ -143,18 +240,19 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
 
-        return RedirectToAction(nameof(TripRequest), new { requestId = model.Id });
+        return RedirectToAction(nameof(TripRequestEdit), new { requestId = model.Id });
     }
 
     private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model)
     {
-        foreach(var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
+        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
         {
             await UnitOfWork.DeleteAsync(to, CancellationToken.None);
         }
-        if(model.ChildTrip)
+        if (model.ChildTrip)
         {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption { 
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
@@ -198,7 +296,7 @@ public class TripRequestController : BaseStateController
 
         if (currentState == TripRequestStateEnum.New.GetEnumGuid())
         {
-            if(isTripRequestAdmin)
+            if (isTripRequestAdmin)
             {
                 res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Отменить");
                 res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Закрыть сбор предложений");
@@ -212,7 +310,7 @@ public class TripRequestController : BaseStateController
     /// </summary>
     private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model)
     {
-        if(model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
+        if (model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
         {
             var reg = await GetOrCreateRegion(model.RegionFromName);
             entity.RegionFromId = reg.Id;
@@ -238,5 +336,55 @@ public class TripRequestController : BaseStateController
             await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
         }
         return reg;
+    }
+
+    private async Task SendReplaysToUsers(Guid tripRequestId)
+    {
+        var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
+            .Select(x => x.Id).ToListAsync();
+
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+
+        foreach (var replay in replays)
+        {
+            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginEnum.Telegram)).ToListAsync();
+
+            foreach (var orgUser in orgUsers)
+            {
+                if (long.TryParse(orgUser.Value, out long chatId))
+                {
+                    _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                    {
+                        ChatId = chatId,
+                        Message = $"Новый заказ на: {trip.TripDate:dd.MM.yyyy HH:mm}\nОткуда: {trip.AddressFrom}\nКуда:{trip.AddressTo}\nЧтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{replay}",
+                        //Link = $"https://nexttripto.ru/MakeOffer/{replay}",
+                        //LinkName = "Откликнуться"
+                    });
+                }
+            }
+        }
+    }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Success")]
+    public IActionResult MakeOfferSuccess()
+    {
+        return View("Success");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Error")]
+    public async Task<IActionResult> MakeOfferError()
+    {
+        var msg = TempData[errMsgName] as string;
+        if(string.IsNullOrWhiteSpace(msg))
+        {
+            return await RedirectToHomeAsync();
+        }
+        ViewBag.Message = msg;
+        return View("Error");
     }
 }

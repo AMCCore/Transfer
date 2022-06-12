@@ -23,7 +23,7 @@
             }
             else
             {
-                <a class="top-button-a" asp-action="TripRequest" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
+                <a class="top-button-a" asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
             }
         </div>
     </div>

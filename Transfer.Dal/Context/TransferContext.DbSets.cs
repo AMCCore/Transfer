@@ -31,6 +31,7 @@ public partial class TransferContext
     public virtual DbSet<DbTripRequest> DbTripRequests { get; set; }
     public virtual DbSet<DbTripRequestOption> DbTripRequestOptions { get; set; }
     public virtual DbSet<DbTripRequestReplay> DbTripRequestReplays { get; set; }
+    public virtual DbSet<DbTripRequestOffer> DbTripRequestOffers { get; set; }
     public virtual DbSet<DbRegion> DdRegions { get; set; }
 }
 

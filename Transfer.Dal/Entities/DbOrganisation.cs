@@ -123,4 +123,6 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public OrganisationStateEnum State { get; set; } = OrganisationStateEnum.Checked;
 
     public virtual ICollection<DbTripRequestReplay> TripRequestReplays { get; set; } = new List<DbTripRequestReplay>();
+
+    public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; } = new List<DbTripRequestOffer>();
 }

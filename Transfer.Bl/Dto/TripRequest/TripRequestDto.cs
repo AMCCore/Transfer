@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.TripRequest
 {
-    public sealed class TripRequestDto : StateMachineDto
+    public class TripRequestDto : StateMachineDto
     {
         public Guid Id { get; set; }
 

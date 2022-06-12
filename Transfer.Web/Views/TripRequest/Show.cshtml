@@ -1,0 +1,124 @@
+﻿@model Transfer.Bl.Dto.TripRequest.TripRequestWithOffersDto
+@using Transfer.Bl.Dto
+@using Transfer.Common.Extensions
+
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/TripRequest/Search.css" />
+}
+
+    @{
+    var TripOptions = new List<TripOption>();
+
+}
+
+<div class="container">
+    <div class="row blank-row"></div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripRequest" asp-action="Search">Поездки</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;
+            <a class="top-button-a" asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-10">
+            <h1 style="color: #0f4c71">Просмотр заказа</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <hr style="color: #fff; border: dashed 1px #007896;">
+    <div class="row">
+        <div class="col-12">
+            <div class="container trip-request">
+                <div class="row blank-row"></div>
+                <div class="row">
+                    <div class="col-9">
+                        <div class="row">
+                            <div class="t-col col-12"><span style="font-size: 1.2rem;">Заказчик: @Model.ChartererName</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="row">
+                            <div class="col-12 t-col"><strong>Дата:</strong> @($"{Model.TripDate:dd.MM.yyyy HH:mm}")</div>
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestEdit" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>редактировать</span></a></div>
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>отменить</span></a></div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="t-col col-12"><i class="fas fa-map-marked"></i> @Model.AddressFrom</div>
+                            <div class="t-col col-12"><i class="fas fa-map-marked-alt"></i> @Model.AddressTo</div>
+                            @if (!string.IsNullOrWhiteSpace(Model.Description))
+                            {
+                                <div class="t-col col-12"><i class="fas fa-comment-dots"></i> @Model.Description</div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="col-12 t-col"><strong>Пассажиров:</strong> @Model.Passengers</div>
+                        <div class="col-12 t-col">
+                            <strong>Особенности поездки:</strong><br />
+                            @await Html.PartialAsync("~/Views/Shared/_TripOptions.cshtml", Model.TripOptions)
+                        </div>
+                    </div>
+                </div>
+                <div class="row blank-row"></div>
+            </div>
+        </div>
+        <div class="row blank-row"></div>
+    </div>
+    <hr style="color: #fff; border: dashed 1px #007896;">
+    @if (Model.Offers.Any())
+    {
+        <div class="row">
+            <div class="t-col col-10">
+                <h6>Отклики:</h6>
+            </div>
+        </div>
+        @foreach (var o in Model.Offers)
+        {
+            <div class="row">
+                <div class="col-12">
+                    <div class="container trip-request">
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="t-col col-md-9 col-12"><span style="font-size: 1.2rem;">@o.Name</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i></div>
+                            <div class="t-col col-md-3 col-12"><strong>Цена:</strong> @($"{o.Amount:c}")</div>
+                        </div>
+                        <div class="row">
+                            <div class="t-col col-12"><i class="fas fa-comment-dots"></i> @o.Comment</div>
+                        </div>
+                        <div class="row">
+                            <div class="t-col col-12"><i class="far fa-user-circle"></i> @o.ContactFio, <a href="tel:@o.ContactPhone">@o.ContactPhone</a>, <a href="mailto:@o.ContactEmail">@o.ContactEmail</a></div>
+                        </div>
+                        <div class="row blank-row"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+        }
+        <hr style="color: #fff; border: dashed 1px #007896;">
+    }
+</div>
