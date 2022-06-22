@@ -9,5 +9,8 @@ public enum OrganisationAssetType
 
     [Description("Водители")]
     Driver,
+
+    [Description("Пользователи")]
+    User,
 }
 

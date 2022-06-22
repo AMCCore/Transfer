@@ -136,6 +136,13 @@ public class BaseProfile : Profile
             .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
+        CreateMap<DbAccount, OrganisationAssetDto>()
+            .ForMember(x => x.Picture, opt => opt.Ignore())
+            .ForMember(x => x.Phone, opt => opt.MapFrom(o => o.Phone))
+            .ForMember(x => x.EMail, opt => opt.MapFrom(o => o.Email))
+            .ForMember(x => x.Name, opt => opt.MapFrom(o => o.PersonData != null ? $"{o.PersonData.LastName} {o.PersonData.FirstName} {o.PersonData.MiddleName}".Trim() : string.Empty));
+
+
         CreateMap<DbBus, BusDto>()
             .ForMember(x => x.OsagoFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Inshurance).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.RegFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Reg).Select(p => p.FileId).FirstOrDefault()))

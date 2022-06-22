@@ -38,5 +38,11 @@ public class DbAccount : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
 
     [ForeignKey(nameof(PersonData))]
     public Guid? PersonDataId { get; set; }
+
+    /// <summary>
+    /// Phone
+    /// </summary>
+    [MaxLength(1000)]
+    public string? Phone { get; set; }
 }
 

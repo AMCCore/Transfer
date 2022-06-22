@@ -252,6 +252,13 @@ public class CarrierController : BaseController
             var entity = await query.Skip(filter.StartRecord).Take(filter.PageSize).ToListAsync(CancellationToken.None);
             entitys = entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList();
         }
+        else if (filter.AssetType == OrganisationAssetType.User)
+        {
+            var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted && x.Id == filter.OrganisationId).SelectMany(x => x.Accounts).Where(x => !x.Account.IsDeleted).Select(x => x.Account);
+            totalCount = await query.CountAsync(CancellationToken.None);
+            var entity = await query.Skip(filter.StartRecord).Take(filter.PageSize).ToListAsync(CancellationToken.None);
+            entitys = entity.Select(ss => Mapper.Map<OrganisationAssetDto>(ss)).ToList();
+        }
 
         filter.Results = new CommonPagedList<OrganisationAssetDto>(entitys, filter.PageNumber, filter.PageSize, totalCount);
 

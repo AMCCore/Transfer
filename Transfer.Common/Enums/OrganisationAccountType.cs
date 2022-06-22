@@ -17,5 +17,12 @@ public enum OrganisationAccountType
     /// </summary>
     [Description("Оператор")]
     [EnumGuid("FBAD3F45-2D85-4A94-975D-88619ED0ACBC")]
-    Operator
+    Operator,
+
+    /// <summary>
+    /// Оператор
+    /// </summary>
+    [Description("Водитель")]
+    [EnumGuid("8EE03426-5245-4D33-BEB5-6D164D86A9A7")]
+    Driver
 }
