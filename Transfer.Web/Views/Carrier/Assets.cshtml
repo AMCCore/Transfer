@@ -7,7 +7,7 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.OrganisationId)
     <div class="row">
-        <div class="col-8 t-col dark-text">
+        <div class="col-6 t-col dark-text">
             <h4>Активы компании</h4>
         </div>
         @foreach (var c in System.Enum.GetValues(typeof(Transfer.Web.Models.OrganisationAssetType)).OfType<Transfer.Web.Models.OrganisationAssetType>())
@@ -64,42 +64,40 @@
         </div>*@
             <div class="col-12 assert-info">
                 <div class="row">
-                    <div class="col-12"><strong>@c.Name</strong></div>
+                    <div class="col-12 t-col">
+                        <strong>@c.Name</strong>
+                    </div>
                 </div>
                 @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
-                        <div class="col-12">Гос. номер: @c.LicenseNumber</div>
+                        <div class="col-12 t-col">Гос. номер: @c.LicenseNumber</div>
                     </div>
                 }
                 @if (c.PeopleCopacity > 0)
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
-                        <div class="col-12">Вместимость: @c.PeopleCopacity чел.</div>
+                        <div class="col-12 t-col">Вместимость: @c.PeopleCopacity чел.</div>
                     </div>
                 }
                 @if (!string.IsNullOrWhiteSpace(c.Phone))
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
-                        <div class="col-12 contacts"><a href="tel: @c.Phone"><i class="fas fa-phone-alt"></i> @c.Phone</a></div>
+                        <div class="col-12 t-col contacts"><a href="tel: @c.Phone"><i class="fas fa-phone-alt"></i> @c.Phone</a></div>
                     </div>
                 }
 
                 @if (!string.IsNullOrWhiteSpace(c.EMail))
                 {
-                    <div class="row blank-row"></div>
                     <div class="row">
-                        <div class="col-12 contacts"><a href="mailto: @c.EMail"><i class="far fa-envelope"></i> @c.EMail</a></div>
+                        <div class="col-12 t-col contacts"><a href="mailto: @c.EMail"><i class="far fa-envelope"></i> @c.EMail</a></div>
                     </div>
                 }
 
                 @if (Model.AssetType == OrganisationAssetType.Bus)
                 {
                     <div class="row">
-                        <div class="col-12 offset-md-10 col-md-2 go">
+                        <div class="col-12 t-col offset-md-10 col-md-2 go">
                             <a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@Model.OrganisationId" asp-route-busId="@c.Id"><span>Подробнее</span></a>
                         </div>
                     </div>

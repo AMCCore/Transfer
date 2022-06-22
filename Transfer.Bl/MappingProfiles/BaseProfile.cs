@@ -138,8 +138,6 @@ public class BaseProfile : Profile
 
         CreateMap<DbAccount, OrganisationAssetDto>()
             .ForMember(x => x.Picture, opt => opt.Ignore())
-            .ForMember(x => x.Phone, opt => opt.MapFrom(o => o.Phone))
-            .ForMember(x => x.EMail, opt => opt.MapFrom(o => o.Email))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => o.PersonData != null ? $"{o.PersonData.LastName} {o.PersonData.FirstName} {o.PersonData.MiddleName}".Trim() : string.Empty));
 
 
