@@ -1,0 +1,167 @@
+﻿@model Transfer.Bl.Dto.Organisation.OrganisationAccountDto
+@using Transfer.Common.Extensions
+
+@{
+}
+
+@section Scripts {
+    <script src="~/js/BasicSave.js" crossorigin="anonymous"></script>
+}
+
+    <div class="container">
+        <div class="row blank-row"></div>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12 crumbs">
+                ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>
+                &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
+                &nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="CarrierItem" asp-controller="Carrier" asp-route-carrierId="@Model.OrganisationId">@Model.OrganisationName</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
+                @if (Model.Id.IsNullOrEmpty())
+            {
+                @:Новый пользователь
+            }
+            else
+            {
+                <a class="top-button-a" asp-action="CarrierAccountItem" asp-controller="Account" asp-route-carrierId="@Model.OrganisationId" asp-route-accountId="@Model.Id">@($"{Model.LastName} {Model.FirstName} {Model.MiddleName}".Trim())</a>
+            }
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+        <div class="t-col col-12 col-md-6 text-end crb-location">
+            <i class="fas fa-location-arrow"></i> Ваш регион: <span class="city">Александровск-Сахалинский</span>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">@(Model.Id.IsNullOrEmpty() ? "Добавление нового пользователя" : "Редактирование пользователя")</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+    <form asp-controller="Account" asp-action="CarrierAccountSave" method="post" id="mainSaveForm">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.LastUpdateTick)
+        @Html.HiddenFor(x => x.OrganisationId)
+        @Html.HiddenFor(x => x.OrganisationName)
+
+        <div class="container the-form">
+            <div class="row blank-row"></div>
+            <h2 class="white-text">Основные данные:</h2>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Фамилия: <span class="red-text">*</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="LastName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Имя: <span class="red-text">*</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="FirstName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Отчество: <span class="red-text">*</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="MiddleName" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row form-row">
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Телефон:
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="Phone" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t-col col-12 col-md-4">
+                    <div class="row">
+                        <div class="t-col col-12 white-text">
+                            Email: <span class="red-text">*</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="t-col col-12 form-group">
+                            <div class="input-group input-group-icon">
+                                <i class="fas fa-pencil-alt input-group-text"></i>
+                                <input asp-for="Email" class="form-control" readonly="@(!Model.Id.IsNullOrEmpty())" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+            <div class="row form-row">
+                <div class="t-col the-error col-10">
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
+                    {
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
+                    }
+                </div>
+@*                <div class="t-col col-2 text-end">
+                    <button type="submit" class="button-one">Создать как водителя</button>
+                </div>*@
+                <div class="t-col col-2 text-end">
+                    <button type="submit" class="button-one">Сохранить</button>
+                </div>
+            </div>
+            <div class="row blank-row"></div>
+        </div>
+        <div class="row blank-row"></div>
+    </form>
+    <div class="row blank-row"></div>
+</div>

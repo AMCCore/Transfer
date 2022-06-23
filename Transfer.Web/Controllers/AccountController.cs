@@ -9,7 +9,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Transfer.Bl.Dto.Organisation;
 using Transfer.Common;
+using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 
@@ -42,8 +44,71 @@ public class AccountController : BaseController
         if (entity == null)
             return NotFound();
 
-        throw new NotImplementedException();
-        //return View("Save", new BusDto { OrganisationId = carrierId, OrganisationName = entity.Name });
+        return View("CarrierAccountSave", new OrganisationAccountDto { OrganisationId = carrierId, OrganisationName = entity.Name });
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    public async Task<IActionResult> CarrierAccountSave([FromForm] OrganisationAccountDto accountModel)
+    {
+        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == accountModel.OrganisationId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return View("CarrierAccountSave", accountModel);
+        }
+
+        if (accountModel.Id.IsNullOrEmpty())
+        {
+            if(await UnitOfWork.GetSet<DbAccount>().AnyAsync(ss => ss.Email == accountModel.Email, CancellationToken.None))
+            {
+                ViewBag.ErrorMsg = "Пользователь с таким Email уже имеется в системе";
+                return View("CarrierAccountSave", accountModel);
+            }
+
+            var account = new DbAccount {
+                Id = Guid.NewGuid(),
+                IsDeleted = false,
+                Phone = accountModel.Phone,
+                Email = accountModel.Email,
+                PersonData = new DbPersonData { 
+                    FirstName = accountModel.FirstName,
+                    LastName = accountModel.LastName,
+                    MiddleName = accountModel.MiddleName,
+                    DocumentSeries = string.Empty,
+                    DocumentNumber = string.Empty,
+                    DocumentSubDivisionCode = string.Empty,
+                    DocumentIssurer = string.Empty,
+                    DocumentDateOfIssue = DateTime.MinValue,
+                    RegistrationAddress = string.Empty,
+                },
+                Password = BCrypt.Net.BCrypt.HashString(Guid.NewGuid().ToString())
+
+        };
+
+            await UnitOfWork.AddEntityAsync(account, CancellationToken.None);
+
+            accountModel.Id = account.Id;
+            await UnitOfWork.AddEntityAsync(new DbOrganisationAccount { 
+                AccountId = account.Id,
+                OrganisationId = accountModel.OrganisationId,
+                AccountType = Common.Enums.OrganisationAccountType.Operator
+            }, CancellationToken.None);
+        }
+        else
+        {
+            var account = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Id == accountModel.Id, CancellationToken.None);
+
+            if (account.LastUpdateTick != accountModel.LastUpdateTick)
+                throw new InvalidOperationException();
+
+            account.Phone = accountModel.Phone;
+        }
+
+        return RedirectToAction(nameof(CarrierAccountItem), new { carrierId = accountModel.OrganisationId, accountId = accountModel.Id });
     }
 
     [HttpGet]
