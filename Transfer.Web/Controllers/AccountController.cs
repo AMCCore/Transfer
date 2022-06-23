@@ -100,29 +100,38 @@ public class AccountController : BaseController
         }
         else
         {
-            var account = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Id == accountModel.Id, CancellationToken.None);
+            var account = await UnitOfWork.GetSet<DbAccount>().Include(x => x.PersonData).FirstOrDefaultAsync(ss => ss.Id == accountModel.Id, CancellationToken.None);
 
             if (account.LastUpdateTick != accountModel.LastUpdateTick)
                 throw new InvalidOperationException();
 
             account.Phone = accountModel.Phone;
+            account.PersonData.FirstName = accountModel.FirstName;
+            account.PersonData.LastName = accountModel.LastName;
+            account.PersonData.MiddleName = accountModel.MiddleName;
+
+            await UnitOfWork.SaveChangesAsync();
         }
 
-        return RedirectToAction(nameof(CarrierAccountItem), new { carrierId = accountModel.OrganisationId, accountId = accountModel.Id });
+        return RedirectToAction(nameof(CarrierController.CarrierItem), "Carrier", new { carrierId = accountModel.OrganisationId });
     }
 
     [HttpGet]
     [Route("Carrier/{carrierId}/Account/{accountId}")]
     public async Task<IActionResult> CarrierAccountItem([Required] Guid carrierId, [Required] Guid accountId)
     {
-        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == carrierId) && ss.Id == accountId, CancellationToken.None);
+        var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
+        if (org == null)
+            return NotFound();
+
+        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == org.Id) && ss.Id == accountId, CancellationToken.None);
         if (entity == null)
             return NotFound();
 
-        throw new NotImplementedException();
+        var res = Mapper.Map<OrganisationAccountDto>(entity);
+        res.OrganisationId = org.Id;
+        res.OrganisationName = org.Name;
 
-        //var res = Mapper.Map<BusDto>(entity);
-
-        //return View("Save", res);
+        return View("CarrierAccountSave", res);
     }
 }
