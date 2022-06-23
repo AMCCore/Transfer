@@ -2,15 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Transfer.Bl.Dto;
 using Transfer.Bl.Dto.Bus;
 using Transfer.Bl.Dto.Carrier;
 using Transfer.Bl.Dto.Driver;
+using Transfer.Bl.Dto.Organisation;
 using Transfer.Bl.Dto.TripRequest;
-using Transfer.Common.Extensions;
 using Transfer.Common.Enums;
+using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Bl.MappingProfiles;
@@ -189,6 +188,11 @@ public class BaseProfile : Profile
             .ForMember(x => x.OrganisationId, opt => opt.Ignore())
             .ForMember(x => x.State, opt => opt.Ignore())
             .ForMember(x => x.DriverFiles, opt => opt.Ignore());
+
+        CreateMap<DbAccount, OrganisationAccountDto>()
+            .ForMember(x => x.LastName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.LastName : string.Empty))
+            .ForMember(x => x.MiddleName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.MiddleName : string.Empty))
+            .ForMember(x => x.FirstName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.FirstName : string.Empty));
     }
 
     private static string[] BusOptionsConvert(DbBus bus)
