@@ -23,7 +23,7 @@ public class AccountDto
     /// <summary>
     /// Отчество
     /// </summary>
-    public string MiddleName { get; set; }
+    public string? MiddleName { get; set; }
 
     /// <summary>
     /// Пол

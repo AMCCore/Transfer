@@ -63,11 +63,30 @@
         </div>
         </div>*@
             <div class="col-12 assert-info">
-                <div class="row">
-                    <div class="col-12 t-col">
-                        <strong>@c.Name</strong>
+                @if (Model.AssetType == OrganisationAssetType.Bus)
+                {
+                    <div class="row">
+                        <div class="col-12 t-col dark-text contacts">
+                            <a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@Model.OrganisationId" asp-route-busId="@c.Id">@c.Name</a>
+                        </div>
                     </div>
-                </div>
+                }
+                else if (Model.AssetType == OrganisationAssetType.Driver)
+                {
+                    <div class="row">
+                        <div class="col-12 t-col dark-text contacts">
+                            <a asp-action="DriverItem" asp-controller="Driver" asp-route-carrierId="@Model.OrganisationId" asp-route-driverId="@c.Id">@c.Name</a>
+                        </div>
+                    </div>
+                }
+                else if (Model.AssetType == OrganisationAssetType.User)
+                {
+                    <div class="row">
+                        <div class="col-12 t-col dark-text contacts">
+                            <a asp-action="CarrierAccountItem" asp-controller="Account" asp-route-carrierId="@Model.OrganisationId" asp-route-accountId="@c.Id">@c.Name</a>
+                        </div>
+                    </div>
+                }
                 @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
                 {
                     <div class="row">

@@ -108,12 +108,12 @@ public class AccountController : BaseController
             account.Phone = accountModel.Phone;
             account.PersonData.FirstName = accountModel.FirstName;
             account.PersonData.LastName = accountModel.LastName;
-            account.PersonData.MiddleName = accountModel.MiddleName;
+            account.PersonData.MiddleName = accountModel.MiddleName ?? string.Empty;
 
             await UnitOfWork.SaveChangesAsync();
         }
 
-        return RedirectToAction(nameof(CarrierController.CarrierItem), "Carrier", new { carrierId = accountModel.OrganisationId });
+        return RedirectToAction(nameof(CarrierAccountItem), new { carrierId = accountModel.OrganisationId, accountId = accountModel.Id });
     }
 
     [HttpGet]
