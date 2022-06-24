@@ -77,7 +77,7 @@ public class AccountController : BaseController
                 PersonData = new DbPersonData { 
                     FirstName = accountModel.FirstName,
                     LastName = accountModel.LastName,
-                    MiddleName = accountModel.MiddleName,
+                    MiddleName = accountModel.MiddleName ?? string.Empty,
                     DocumentSeries = string.Empty,
                     DocumentNumber = string.Empty,
                     DocumentSubDivisionCode = string.Empty,

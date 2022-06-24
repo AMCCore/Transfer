@@ -17,16 +17,19 @@ public class HandleUpdateService
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<HandleUpdateService> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMailModule _mailModule;
 
     public HandleUpdateService(
         ITelegramBotClient botClient,
         ILogger<HandleUpdateService> logger,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IMailModule mailModule
     )
     {
         _botClient = botClient;
         _logger = logger;
         _unitOfWork = unitOfWork;
+        _mailModule = mailModule;
     }
 
     public async Task SendMessages(SendMsgToUserDto message)
@@ -44,7 +47,7 @@ public class HandleUpdateService
             // UpdateType.ShippingQuery:
             // UpdateType.PreCheckoutQuery:
             // UpdateType.Poll:
-            UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _unitOfWork!, _logger),
+            UpdateType.Message => _botClient.OnMessageReceived(update.Message!, _unitOfWork!, _logger, _mailModule),
             //UpdateType.EditedMessage => BotOnMessageReceived(update.EditedMessage!),
             UpdateType.CallbackQuery => _botClient.OnCallbackQueryReceived(update.CallbackQuery!, _unitOfWork!, _logger),
             //UpdateType.InlineQuery => BotOnInlineQueryReceived(update.InlineQuery!),
