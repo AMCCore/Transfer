@@ -43,7 +43,7 @@ internal static class RequestList
         foreach(var r in await requests.ToListAsync())
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Новый заказ №{r.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
+            sb.AppendLine($"Заказ №{r.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
             sb.AppendLine($"Заказчик: {(!r.ChartererId.IsNullOrEmpty() ? r.Charterer.Name : r.СhartererName)}");
             sb.AppendLine($"Дата отправления: {r.TripDate:dd.MM.yyyy HH:mm}");
             sb.AppendLine($"Место отправления: {r.AddressFrom}");
