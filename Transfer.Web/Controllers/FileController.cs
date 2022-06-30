@@ -117,7 +117,7 @@ public class FileController : BaseController
     [HttpGet]
     [Route("static/{code}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetStatic(string code)
+    public IActionResult GetStatic(string code)
     {
         if(static_lib.ContainsKey(code))
         {
