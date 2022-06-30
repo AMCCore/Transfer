@@ -37,7 +37,7 @@
                 @if (Transfer.Web.Models.Security.IsAuthenticated)
                 {
                     <div class="col-lg-3 col-md-12 text-center t-col avatar">
-                        <img src="~/images/Girl_operator.png" alt=""/>&nbsp;&nbsp;&nbsp;<a asp-controller="Account" asp-action="Index">@Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName</a>
+                        <i class="far fa-user-circle" style="color: #0f4c71; font-size: 1.2em;"></i>&nbsp;&nbsp;&nbsp;<a asp-controller="Account" asp-action="Index">@Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName</a>
                     </div>
                     <div class="col-lg-2 offset-lg-2 text-center">
                         <a class="top-button-a" asp-controller="Auth" asp-action="LogOut">
