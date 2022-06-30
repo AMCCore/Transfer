@@ -32,15 +32,15 @@ internal static class RequestList
 
         var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync();
 
-        var requests = await qRequests.Include(x => x.TripRequestOffers).Include(x => x.TripRequestReplays).ToListAsync();
-        if(!requests.Any())
+        var requests = qRequests.Include(x => x.Identifiers).Include(x => x.TripRequestOffers).Include(x => x.TripRequestReplays);
+        if(!await requests.AnyAsync())
         {
             return await bot.SendTextMessageAsync(
                 chatId: Sender,
                 text: "Актуальных заказов не найдено",
                 replyMarkup: BaseMenu.backtomenu);
         }
-        foreach(var r in requests)
+        foreach(var r in await requests.ToListAsync())
         {
             var sb = new StringBuilder();
             sb.AppendLine($"Новый заказ №{r.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
