@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Common.Settings;
+using System.Collections.Generic;
 
 namespace Transfer.Web.Controllers;
 
@@ -104,5 +105,34 @@ public class FileController : BaseController
         return NotFound();
     }
 
+    private static readonly Dictionary<string, string> static_lib = new()
+    {
+        { "sd9dzh", "Договор ВОУ (агентское вознаграждение).docx" },
+        { "6thrai", "Лицензионное соглашение.docx" },
+        { "v8ls7e", "Политика конфиденциальности.docx" },
+        { "5r125k", "Партнерское соглашение на осуществление перевозок.docx" },
+        { "62s5ut", "Договор ВОУ (абонентская плата).docx" },
+    };
 
+    [HttpGet]
+    [Route("static/{code}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetStatic(string code)
+    {
+        if(static_lib.ContainsKey(code))
+        {
+            var ext = GetFileExtention(static_lib[code]);
+            var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/Static/{code}.{ext}";
+            if(System.IO.File.Exists(path))
+            {
+                using var fileStream = System.IO.File.OpenRead(path);
+                //using var ms = new MemoryStream();
+                //fileStream.CopyTo(ms);
+                //var byts = ms.ToArray();
+                return File(fileStream, "application/octet-stream", static_lib[code], true);
+            }
+        }
+        
+        return NotFound();
+    }
 }
