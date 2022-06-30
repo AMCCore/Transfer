@@ -10,6 +10,7 @@ using Telegram.Bot.Types;
 using Transfer.Bot.Dtos;
 using Transfer.Bot.Menu;
 using Transfer.Common;
+using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Bot.Actions;
@@ -42,17 +43,28 @@ internal static class RequestList
         foreach(var r in requests)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Заказ от: {r.Charterer?.Name ?? r.ContactFio}");
-            sb.AppendLine($"Дата отправления: {r.TripDate:dd.MM.yyyy}");
+            sb.AppendLine($"Новый заказ №{r.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
+            sb.AppendLine($"Заказчик: {(!r.ChartererId.IsNullOrEmpty() ? r.Charterer.Name : r.СhartererName)}");
+            sb.AppendLine($"Дата отправления: {r.TripDate:dd.MM.yyyy HH:mm}");
             sb.AppendLine($"Место отправления: {r.AddressFrom}");
             sb.AppendLine($"Место прибытия: {r.AddressTo}");
             sb.AppendLine($"Кол-во пассажиров: {r.Passengers}");
+            
+            //sb.AppendLine($"Заказ от: {r.Charterer?.Name ?? r.ContactFio}");
+            //sb.AppendLine($"Дата отправления: {r.TripDate:dd.MM.yyyy}");
+            //sb.AppendLine($"Место отправления: {r.AddressFrom}");
+            //sb.AppendLine($"Место прибытия: {r.AddressTo}");
+            //sb.AppendLine($"Кол-во пассажиров: {r.Passengers}");
 
             var rep = r.TripRequestReplays.FirstOrDefault(x => myOrgIds.Any(y => y == x.CarrierId));
             if (rep != null && !r.TripRequestOffers.Any(x => myOrgIds.Any(y => y == x.CarrierId)))
             {
                 sb.AppendLine();
-                sb.AppendLine($"Чтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{rep.Id}");
+                sb.AppendLine("Чтобы откликнуться перейдите по ссылке");
+                sb.AppendLine($"https://nexttripto.ru/MakeOffer/{rep.Id}");
+
+                //sb.AppendLine();
+                //sb.AppendLine($"Чтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{rep.Id}");
             }
 
             await bot.SendTextMessageAsync(

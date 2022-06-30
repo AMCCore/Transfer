@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto.TripRequest;
@@ -362,7 +363,7 @@ public sealed class TripRequestController : BaseStateController
         var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
             .Select(x => x.Id).ToListAsync();
 
-        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Identifiers).FirstAsync(x => x.Id == tripRequestId);
 
         foreach (var replay in replays)
         {
@@ -373,10 +374,23 @@ public sealed class TripRequestController : BaseStateController
             {
                 if (long.TryParse(orgUser.Value, out long chatId))
                 {
+                    var sb = new StringBuilder();
+                    sb.AppendLine($"Новый заказ №{trip.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
+                    sb.AppendLine($"Заказчик: {(!trip.ChartererId.IsNullOrEmpty() ? trip.Charterer.Name : trip.СhartererName)}");
+                    sb.AppendLine($"Дата отправления: {trip.TripDate:dd.MM.yyyy HH:mm}");
+                    sb.AppendLine($"Место отправления: {trip.AddressFrom}");
+                    sb.AppendLine($"Место прибытия: {trip.AddressTo}");
+                    sb.AppendLine($"Кол-во пассажиров: {trip.Passengers}");
+                    sb.AppendLine();
+                    sb.AppendLine("Чтобы откликнуться перейдите по ссылке");
+                    sb.AppendLine($"https://nexttripto.ru/MakeOffer/{replay}");
+
+
                     _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
                     {
                         ChatId = chatId,
-                        Message = $"Новый заказ на: {trip.TripDate:dd.MM.yyyy HH:mm}\nОткуда: {trip.AddressFrom}\nКуда:{trip.AddressTo}\nЧтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{replay}",
+                        Message = sb.ToString()
+                        //Message = $"Новый заказ на: {trip.TripDate:dd.MM.yyyy HH:mm}\nОткуда: {trip.AddressFrom}\nКуда:{trip.AddressTo}\nЧтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{replay}",
                         //Link = $"https://nexttripto.ru/MakeOffer/{replay}",
                         //LinkName = "Откликнуться"
                     });
