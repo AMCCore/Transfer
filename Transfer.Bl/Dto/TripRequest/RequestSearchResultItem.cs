@@ -9,7 +9,9 @@ namespace Transfer.Bl.Dto.TripRequest
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-        
+
+        public long Identifier { get; set; }
+
         public string AddressFrom { get; set; }
         
         public string AddressTo { get; set; }

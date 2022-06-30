@@ -75,7 +75,7 @@ public class Startup
                 x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
             });
 
-        #if !DEBUG
+        #if DEBUG
 
         services.AddHostedService<ConfigureWebhook>();
 

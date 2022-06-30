@@ -11,6 +11,8 @@ namespace Transfer.Bl.Dto.TripRequest
     {
         public Guid Id { get; set; }
 
+        public long Identifier { get; set; }
+
         public string ChartererName { get; set; }
 
         public string AddressFrom { get; set; }

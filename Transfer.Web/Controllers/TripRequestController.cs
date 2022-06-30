@@ -224,6 +224,11 @@ public sealed class TripRequestController : BaseStateController
             }
 
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
+
+            await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier { 
+                TripRequestId = model.Id
+            }, CancellationToken.None);
+
             await SetTripOptions(entity, model);
             await SetTripRegions(entity, model);
 
