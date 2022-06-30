@@ -20,7 +20,7 @@
     <div class="row">
         <div class="t-col col-12 crumbs">
             ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripRequest" asp-action="Search">Поездки</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;
-            <a class="top-button-a" asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@Model.Id">@Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
+            <a class="top-button-a" asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@Model.Id">Заказ №@Model.Identifier от @Model.ChartererName @($"({Model.TripDate:dd.MM.yyyy})")</a>
         </div>
     </div>
     <div class="row blank-row"></div>
@@ -74,6 +74,7 @@
                         </div>
                     </div>
                     <div class="col-3">
+                        <div class="col-12 t-col"><strong>Заказ №:</strong> @Model.Identifier</div>
                         <div class="col-12 t-col"><strong>Пассажиров:</strong> @Model.Passengers</div>
                         <div class="col-12 t-col">
                             <strong>Особенности поездки:</strong><br />
