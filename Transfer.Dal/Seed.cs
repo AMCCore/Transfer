@@ -21,6 +21,7 @@ namespace Transfer.Dal
             uw.SetRights();
             uw.SetAccounts();
             uw.SetTripOptions();
+            uw.SetRequestTripIds();
 
 
             //uw.SetTestOrganisations();
@@ -224,6 +225,19 @@ namespace Transfer.Dal
             };
             uw.AddIfNotExists(to);
 
+        }
+
+        private static void SetRequestTripIds(this IUnitOfWork uw)
+        {
+            var reqs = uw.GetSet<DbTripRequest>().Where(x => !x.Identifiers.Any()).OrderBy(x => x.DateCreated).Select(x => x.Id).ToList();
+            foreach(var req in reqs)
+            {
+                uw.AddEntity(new DbTripRequestIdentifier { 
+                    Id = Guid.NewGuid(),
+                    TripRequestId = req,
+                    LastUpdateTick = DateTime.Now.Ticks
+                });
+            }
         }
     }
 }

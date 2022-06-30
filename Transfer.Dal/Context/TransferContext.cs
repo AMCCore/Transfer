@@ -38,6 +38,10 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbOrganisation>().Property(d => d.State).HasConversion(new GuidEnumConverter<OrganisationStateEnum>());
             modelBuilder.Entity<DbTripRequest>().Property(d => d.State).HasConversion(new GuidEnumConverter<TripRequestStateEnum>());
 
+            //modelBuilder.Entity<DbTripRequestIdentifier>().Property(a => a.Identifier).ValueGeneratedOnAdd();
+            modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.TripRequestId }).IsUnique();
+            modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.Identifier }).IsUnique();
+
             modelBuilder.DisableCascadeDeleteConvention();
 
             modelBuilder.UseIdentityColumns();

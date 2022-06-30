@@ -68,4 +68,5 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     [ForeignKey(nameof(RegionTo))]
     public Guid? RegionToId { get; set; }
 
+    public virtual ICollection<DbTripRequestIdentifier> Identifiers { get; set; }
 }
