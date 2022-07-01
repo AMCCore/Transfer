@@ -126,10 +126,10 @@ public class FileController : BaseController
             if(System.IO.File.Exists(path))
             {
                 using var fileStream = System.IO.File.OpenRead(path);
-                //using var ms = new MemoryStream();
-                //fileStream.CopyTo(ms);
-                //var byts = ms.ToArray();
-                return File(fileStream, "application/octet-stream", static_lib[code], true);
+                using var ms = new MemoryStream();
+                fileStream.CopyTo(ms);
+                var byts = ms.ToArray();
+                return File(byts, "application/octet-stream", static_lib[code], true);
             }
         }
         
