@@ -10,7 +10,7 @@ using Transfer.Common.Security;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
 
-namespace Transfer.Web.Models;
+namespace Transfer.Web.Moduls;
 
 public static class Security
 {

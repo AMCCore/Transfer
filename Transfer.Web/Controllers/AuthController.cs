@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Transfer.Common.Settings;
 using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
+using Transfer.Web.Moduls;
 
 namespace Transfer.Web.Controllers;
 

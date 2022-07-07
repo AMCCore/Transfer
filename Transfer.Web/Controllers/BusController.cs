@@ -16,6 +16,7 @@ using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Models;
+using Transfer.Web.Moduls;
 
 namespace Transfer.Web.Controllers;
 

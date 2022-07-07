@@ -3,7 +3,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 
-namespace Transfer.Web.Models;
+namespace Transfer.Web.Moduls;
 
 /// <summary>
 /// получение Bearer Token

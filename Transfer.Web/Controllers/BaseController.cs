@@ -7,10 +7,10 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Transfer.Web.Models;
 using Transfer.Common.Extensions;
 using System.Threading.Tasks;
 using Transfer.Common.Settings;
+using Transfer.Web.Moduls;
 
 namespace Transfer.Web.Controllers;
 

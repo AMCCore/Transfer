@@ -20,6 +20,7 @@ public partial class TransferContext
     public virtual DbSet<DbDriversLicense> DbDriversLicense { get; set; }
     public virtual DbSet<DbExternalLogin> DbExternalLogins { get; set; }
     public virtual DbSet<DbFile> DbFiles { get; set; }
+    public virtual DbSet<DbHistoryLog> DbHistoryLogs { get; set; }
     public virtual DbSet<DbOrganisation> DbOrganisations { get; set; }
     public virtual DbSet<DbOrganisationAccount> DbOrganisationAccounts { get; set; }
     public virtual DbSet<DbOrganisationFile> DbOrganisationFiles { get; set; }

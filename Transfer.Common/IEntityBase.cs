@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Transfer.Common
+namespace Transfer.Common;
+
+public interface IEntityBase
 {
-    public interface IEntityBase
-    {
-        Guid Id { get; set; }
+    Guid Id { get; set; }
 
-        long LastUpdateTick { get; set; }
-    }
+    long LastUpdateTick { get; set; }
 }
