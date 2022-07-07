@@ -10,6 +10,7 @@ using Telegram.Bot.Types;
 using Transfer.Bot.Dtos;
 using Transfer.Bot.Menu;
 using Transfer.Common;
+using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
@@ -23,9 +24,9 @@ internal static class RequestList
     public async static Task<Message> GetRequestList(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null)
     {
         //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
-        var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted && x.State == Common.Enums.TripRequestStateEnum.Active && x.TripDate > DateTime.Now).OrderByDescending(x => x.DateCreated).Take(100);
+        var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted && x.State == TripRequestStateEnum.Active && x.TripDate > DateTime.Now).OrderByDescending(x => x.DateCreated).Take(100);
         var qMyOrgs = unitOfWork.GetSet<DbExternalLogin>()
-            .Where(x => x.IsDeleted && x.LoginType == Common.Enums.ExternalLoginEnum.Telegram && x.Value == Sender.ToString())
+            .Where(x => x.IsDeleted && x.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && x.Value == Sender.ToString())
             .SelectMany(x => x.Account.Organisations).Where(x => !x.Organisation.IsDeleted).Select(x => x.Organisation);
 
         //var regionIds = await qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => x.RegionId).ToListAsync();

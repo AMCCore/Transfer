@@ -89,19 +89,19 @@ public class BusController : BaseController
         }
 
         //Файл осаго
-        await SetBusFile(busModel.Id, busModel.OsagoFileId, Common.Enums.BusFileType.Inshurance);
+        await SetBusFile(busModel.Id, busModel.OsagoFileId, Common.Enums.BusFileTypeEnum.Inshurance);
 
         //Файл СТС
-        await SetBusFile(busModel.Id, busModel.RegFileId, Common.Enums.BusFileType.Reg);
+        await SetBusFile(busModel.Id, busModel.RegFileId, Common.Enums.BusFileTypeEnum.Reg);
 
         //Файл ТО
-        await SetBusFile(busModel.Id, busModel.ToFileId, Common.Enums.BusFileType.TO);
+        await SetBusFile(busModel.Id, busModel.ToFileId, Common.Enums.BusFileTypeEnum.TO);
 
         //Файл ОСГОП
-        await SetBusFile(busModel.Id, busModel.OsgopFileId, Common.Enums.BusFileType.Osgop);
+        await SetBusFile(busModel.Id, busModel.OsgopFileId, Common.Enums.BusFileTypeEnum.Osgop);
 
         //Файл Калибровка тахографа
-        await SetBusFile(busModel.Id, busModel.TahografFileId, Common.Enums.BusFileType.Tahograf);
+        await SetBusFile(busModel.Id, busModel.TahografFileId, Common.Enums.BusFileTypeEnum.Tahograf);
 
         var photos = new List<Guid>();
         if (!busModel.Photo1.IsNullOrEmpty())
@@ -118,7 +118,7 @@ public class BusController : BaseController
             photos.Add(busModel.Photo6.Value);
 
         var files = await UnitOfWork.GetSet<DbBusFile>()
-            .Where(x => x.BusId == busModel.Id && !x.IsDeleted && (x.FileType == Common.Enums.BusFileType.Photo || x.FileType == Common.Enums.BusFileType.PhotoMain))
+            .Where(x => x.BusId == busModel.Id && !x.IsDeleted && (x.FileType == Common.Enums.BusFileTypeEnum.Photo || x.FileType == Common.Enums.BusFileTypeEnum.PhotoMain))
             .ToListAsync(CancellationToken.None);
 
         await UnitOfWork.DeleteListAsync(files, CancellationToken.None);
@@ -134,7 +134,7 @@ public class BusController : BaseController
                     BusId = busModel.Id,
                     FileId = p,
                     IsDeleted = false,
-                    FileType = Common.Enums.BusFileType.PhotoMain,
+                    FileType = Common.Enums.BusFileTypeEnum.PhotoMain,
                     UploaderId = Security.CurrentAccountId
                 }, CancellationToken.None);
             }
@@ -145,7 +145,7 @@ public class BusController : BaseController
                     BusId = busModel.Id,
                     FileId = p,
                     IsDeleted = false,
-                    FileType = Common.Enums.BusFileType.Photo,
+                    FileType = Common.Enums.BusFileTypeEnum.Photo,
                     UploaderId = Security.CurrentAccountId
                 }, CancellationToken.None);
             }
@@ -155,7 +155,7 @@ public class BusController : BaseController
         return RedirectToAction(nameof(BusItem), new { carrierId = busModel.OrganisationId, busId = busModel.Id });
     }
 
-    private async Task SetBusFile(Guid busId, Guid? fileId, Common.Enums.BusFileType fileType)
+    private async Task SetBusFile(Guid busId, Guid? fileId, Common.Enums.BusFileTypeEnum fileType)
     {
         var files = await UnitOfWork.GetSet<DbBusFile>().Where(x => x.BusId == busId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
         if (files.All(x => x.FileId != fileId))

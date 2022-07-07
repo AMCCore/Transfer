@@ -15,7 +15,7 @@ namespace Transfer.Dal.Entities
         public long LastUpdateTick { get; set; }
 
         [Required]
-        public OrganisationAccountType AccountType { get; set; } = OrganisationAccountType.Operator;
+        public OrganisationAccountTypeEnum AccountType { get; set; } = OrganisationAccountTypeEnum.Operator;
         
         [ForeignKey(nameof(Organisation))]
         [Required]

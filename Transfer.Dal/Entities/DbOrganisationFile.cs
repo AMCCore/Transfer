@@ -22,7 +22,7 @@ public class DbOrganisationFile : IEntityBase, IEntityWithDateCreated, ISoftDele
 
     public DateTime DateCreated { get; set; }
 
-    public OrganisationFileType FileType { get; set; }
+    public OrganisationFileTypeEnum FileType { get; set; }
 
     [ForeignKey(nameof(Uploader))]
     [Required]

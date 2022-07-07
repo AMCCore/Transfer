@@ -4,27 +4,27 @@
 
 @foreach(var to in Model)
 {
-    if(to.Id == TripOptions.TripGuide.GetEnumGuid())
+    if(to.Id == TripOptionsEnum.TripGuide.GetEnumGuid())
     {
         <span><i class="fas fa-headphones-alt"></i> @to.Name</span><br />
     }
-    else if(to.Id == TripOptions.ChildTrip.GetEnumGuid())
+    else if(to.Id == TripOptionsEnum.ChildTrip.GetEnumGuid())
     {
         <span><i class="fas fa-child"></i> @to.Name</span><br />
     }
-    else if(to.Id == TripOptions.CardPayment.GetEnumGuid())
+    else if(to.Id == TripOptionsEnum.CardPayment.GetEnumGuid())
     {
         <span><i class="fas fa-credit-card"></i> @to.Name</span><br />
     }
-    else if(to.Id == TripOptions.CashPayment.GetEnumGuid())
+    else if(to.Id == TripOptionsEnum.CashPayment.GetEnumGuid())
     {
         <span><i class="fas fa-money-bill-wave"></i> @to.Name</span><br />
     }
-    else if(to.Id == TripOptions.IdleTrip.GetEnumGuid())
+    else if(to.Id == TripOptionsEnum.IdleTrip.GetEnumGuid())
     {
         <span><i class="fas fa-directions"></i> @to.Name</span><br />
     }
-    else if(to.Id == TripOptions.RSPayment.GetEnumGuid())
+    else if(to.Id == TripOptionsEnum.RSPayment.GetEnumGuid())
     {
         <span><i class="fas fa-university"></i> @to.Name</span><br />
     }

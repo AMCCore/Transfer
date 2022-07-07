@@ -78,23 +78,23 @@ public class DriverController : BaseController
         }
 
         //права
-        await SetDriverFile(driverModel.Id, driverModel.License1.Value, Common.Enums.DriverFileType.License);
+        await SetDriverFile(driverModel.Id, driverModel.License1.Value, Common.Enums.DriverFileTypeEnum.License);
 
         //права обр ст
-        await SetDriverFile(driverModel.Id, driverModel.License2.Value, Common.Enums.DriverFileType.LicenseBack);
+        await SetDriverFile(driverModel.Id, driverModel.License2.Value, Common.Enums.DriverFileTypeEnum.LicenseBack);
 
         //тахограф
-        await SetDriverFile(driverModel.Id, driverModel.TahografFileId.Value, Common.Enums.DriverFileType.TahografCard);
+        await SetDriverFile(driverModel.Id, driverModel.TahografFileId.Value, Common.Enums.DriverFileTypeEnum.TahografCard);
 
         //аватар
-        await SetDriverFile(driverModel.Id, driverModel.Avatar.Value, Common.Enums.DriverFileType.Avatar);
+        await SetDriverFile(driverModel.Id, driverModel.Avatar.Value, Common.Enums.DriverFileTypeEnum.Avatar);
 
 
 
         return RedirectToAction(nameof(DriverItem), new { carrierId = driverModel.OrganisationId, driverId = driverModel.Id });
     }
 
-    private async Task SetDriverFile(Guid driverId, Guid fileId, Common.Enums.DriverFileType fileType)
+    private async Task SetDriverFile(Guid driverId, Guid fileId, Common.Enums.DriverFileTypeEnum fileType)
     {
         var files = await UnitOfWork.GetSet<DbDriverFile>().Where(x => x.DriverId == driverId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
         if (files.All(x => x.FileId != fileId))

@@ -8,7 +8,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Common.Enums;
 
-public enum OrganisationFileType
+public enum OrganisationFileTypeEnum
 {
     /// <summary>
     /// Логотип компании

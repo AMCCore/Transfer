@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Transfer.Common.Attributes;
 
-namespace Transfer.Common.Enums;
+namespace Transfer.Common.Enums.States;
 
 public enum TripRequestStateEnum
 {
@@ -19,7 +19,7 @@ public enum TripRequestStateEnum
     [Description("Действующий")]
     [EnumGuid("C2BD98B2-CA6E-4C3C-BD75-8D10FD804DA4")]
     Active,
-    
+
     /// <summary>
     /// Завершен сбор предложений
     /// </summary>

@@ -21,7 +21,7 @@ namespace Transfer.Bot
 
         public async static Task SetState(this IUnitOfWork unitOfWork, long ChatId, string State = "Done", string Props = null)
         {
-            var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == ChatId.ToString())).Select(x => x.Id).FirstAsync();
+            var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && a.Value == ChatId.ToString())).Select(x => x.Id).FirstAsync();
             await unitOfWork.SetState(user, State, Props);
         }
 

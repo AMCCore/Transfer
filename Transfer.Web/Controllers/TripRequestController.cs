@@ -14,6 +14,7 @@ using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
 using Transfer.Common.Enums;
 using Transfer.Common.Enums.AccessRights;
+using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
@@ -58,7 +59,7 @@ public sealed class TripRequestController : BaseStateController
 
         if (filter.OrderByChild)
         {
-            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptions.ChildTrip.GetEnumGuid()))
+            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid()))
                 .ThenBy(x => x.СhartererName)
                 .ThenBy(x => x.Charterer.Name);
         }
@@ -140,7 +141,7 @@ public sealed class TripRequestController : BaseStateController
         return View("Save", new TripRequestDto
         {
             TripDate = DateTime.Now.AddDays(1).ChangeTime(9, 0),
-            PaymentType = (int)PaymentType.Card
+            PaymentType = (int)PaymentTypeEnum.Card
         });
     }
 
@@ -279,7 +280,7 @@ public sealed class TripRequestController : BaseStateController
             {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
-                TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
+                TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
             }, CancellationToken.None);
         }
         if (model.StandTrip)
@@ -288,26 +289,26 @@ public sealed class TripRequestController : BaseStateController
             {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
-                TripOptionId = TripOptions.IdleTrip.GetEnumGuid()
+                TripOptionId = TripOptionsEnum.IdleTrip.GetEnumGuid()
             }, CancellationToken.None);
         }
-        if (model.PaymentType == (int)PaymentType.Card)
+        if (model.PaymentType == (int)PaymentTypeEnum.Card)
         {
             await UnitOfWork.AddEntityAsync(new DbTripRequestOption
             {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
-                TripOptionId = TripOptions.CardPayment.GetEnumGuid()
+                TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
             }, CancellationToken.None);
 
         }
-        else if (model.PaymentType == (int)PaymentType.Cash)
+        else if (model.PaymentType == (int)PaymentTypeEnum.Cash)
         {
             await UnitOfWork.AddEntityAsync(new DbTripRequestOption
             {
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
-                TripOptionId = TripOptions.CashPayment.GetEnumGuid()
+                TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
             }, CancellationToken.None);
         }
     }
@@ -372,7 +373,7 @@ public sealed class TripRequestController : BaseStateController
         foreach (var replay in replays)
         {
             var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
-                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginEnum.Telegram)).ToListAsync();
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
 
             foreach (var orgUser in orgUsers)
             {

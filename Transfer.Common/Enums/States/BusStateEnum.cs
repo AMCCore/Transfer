@@ -1,35 +1,35 @@
 ﻿using System.ComponentModel;
 using Transfer.Common.Attributes;
 
-namespace Transfer.Common.Enums;
+namespace Transfer.Common.Enums.States;
 
-public enum OrganisationStateEnum
+public enum BusStateEnum
 {
     /// <summary>
     /// Новый
     /// </summary>
     [Description("Новый")]
-    [EnumGuid("BFC18692-FDBF-4A41-9998-78DDD74A4F54")]
+    [EnumGuid("AE78EBC8-A108-4CAD-A512-EFA47F69F537")]
     New,
 
     /// <summary>
     /// Заблокирован
     /// </summary>
     [Description("Заблокирован")]
-    [EnumGuid("FB7DAB75-7781-4F1F-8D63-479C77CFE1F0")]
+    [EnumGuid("05E066AD-85C3-4221-BF05-BC549848742C")]
     Blocked,
 
     /// <summary>
     /// На проверке
     /// </summary>
     [Description("На проверке")]
-    [EnumGuid("D408D750-1B9F-4C90-B1FB-25300DF42981")]
+    [EnumGuid("DA1ED977-F9D9-4036-94E3-1D828EC83A9E")]
     Checking,
 
     /// <summary>
     /// Проверен
     /// </summary>
     [Description("Проверен")]
-    [EnumGuid("9AEC0B81-230D-4137-B4DD-A1B51B5EB467")]
+    [EnumGuid("24554358-C796-4355-A9FD-34052A66A8CD")]
     Checked,
 }

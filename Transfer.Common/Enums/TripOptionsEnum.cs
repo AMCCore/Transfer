@@ -3,7 +3,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Common.Enums;
 
-public enum TripOptions
+public enum TripOptionsEnum
 {
     /// <summary>
     /// Услуги гида

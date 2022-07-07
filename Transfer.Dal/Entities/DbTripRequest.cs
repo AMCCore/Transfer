@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Transfer.Common;
-using Transfer.Common.Enums;
+using Transfer.Common.Enums.States;
 
 namespace Transfer.Dal.Entities;
 

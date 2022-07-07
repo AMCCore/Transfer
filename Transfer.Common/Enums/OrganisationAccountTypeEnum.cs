@@ -3,7 +3,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Common.Enums;
 
-public enum OrganisationAccountType
+public enum OrganisationAccountTypeEnum
 {
     /// <summary>
     /// Директор (основное контактное лицо)

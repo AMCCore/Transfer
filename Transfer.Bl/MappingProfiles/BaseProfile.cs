@@ -21,7 +21,7 @@ public class BaseProfile : Profile
         CreateMap<DbOrganisation, CarrierSearchResultItem>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => string.IsNullOrEmpty(o.Name) ? o.FullName : o.Name))
             .ForMember(x => x.Address, opt => opt.MapFrom(o => o.FactAddress))
-            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileTypeEnum.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
             .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition))
@@ -52,8 +52,8 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestDto>()
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
-            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
-            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.IdleTrip.GetEnumGuid())))
+            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
+            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.IdleTrip.GetEnumGuid())))
             .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))
             .ForMember(x => x.ChartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
@@ -63,8 +63,8 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestOfferDto>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
-            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
-            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.IdleTrip.GetEnumGuid())))
+            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
+            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.IdleTrip.GetEnumGuid())))
             .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))
             .ForMember(x => x.ChartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
@@ -76,8 +76,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
             .ForMember(x => x.Offers, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
-            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.ChildTrip.GetEnumGuid())))
-            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptions.IdleTrip.GetEnumGuid())))
+            .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
+            .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.IdleTrip.GetEnumGuid())))
             .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))
             .ForMember(x => x.ChartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Name : o.СhartererName))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
@@ -111,9 +111,9 @@ public class BaseProfile : Profile
 
         CreateMap<DbOrganisation, CarrierDto>()
             .ForMember(x => x.WorkingAreas, opt => opt.MapFrom(o => o.WorkingArea.Select(a => a.RegionId.ToString()).ToArray()))
-            .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.LogoFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileTypeEnum.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
-            .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.LicenceFileId, opt => opt.MapFrom(o => o.Files.Where(p => !p.IsDeleted && p.FileType == OrganisationFileTypeEnum.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition));
         CreateMap<CarrierDto, DbOrganisation>()
@@ -130,12 +130,12 @@ public class BaseProfile : Profile
 
 
         CreateMap<DbDriver, OrganisationAssetDto>()
-            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileTypeEnum.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.LastName} {o.FirstName} {o.MiddleName}".Trim()));
 
         CreateMap<DbBus, OrganisationAssetDto>()
             .ForMember(x => x.Name, opt => opt.MapFrom(o => $"{o.Make} {o.Model}, {o.Yaer} гв."))
-            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Picture, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.TransportClass, opt => opt.MapFrom(o => $"Название класса транспортного средства"));
 
         CreateMap<DbAccount, OrganisationAssetDto>()
@@ -144,17 +144,17 @@ public class BaseProfile : Profile
 
 
         CreateMap<DbBus, BusDto>()
-            .ForMember(x => x.OsagoFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Inshurance).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.RegFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Reg).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.ToFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.TO).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.OsgopFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Osgop).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Tahograf).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Photo1, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Photo2, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.Photo3, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(1).FirstOrDefault()))
-            .ForMember(x => x.Photo4, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(2).FirstOrDefault()))
-            .ForMember(x => x.Photo5, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(3).FirstOrDefault()))
-            .ForMember(x => x.Photo6, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileType.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(5).FirstOrDefault()))
+            .ForMember(x => x.OsagoFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Inshurance).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.RegFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Reg).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.ToFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.TO).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.OsgopFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Osgop).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Tahograf).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Photo1, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.PhotoMain).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Photo2, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.Photo3, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(1).FirstOrDefault()))
+            .ForMember(x => x.Photo4, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(2).FirstOrDefault()))
+            .ForMember(x => x.Photo5, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(3).FirstOrDefault()))
+            .ForMember(x => x.Photo6, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Photo).OrderBy(x => x.DateCreated).Select(p => p.FileId).Skip(5).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
             .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null));
 
@@ -181,11 +181,11 @@ public class BaseProfile : Profile
 
         CreateMap<DbDriver, DriverDto>()
             .ForMember(x => x.OrganisationName, opt => opt.MapFrom(o => o.Organisation != null ? o.Organisation.Name : null))
-            .ForMember(x => x.License1, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.License2, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.LicenseBack).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
-            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.TahografCard).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.License1, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileTypeEnum.License).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.License2, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileTypeEnum.LicenseBack).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
+            .ForMember(x => x.TahografFileId, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileTypeEnum.TahografCard).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()))
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()))
-            .ForMember(x => x.Avatar, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileType.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()));
+            .ForMember(x => x.Avatar, opt => opt.MapFrom(o => o.DriverFiles.Where(p => !p.IsDeleted && p.FileType == DriverFileTypeEnum.Avatar).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault()));
 
         CreateMap<DriverDto, DbDriver>()
             .ForMember(x => x.OrganisationId, opt => opt.Ignore())
@@ -234,24 +234,24 @@ public class BaseProfile : Profile
 
     private static int TripPaymentConvert(ICollection<DbTripRequestOption> options)
     {
-        if (options.Any(x => x.TripOptionId == TripOptions.CardPayment.GetEnumGuid()))
+        if (options.Any(x => x.TripOptionId == TripOptionsEnum.CardPayment.GetEnumGuid()))
         {
-            return (int)PaymentType.Card;
+            return (int)PaymentTypeEnum.Card;
         }
-        else if (options.Any(x => x.TripOptionId == TripOptions.CashPayment.GetEnumGuid()))
+        else if (options.Any(x => x.TripOptionId == TripOptionsEnum.CashPayment.GetEnumGuid()))
         {
-            return (int)PaymentType.Cash;
+            return (int)PaymentTypeEnum.Cash;
         }
-        else if (options.Any(x => x.TripOptionId == TripOptions.RSPayment.GetEnumGuid()))
+        else if (options.Any(x => x.TripOptionId == TripOptionsEnum.RSPayment.GetEnumGuid()))
         {
-            return (int)PaymentType.Checking;
+            return (int)PaymentTypeEnum.Checking;
         }
 
-        return (int)PaymentType.Cash;
+        return (int)PaymentTypeEnum.Cash;
     }
 
     private static Guid? GetCarrierLogoId(DbTripRequest tr)
     {
-        return tr.Charterer?.Files?.Where(p => !p.IsDeleted && p.FileType == OrganisationFileType.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault() ?? null;
+        return tr.Charterer?.Files?.Where(p => !p.IsDeleted && p.FileType == OrganisationFileTypeEnum.Logo).OrderBy(x => x.DateCreated).Select(p => p.FileId).FirstOrDefault() ?? null;
     }
 }

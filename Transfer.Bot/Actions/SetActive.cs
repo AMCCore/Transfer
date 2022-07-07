@@ -17,7 +17,7 @@ namespace Transfer.Bot.Actions
 
         public async static Task<Message> SetState(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, bool IsActive, ILogger Logger = null)
         {
-            var state = await unitOfWork.GetSet<DbTgActionState>().Where(x => !x.Account.IsDeleted && x.Account.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == Sender.ToString())).FirstAsync();
+            var state = await unitOfWork.GetSet<DbTgActionState>().Where(x => !x.Account.IsDeleted && x.Account.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && a.Value == Sender.ToString())).FirstAsync();
             state.IsActive = IsActive;
             await unitOfWork.SaveChangesAsync();
 

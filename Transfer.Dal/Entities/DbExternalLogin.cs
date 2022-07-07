@@ -22,7 +22,7 @@ namespace Transfer.Dal.Entities
 
         public virtual DbAccount Account { get; set; }
 
-        public virtual ExternalLoginEnum LoginType { get; set; }
+        public virtual ExternalLoginTypeEnum LoginType { get; set; }
 
         [MaxLength(1000)]
         public string Value { get; set; }

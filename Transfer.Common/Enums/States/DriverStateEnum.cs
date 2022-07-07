@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Transfer.Common.Attributes;
 
-namespace Transfer.Common.Enums;
+namespace Transfer.Common.Enums.States;
 
 public enum DriverStateEnum
 {

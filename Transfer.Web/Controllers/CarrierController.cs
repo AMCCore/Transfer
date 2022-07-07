@@ -214,10 +214,10 @@ public class CarrierController : BaseController
         }
 
         //лтцензия
-        await SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileType.License);
+        await SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License);
 
         //логотип
-        await SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileType.Logo);
+        await SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileTypeEnum.Logo);
 
         //регионы работы
         await SetCarrierWorkingArea(model.Id, model.WorkingAreas);
@@ -281,7 +281,7 @@ public class CarrierController : BaseController
         return PartialView("/Views/Carrier/Assets.cshtml", result);
     }
 
-    private async Task SetCarrierFile(Guid carrierId, Guid? fileId, Common.Enums.OrganisationFileType fileType)
+    private async Task SetCarrierFile(Guid carrierId, Guid? fileId, Common.Enums.OrganisationFileTypeEnum fileType)
     {
         var files = await UnitOfWork.GetSet<DbOrganisationFile>().Where(x => x.OrganisationId == carrierId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
         if (files.All(x => x.FileId != fileId))

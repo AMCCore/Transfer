@@ -93,7 +93,7 @@ namespace Transfer.Dal
         private static void SetTripOptions(this IUnitOfWork uw)
         {
             var rights = new List<DbTripOption>();
-            rights.AddRange(Enum.GetValues(typeof(TripOptions)).Cast<TripOptions>().Select(r => DbTripOption.CreateForSeed(r)));
+            rights.AddRange(Enum.GetValues(typeof(TripOptionsEnum)).Cast<TripOptionsEnum>().Select(r => DbTripOption.CreateForSeed(r)));
             uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
         }
 
@@ -199,27 +199,27 @@ namespace Transfer.Dal
                 new DbTripRequestOption { 
                     Id = Guid.Parse("CF8B46FB-117F-4A81-83CC-E6DC4D208142"),
                     TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptions.CardPayment.GetEnumGuid()
+                    TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
                 },
                 new DbTripRequestOption {
                     Id = Guid.Parse("2A4673EA-E9F7-4280-861A-DB1BBA0A8962"),
                     TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptions.ChildTrip.GetEnumGuid()
+                    TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
                 },
                 new DbTripRequestOption {
                     Id = Guid.Parse("44597BCF-B59D-4E39-8DAB-9BA6CAD60DAD"),
                     TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptions.TripGuide.GetEnumGuid()
+                    TripOptionId = TripOptionsEnum.TripGuide.GetEnumGuid()
                 },
                 new DbTripRequestOption {
                     Id = Guid.Parse("702CFBE8-CA87-411C-BF18-AB78D93E0889"),
                     TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    TripOptionId = TripOptions.TripGuide.GetEnumGuid()
+                    TripOptionId = TripOptionsEnum.TripGuide.GetEnumGuid()
                 },
                 new DbTripRequestOption {
                     Id = Guid.Parse("5B9A34E3-E741-497C-BE29-FE2AB8EF6FAB"),
                     TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    TripOptionId = TripOptions.CashPayment.GetEnumGuid()
+                    TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
                 },
 
             };

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
-using Transfer.Common.Enums;
+using Transfer.Common.Enums.States;
 
 namespace Transfer.Dal.Entities;
 

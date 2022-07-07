@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Common.Enums;
+using Transfer.Common.Enums.States;
 using Transfer.Dal.Entities;
 using Transfer.Dal.Extensions;
 using Transfer.Dal.Helpers;
@@ -27,12 +28,12 @@ namespace Transfer.Dal.Context
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<DbAccountRight>().HasIndex(a => new { a.AccountId, a.RightId, a.OrganisationId }).IsUnique();
-            modelBuilder.Entity<DbExternalLogin>().Property(d => d.LoginType).HasConversion(new GuidEnumConverter<ExternalLoginEnum>());
+            modelBuilder.Entity<DbExternalLogin>().Property(d => d.LoginType).HasConversion(new GuidEnumConverter<ExternalLoginTypeEnum>());
             modelBuilder.Entity<DbExternalLogin>().HasIndex(d => new { d.LoginType, d.Value }).IsUnique();
-            modelBuilder.Entity<DbOrganisationAccount>().Property(d => d.AccountType).HasConversion(new GuidEnumConverter<OrganisationAccountType>());
-            modelBuilder.Entity<DbOrganisationFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<OrganisationFileType>());
-            modelBuilder.Entity<DbDriverFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<DriverFileType>());
-            modelBuilder.Entity<DbBusFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<BusFileType>());
+            modelBuilder.Entity<DbOrganisationAccount>().Property(d => d.AccountType).HasConversion(new GuidEnumConverter<OrganisationAccountTypeEnum>());
+            modelBuilder.Entity<DbOrganisationFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<OrganisationFileTypeEnum>());
+            modelBuilder.Entity<DbDriverFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<DriverFileTypeEnum>());
+            modelBuilder.Entity<DbBusFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<BusFileTypeEnum>());
             modelBuilder.Entity<DbBus>().Property(d => d.State).HasConversion(new GuidEnumConverter<BusStateEnum>());
             modelBuilder.Entity<DbDriver>().Property(d => d.State).HasConversion(new GuidEnumConverter<DriverStateEnum>());
             modelBuilder.Entity<DbOrganisation>().Property(d => d.State).HasConversion(new GuidEnumConverter<OrganisationStateEnum>());

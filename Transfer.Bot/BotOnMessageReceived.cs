@@ -31,7 +31,7 @@ namespace Transfer.Bot
                 return;
             }
 
-            var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.From.Id.ToString())).FirstOrDefaultAsync();
+            var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && a.Value == message.From.Id.ToString())).FirstOrDefaultAsync();
             if(user == null)
             {
                 //email
@@ -70,7 +70,7 @@ namespace Transfer.Bot
                     await unitOfWork.AddEntityAsync(new DbExternalLogin
                     {
                         AccountId = ruser.Id,
-                        LoginType = Common.Enums.ExternalLoginEnum.Telegram,
+                        LoginType = Common.Enums.ExternalLoginTypeEnum.Telegram,
                         Value = message.From.Id.ToString(),
                     });
                     await unitOfWork.SetState(ruser.Id, "Registered");

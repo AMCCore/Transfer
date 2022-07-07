@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Transfer.Common.Enums.States;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
 
@@ -87,7 +88,7 @@ internal class Program
                 INN = inn.Trim(),
                 DirectorFio = "Неизвестен",
                 DirectorPosition = "Директор",
-                State = Common.Enums.OrganisationStateEnum.Checked,
+                State = OrganisationStateEnum.Checked,
                 IsDeleted = false
             });
 
@@ -106,7 +107,7 @@ internal class Program
                 Email = email
             });
 
-            uc.AddEntity(new DbOrganisationAccount { Organisation = o, AccountType = Common.Enums.OrganisationAccountType.Director, AccountId = u });
+            uc.AddEntity(new DbOrganisationAccount { Organisation = o, AccountType = Common.Enums.OrganisationAccountTypeEnum.Director, AccountId = u });
         }
 
         sheet1 = package.Workbook.Worksheets[1];
@@ -151,7 +152,7 @@ internal class Program
                 PeopleCopacity = capacityNum,
                 Organisation = org,
                 IsDeleted = false,
-                State = Common.Enums.BusStateEnum.Checked
+                State = BusStateEnum.Checked
            });
 
         }

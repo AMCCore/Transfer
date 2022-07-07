@@ -22,7 +22,7 @@ namespace Transfer.Dal.Entities
 
         public DateTime DateCreated { get; set; }
 
-        public DriverFileType FileType { get; set; }
+        public DriverFileTypeEnum FileType { get; set; }
 
         [ForeignKey(nameof(Uploader))]
         [Required]

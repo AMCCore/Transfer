@@ -3,7 +3,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Common.Enums;
 
-public enum BusFileType
+public enum BusFileTypeEnum
 {
     /// <summary>
     /// Photo

@@ -13,5 +13,5 @@ public class OrganisationFileDto
 
     public Guid FileId { get; set; }
 
-    public OrganisationFileType FileType { get; set; }
+    public OrganisationFileTypeEnum FileType { get; set; }
 }

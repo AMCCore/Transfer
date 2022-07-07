@@ -8,7 +8,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Common.Enums
 {
-    public enum ExternalLoginEnum
+    public enum ExternalLoginTypeEnum
     {
         /// <summary>
         /// Telegram
