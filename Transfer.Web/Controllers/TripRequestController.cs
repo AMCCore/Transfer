@@ -17,6 +17,7 @@ using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
+using Transfer.Web.Extensions;
 using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
 using Transfer.Web.Services;
@@ -207,6 +208,7 @@ public sealed class TripRequestController : BaseStateController
 
     [ValidateAntiForgeryToken]
     [HttpPost]
+    [Route("TripRequest/Save")]
     public async Task<IActionResult> Save([FromForm] TripRequestDto model)
     {
         if (!ModelState.IsValid)
@@ -246,6 +248,7 @@ public sealed class TripRequestController : BaseStateController
             }
 
             await SendReplaysToUsers(entity.Id);
+            await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
         }
         else
         {
@@ -258,6 +261,7 @@ public sealed class TripRequestController : BaseStateController
             await SetTripOptions(entity, model);
             await SetTripRegions(entity, model);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.AddToHistoryLog(entity, "Запроса на перевозку изменён");
         }
 
         return RedirectToAction(nameof(TripRequestEdit), new { requestId = model.Id });

@@ -23,10 +23,12 @@ public class DbHistoryLog : IEntityBase, IEntityWithDateCreated
     public Guid AccountId { get; set; }
 
     [Required]
+    public Guid EntityId { get; set; }
+
+    [Required]
     [MaxLength(50)]
     public string ActionName { get; set; }
 
-    [Required]
     [MaxLength(1000)]
-    public string Value { get; set; }
+    public string? Description { get; set; }
 }
