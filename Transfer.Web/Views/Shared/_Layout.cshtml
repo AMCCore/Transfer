@@ -34,7 +34,7 @@
                         <i class="fab fa-telegram fa-lg"></i>
                     </a>
                 </div>
-                @if (Transfer.Web.Models.Security.IsAuthenticated)
+                @if (Transfer.Web.Moduls.Security.IsAuthenticated)
                 {
                     <div class="col-lg-3 col-md-12 text-center t-col avatar">
                         <i class="far fa-user-circle" style="color: #0f4c71; font-size: 1.2em;"></i>&nbsp;&nbsp;&nbsp;<a asp-controller="Account" asp-action="Index">@Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName</a>
@@ -69,7 +69,7 @@
             </div>
             <div class="row blank-row"></div>
             <div class="row">
-                @if (Transfer.Web.Models.Security.IsAuthenticated)
+                @if (Transfer.Web.Moduls.Security.IsAuthenticated)
                 {
                     <div class="main-menu row">
                         <a class="col-md-2 text-center" asp-controller="TripRequest" asp-action="Search">Поездки</a>
