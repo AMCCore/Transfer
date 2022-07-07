@@ -31,4 +31,12 @@ public class DbStateMachineState : IEntityBase, IEntityWithDateCreated
     public bool UseByAuthorized { get; set; } = false;
 
     public bool UseByOrganisation { get; set; } = false;
+
+    public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
+
+    [MaxLength(100)]
+    public string Description { get; set; }
+
+    [MaxLength(1000)]
+    public string? ButtonName { get; set; }
 }

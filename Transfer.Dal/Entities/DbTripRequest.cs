@@ -41,11 +41,11 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public int Passengers { get; set; }
 
-    public virtual ICollection<DbTripRequestOption> TripOptions { get; set; }
+    public virtual ICollection<DbTripRequestOption> TripOptions { get; set; } = new List<DbTripRequestOption>();
 
-    public virtual ICollection<DbTripRequestReplay> TripRequestReplays { get; set; }
+    public virtual ICollection<DbTripRequestReplay> TripRequestReplays { get; set; } = new List<DbTripRequestReplay>();
 
-    public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; }
+    public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; } = new List<DbTripRequestOffer>();
 
     public virtual DbOrganisation? Charterer { get; set; }
 
@@ -68,5 +68,5 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     [ForeignKey(nameof(RegionTo))]
     public Guid? RegionToId { get; set; }
 
-    public virtual ICollection<DbTripRequestIdentifier> Identifiers { get; set; }
+    public virtual ICollection<DbTripRequestIdentifier> Identifiers { get; set; } = new List<DbTripRequestIdentifier>();
 }
