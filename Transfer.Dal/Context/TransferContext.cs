@@ -43,6 +43,7 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.TripRequestId }).IsUnique();
             modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.Identifier }).IsUnique();
             modelBuilder.Entity<DbStateMachineState>().HasIndex(a => new { a.StateFrom, a.StateTo, a.UseByOrganisation }).IsUnique();
+            modelBuilder.Entity<DbStateMachineStateRight>().HasIndex(a => new { a.StateMachineStateId, a.RightId }).IsUnique();
 
             modelBuilder.DisableCascadeDeleteConvention();
 

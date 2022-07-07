@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Common.Enums.States;
 
@@ -39,4 +36,7 @@ public class DbStateMachineState : IEntityBase, IEntityWithDateCreated
 
     [MaxLength(1000)]
     public string? ButtonName { get; set; }
+
+    [MaxLength(1000)]
+    public string? ConfirmText { get; set; }
 }
