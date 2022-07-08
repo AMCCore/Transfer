@@ -9,11 +9,11 @@
 @Html.HiddenFor(x => x.PageNumber)
 <div class="row blank-row"></div>
 <div class="row ordering">
-    <div class="t-col col-3">
+    <div class="t-col col-12 col-md-3">
         <i class="far fa-question-circle fa-lg"></i>
         Параметры сортировки запросов:
     </div>
-    <div class="t-col col-6">
+    <div class="t-col col-12 col-md-6">
         @Html.CheckBoxFor(x => x.OrderByName, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
         <label class="btn btn-sm" for="OrderByName">
             <i class="fas fa-caret-down"></i>
@@ -38,10 +38,11 @@
             <i class="fas fa-child"></i>
         </label>
     </div>
-    <div class="t-col col-2 text-end form-group">
+    <div class="row blank-row d-md-none d-flex"></div>
+    <div class="t-col col-4 offset-5 offset-md-0 col-md-2 text-end form-group">
         Выводить по:
     </div>
-    <div class="t-col col-1 text-end form-group">
+    <div class="t-col col-3 col-md-1 text-end form-group">
         @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("1", "1"), new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
 </div>
@@ -60,12 +61,13 @@
             <div class="container trip-request">
                 <div class="row blank-row"></div>
                 <div class="row">
-                    <div class="col-9">
+                    <div class="col-12 col-md-9">
                         <div class="row">
                             <div class="t-col col-12"><span style="font-size: 1.2rem;">Заказ №@c.Identifier (от @c.Name)</span></div>
                         </div>
+                        <div class="row blank-row d-md-none d-flex"></div>
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-6 col-md-3">
                                 <div class="row">
                                     @if (c.Picture.IsNullOrEmpty())
                                     {
@@ -82,7 +84,7 @@
                                     <div class="col-12 t-col text-center go"><a asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@c.Id"><span>перейти</span></a></div>
                                 </div>
                             </div>
-                            <div class="col-9">
+                            <div class="col-6 col-md-9">
                                 <div class="row">
                                     <div class="t-col col-12"><i class="fas fa-comment-dots"></i> Откликов: @c.ReplaysCount</div>
                                     <div class="t-col col-12"><i class="fas fa-map-marked"></i> @c.AddressFrom</div>
@@ -92,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-12 col-md-3">
                         <div class="row">
                             <div class="t-col col-12">Дата: @($"{c.TripDate:dd.MM.yyyy HH:mm}")</div>
                         </div>
