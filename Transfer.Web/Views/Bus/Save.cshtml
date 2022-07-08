@@ -272,10 +272,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="t-col col-9 form-group">
+                        <div class="t-col col-8 form-group">
                             <input type="text" class="form-control file-result-name" readonly="readonly" />
                         </div>
-                        <div class="t-col col-3 form-group">
+                        <div class="t-col col-4 form-group">
                             <input type="file" class="form-control input-file">
                         </div>
                     </div>
@@ -455,13 +455,13 @@
             </div>
             <div class="row blank-row"></div>
             <div class="row form-row">
-                <div class="t-col the-error col-10">
+                <div class="t-col the-error col-6 col-md-10">
                     @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
                     {
                         <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
                     }
                 </div>
-                <div class="t-col col-2 text-end">
+                <div class="t-col col-6 col-md-2 text-end">
                     <button type="submit" class="button-one">Сохранить</button>
                 </div>
             </div>

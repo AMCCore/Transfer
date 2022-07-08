@@ -32,10 +32,20 @@ public sealed class TripRequestController : BaseStateController
 
     private HandleUpdateService _handleUpdateService;
 
+#if !DEBUG
+
     public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper, HandleUpdateService handleUpdateService) : base(transferSettings, unitOfWork, logger, mapper)
     {
         _handleUpdateService = handleUpdateService;
     }
+
+#else
+
+    public TripRequestController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<TripRequestController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper)
+    {
+    }
+
+#endif
 
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
