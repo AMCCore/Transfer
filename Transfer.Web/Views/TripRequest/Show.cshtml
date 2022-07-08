@@ -116,15 +116,11 @@
         {
             <div class="row">
                 <div class="col-12">
-                    <div class="container trip-request">
+                    <div class="container trip-request" @(o.Chosen ? Html.Raw("style=\"border: 1px solid #0f4c71\"") : string.Empty)>
                         <div class="row blank-row"></div>
                         <div class="row">
                             <div class="t-col col-md-9 col-12">
                                 <span style="font-size: 1.2rem;">@o.Name</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i>
-                                @if(o.Chosen)
-                                {
-                                    <span style="font-size: 1.2rem;"><strong>(Выбран)</strong></span>
-                                }
                             </div>
                             <div class="t-col col-md-3 col-12"><strong>Цена:</strong> @($"{o.Amount:c}")</div>
                         </div>
