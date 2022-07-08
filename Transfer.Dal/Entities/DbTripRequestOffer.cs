@@ -34,4 +34,6 @@ public class DbTripRequestOffer : IEntityBase, IEntityWithDateCreated, ISoftDele
     [Column(TypeName = "money")]
     [Required]
     public decimal Amount { get; set; } = 0;
+
+    public bool Chosen { get; set; } = false;
 }

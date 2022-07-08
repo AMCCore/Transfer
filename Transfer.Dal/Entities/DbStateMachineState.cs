@@ -25,11 +25,11 @@ public class DbStateMachineState : IEntityBase, IEntityWithDateCreated
 
     public bool UseByOwner { get; set; } = false;
 
-    public bool UseByAuthorized { get; set; } = false;
+    public bool UseByAuthorized { get; set; } = true;
 
     public bool UseByOrganisation { get; set; } = false;
 
-    public bool UseSystem { get; set; } = false;
+    public bool UseBySystem { get; set; } = false;
 
     public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
 

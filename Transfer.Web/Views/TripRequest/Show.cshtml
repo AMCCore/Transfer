@@ -66,11 +66,39 @@
                             @await Html.PartialAsync("~/Views/Shared/_TripOptions.cshtml", Model.TripOptions)
                         </div>
                         <div class="row blank-row"></div>
-                        <div class="row">
-                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestEdit" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>Редактировать</span></a></div>
-                        </div>
                     </div>
                 </div>
+                @if (Model.NextStates.Any())
+                {
+                    <div class="row blank-row"></div>
+                    <div class="row">
+                        @foreach (var ns in Model.NextStates)
+                        {
+                            if (string.IsNullOrWhiteSpace(ns.ConfirmText))
+                            {
+                                <div class="col-12 col-md-3">
+                                    <div class="t-col col-10 text-center text-md-start go" style="padding: 0;">
+                                        <a asp-action="TripRequestStateChange" asp-controller="TripRequest" asp-route-requestId="@Model.Id" asp-route-stateId="@ns.NextStateId"><span>@ns.ButtonName</span></a>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-12 col-md-3">
+                                    <div class="t-col col-10 text-center text-md-start go" style="padding: 0;">
+                                        <a href="#" data-bs-href="@Url.Action("TripRequestStateChange", "TripRequest", new { requestId = Model.Id,  stateId = ns.NextStateId })" data-bs-confirm-text="@ns.ConfirmText" data-bs-toggle="modal" data-bs-target="#confirm-action">
+                                            <span>@ns.ButtonName</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            if (Model.NextStates.Count > 1)
+                            {
+                                <div class="row d-md-none blank-row"></div>
+                            }
+                        }
+                    </div>
+                }
                 <div class="row blank-row"></div>
             </div>
         </div>
@@ -100,6 +128,14 @@
                         <div class="row">
                             <div class="t-col col-12"><i class="far fa-user-circle"></i> @o.ContactFio, <a href="tel:@o.ContactPhone">@o.ContactPhone</a>, <a href="mailto:@o.ContactEmail">@o.ContactEmail</a></div>
                         </div>
+                        @if (Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid())
+                        {
+                            <div class="col-12 col-md-3 t-col text-center go">
+                                <a href="#" data-bs-href="@Url.Action("TripRequestSetCarrierChoosen", "TripRequest", new { requestId = Model.Id, offerId = o.Id })" data-bs-confirm-text="Вы уверены что хотите выбрать это предложение?" data-bs-toggle="modal" data-bs-target="#confirm-action">
+                                    <span>Выбрать</span>
+                                </a>
+                            </div>
+                        }
                         <div class="row blank-row"></div>
                     </div>
                 </div>

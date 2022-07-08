@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Transfer.Bl.Dto;
 using Transfer.Common;
 using Transfer.Common.Settings;
@@ -17,18 +18,13 @@ public abstract class BaseStateController : BaseController
     {
     }
 
-    public void SetNextStates(StateMachineDto model)
+    public async Task SetNextStates(StateMachineDto model)
     {
-        model.NextStates = GetPossibleStatets(model.State);
+        model.NextStates = await GetPossibleStatets(model.State);
     }
 
-    public virtual IDictionary<Guid, string> GetPossibleStatets(Guid currentState)
+    public virtual async Task<ICollection<NextStateDto>> GetPossibleStatets(Guid currentState)
     {
-        return new Dictionary<Guid, string>();
-    }
-
-    public virtual bool CanSetState(StateMachineDto model)
-    {
-        return model.StateChange.HasValue && GetPossibleStatets(model.State).ContainsKey(model.StateChange.Value);
+        return new List<NextStateDto>();
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Transfer.Bl.Dto;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
 using Transfer.Common.Enums;
@@ -18,6 +19,7 @@ using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
+using Transfer.Dal.Helpers;
 using Transfer.Web.Extensions;
 using Transfer.Web.Models;
 using Transfer.Web.Models.TripRequest;
@@ -51,6 +53,8 @@ public sealed class TripRequestController : BaseStateController
     {
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
+
+        query = query.Where(x => x.State == TripRequestStateEnum.Active || x.State == TripRequestStateEnum.CarrierSelected);
 
         if (filter.OrderByName)
         {
@@ -111,7 +115,7 @@ public sealed class TripRequestController : BaseStateController
             return NotFound();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
-        SetNextStates(model);
+        await SetNextStates(model);
 
         model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync();
         return View("Show", model);
@@ -126,7 +130,7 @@ public sealed class TripRequestController : BaseStateController
             return NotFound();
 
         var model = Mapper.Map<TripRequestDto>(entity);
-        SetNextStates(model);
+        await SetNextStates(model);
         return View("Save", model);
     }
 
@@ -155,70 +159,6 @@ public sealed class TripRequestController : BaseStateController
         });
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("MakeOffer/{requestId}")]
-    public async Task<IActionResult> MakeOffer(Guid requestId)
-    {
-        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
-        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived)
-        {
-            TempData[errMsgName] = "Поездка не найдена";
-            return RedirectToAction(nameof(MakeOfferError));
-        }
-        if (replay.TripRequest.TripDate >= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
-        {
-            TempData[errMsgName] = "Поездка уже прошла";
-            return RedirectToAction(nameof(MakeOfferError));
-        }
-        if (replay.TripRequest.State != TripRequestStateEnum.Active)
-        {
-            TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
-            return RedirectToAction(nameof(MakeOfferError));
-        }
-        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
-        {
-            TempData[errMsgName] = "Ваше предложение уже учтено";
-            return RedirectToAction(nameof(MakeOfferError));
-        }
-
-        var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
-        SetNextStates(model);
-        model.CarrierId = replay.CarrierId;
-        return View("MakeOffer", model);
-    }
-
-    [ValidateAntiForgeryToken]
-    [HttpPost]
-    [Route("MakeOffer/Save")]
-    [AllowAnonymous]
-    public async Task<IActionResult> OfferSave([FromForm] TripRequestOfferDto model)
-    {
-        if (model.Id.IsNullOrEmpty())
-        {
-            return BadRequest();
-        }
-        if (model.Amount < 1)
-        {
-            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
-            return View("MakeOffer", model);
-        }
-
-        var req = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == model.Id);
-
-        var offer = new DbTripRequestOffer
-        {
-            CarrierId = model.CarrierId,
-            Amount = model.Amount,
-            Comment = model.Comment,
-            TripRequestId = model.Id
-        };
-
-        await UnitOfWork.AddEntityAsync(offer);
-
-        return RedirectToAction(nameof(MakeOfferSuccess));
-    }
-
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("TripRequest/Save")]
@@ -241,7 +181,8 @@ public sealed class TripRequestController : BaseStateController
 
             await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
 
-            await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier { 
+            await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier
+            {
                 TripRequestId = model.Id
             }, CancellationToken.None);
 
@@ -264,6 +205,8 @@ public sealed class TripRequestController : BaseStateController
         }
         else
         {
+            throw new NotSupportedException();
+
             var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == model.Id, CancellationToken.None);
 
             if (entity.LastUpdateTick != model.LastUpdateTick)
@@ -324,10 +267,13 @@ public sealed class TripRequestController : BaseStateController
         }
     }
 
-    public override IDictionary<Guid, string> GetPossibleStatets(Guid currentState)
+    public override async Task<ICollection<NextStateDto>> GetPossibleStatets(Guid currentState)
     {
-        var res = new Dictionary<Guid, string>();
-        return res;
+        var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
+        q = q.Where(x => x.StateFrom == currentState);
+        q = q.Where(x => !x.UseBySystem);
+
+        return await q.Select(x => new NextStateDto { ButtonName = x.ButtonName, ConfirmText = x.ConfirmText, NextStateId = x.StateTo, NeedSaveButton = false }).ToListAsync();
     }
 
     /// <summary>
@@ -363,16 +309,173 @@ public sealed class TripRequestController : BaseStateController
         return reg;
     }
 
+    [HttpGet]
+    [Route("TripRequest/StateChange")]
+    public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId && !ss.IsDeleted).FirstOrDefaultAsync();
+        if (entity == null)
+            throw new ArgumentNullException(nameof(requestId));
+
+        var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
+        q = q.Where(x => x.StateFrom == entity.State.GetEnumGuid());
+        q = q.Where(x => x.StateTo == stateId);
+        if (await q.CountAsync() != 1)
+            throw new ArgumentOutOfRangeException();
+
+        var nextState = await q.FirstOrDefaultAsync();
+
+        if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin))
+        {
+            entity.State = GuidEnumConverter<TripRequestStateEnum>.ConvertToEnum(nextState.StateTo);
+            await UnitOfWork.SaveChangesAsync();
+            await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", nextState.Description);
+
+            if(nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
+            {
+                await SendChancelOferToUsers(entity.Id);
+            }
+
+            return RedirectToAction(nameof(Search));
+        }
+
+        return RedirectToHome();
+    }
+
+    [HttpGet]
+    [Route("TripRequest/{requestId}/CarrierChoose/{offerId}")]
+    public async Task<IActionResult> TripRequestSetCarrierChoosen(Guid requestId, Guid offerId)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(ss => ss.Id == offerId && !ss.IsDeleted && ss.TripRequestId == requestId).FirstOrDefaultAsync();
+        if (entity == null)
+            throw new ArgumentNullException(nameof(offerId));
+
+        var trip = entity.TripRequest;
+
+        if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin) && trip.State == TripRequestStateEnum.Active)
+        {
+            entity.Chosen = true;
+            trip.State = TripRequestStateEnum.CarrierSelected;
+            await UnitOfWork.SaveChangesAsync();
+            await UnitOfWork.AddToHistoryLog(trip, "Перевозчик выбран", $"Перевозчик: {entity.Carrier.Name}({entity.Carrier.Id}), сумма предложения: {entity.Amount}");
+
+            await SendChoosenOferToUsers(entity.Id);
+            await SendUnChoosenOferToUsers(trip.Id);
+
+
+            return RedirectToAction(nameof(TripRequestEdit), new { requestId = entity.Id });
+        }
+
+        return RedirectToHome();
+    }
+
+    #region Make offer
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Success")]
+    public IActionResult MakeOfferSuccess()
+    {
+        return View("Success");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Error")]
+    public async Task<IActionResult> MakeOfferError()
+    {
+        var msg = TempData[errMsgName] as string;
+        if (string.IsNullOrWhiteSpace(msg))
+        {
+            return await RedirectToHomeAsync();
+        }
+        ViewBag.Message = msg;
+        return View("Error");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/{requestId}")]
+    public async Task<IActionResult> MakeOffer(Guid requestId)
+    {
+        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
+        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived)
+        {
+            TempData[errMsgName] = "Поездка не найдена";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (replay.TripRequest.TripDate >= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
+        {
+            TempData[errMsgName] = "Поездка уже прошла";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (replay.TripRequest.State != TripRequestStateEnum.Active)
+        {
+            TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
+        {
+            TempData[errMsgName] = "Ваше предложение уже учтено";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+
+        var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
+        await SetNextStates(model);
+        model.CarrierId = replay.CarrierId;
+        return View("MakeOffer", model);
+    }
+
+    [ValidateAntiForgeryToken]
+    [HttpPost]
+    [Route("MakeOffer/Save")]
+    [AllowAnonymous]
+    public async Task<IActionResult> OfferSave([FromForm] TripRequestOfferDto model)
+    {
+        if (model.Id.IsNullOrEmpty())
+        {
+            return BadRequest();
+        }
+        if (model.Amount < 1)
+        {
+            ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
+            return View("MakeOffer", model);
+        }
+
+        var req = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == model.Id);
+
+        var offer = new DbTripRequestOffer
+        {
+            CarrierId = model.CarrierId,
+            Amount = model.Amount,
+            Comment = model.Comment,
+            TripRequestId = model.Id
+        };
+
+        await UnitOfWork.AddEntityAsync(offer);
+
+        return RedirectToAction(nameof(MakeOfferSuccess));
+    }
+
+    #endregion
+
+    #region Telegram send
+
+    /// <summary>
+    /// Уведомление о новом заказе в ситеме
+    /// </summary>
+    /// <param name="tripRequestId"></param>
+    /// <returns></returns>
     private async Task SendReplaysToUsers(Guid tripRequestId)
     {
         var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
             .Select(x => x.Id).ToListAsync();
 
-        var trip = await UnitOfWork.GetSet<DbTripRequest>().Include(x => x.Identifiers).FirstAsync(x => x.Id == tripRequestId);
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
 
         foreach (var replay in replays)
         {
-            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted).Select(a => a.Account))
+            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
                 .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
 
             foreach (var orgUser in orgUsers)
@@ -403,26 +506,111 @@ public sealed class TripRequestController : BaseStateController
             }
         }
     }
-    
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("MakeOffer/Success")]
-    public IActionResult MakeOfferSuccess()
+
+    /// <summary>
+    /// Отправка уведомаления о выиграном заказе
+    /// </summary>
+    /// <param name="offerId"></param>
+    /// <returns></returns>
+    private async Task SendChoosenOferToUsers(Guid offerId)
     {
-        return View("Success");
+        var tripId = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.TripRequest.Identifiers.FirstOrDefault()).FirstOrDefaultAsync();
+
+        var orgUsers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
+            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+
+        foreach (var orgUser in orgUsers)
+        {
+            if (long.TryParse(orgUser.Value, out long chatId))
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"Ранее Вы откликались на заказ №{tripId}");
+                sb.AppendLine($"Вы выбраны в качестве перевозчика на данный заказ");
+                sb.AppendLine($"Для оформления документов и уточнения деталей свяжитесь с менеджером по телефонам +79002944275 или +79002783868");
+
+                _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = chatId,
+                    Message = sb.ToString()
+                });
+            }
+        }
     }
 
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("MakeOffer/Error")]
-    public async Task<IActionResult> MakeOfferError()
+    /// <summary>
+    /// отправка уведомления о не выиграном заказе
+    /// </summary>
+    /// <param name="tripRequestId"></param>
+    /// <returns></returns>
+    private async Task SendUnChoosenOferToUsers(Guid tripRequestId)
     {
-        var msg = TempData[errMsgName] as string;
-        if(string.IsNullOrWhiteSpace(msg))
+        var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
+            .Select(x => x.Id).ToListAsync();
+
+        var tripId = await UnitOfWork.GetSet<DbTripRequest>().Where(x => x.Id == tripRequestId).Select(x => x.Id).FirstAsync();
+
+        var unchosenCarrier = UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Chosen).Select(x => x.CarrierId);
+
+        foreach (var replay in replays)
         {
-            return await RedirectToHomeAsync();
+            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).Where(x => unchosenCarrier.Any(a => a == x.Id)).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+
+            foreach (var orgUser in orgUsers)
+            {
+                if (long.TryParse(orgUser.Value, out long chatId))
+                {
+                    var sb = new StringBuilder();
+                    sb.AppendLine($"Ранее Вы откликались на заказ №{tripId}");
+                    sb.AppendLine($"К сожалению, Вас не выбрали в качестве перевозчика по данному заказу");
+                    sb.AppendLine($"Ждем Ваших откликов на другие заказы");
+                    sb.AppendLine($"Просмотреть список актуальных заказов Вы можете воспользовавшись командой /requests");
+
+                    _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                    {
+                        ChatId = chatId,
+                        Message = sb.ToString()
+                    });
+
+                }
+            }
         }
-        ViewBag.Message = msg;
-        return View("Error");
     }
+
+    private async Task SendChancelOferToUsers(Guid tripRequestId)
+    {
+        var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
+            .Select(x => x.Id).ToListAsync();
+
+        var tripId = await UnitOfWork.GetSet<DbTripRequest>().Where(x => x.Id == tripRequestId).Select(x => x.Id).FirstAsync();
+
+        var offerdCarriers = UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted).Select(x => x.CarrierId);
+
+        foreach (var replay in replays)
+        {
+            var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).Where(x => offerdCarriers.Any(a => a == x.Id)).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+
+            foreach (var orgUser in orgUsers)
+            {
+                if (long.TryParse(orgUser.Value, out long chatId))
+                {
+                    var sb = new StringBuilder();
+                    sb.AppendLine($"Ранее Вы откликались на заказ №{tripId}");
+                    sb.AppendLine($"К сожалению, заказ был отменён");
+                    sb.AppendLine($"Ждем Ваших откликов на другие заказы");
+                    sb.AppendLine($"Просмотреть список актуальных заказов Вы можете воспользовавшись командой /requests");
+
+                    _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                    {
+                        ChatId = chatId,
+                        Message = sb.ToString()
+                    });
+
+                }
+            }
+        }
+    }
+
+    #endregion
 }

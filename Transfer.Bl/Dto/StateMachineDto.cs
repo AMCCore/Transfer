@@ -10,10 +10,8 @@ namespace Transfer.Bl.Dto
     {
         public Guid? StateChange { get; set; }
 
-        public IDictionary<Guid, string> NextStates { get; set; } = new Dictionary<Guid, string>();
+        public ICollection<NextStateDto> NextStates { get; set; } = new List<NextStateDto>();
 
         public abstract Guid State { get; set; }
-
-        public bool NeedSaveButton { get; set; } = true;
     }
 }
