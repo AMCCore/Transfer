@@ -34,7 +34,7 @@
             <div class="container carrier-info">
                 <div class="row blank-row"></div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-4 col-md-2">
                         <div class="row">
                             @if (Model.LogoFileId.IsNullOrEmpty())
                             {
@@ -63,12 +63,12 @@
                         <div class="row blank-row"></div>
                         <div class="row blank-row"></div>
                         <div class="row">
-                            <div class="col-12 text-center go">
+                            <div class="col-12 col-md-8 offset-md-2 text-center go">
                                 <a asp-action="CarrierItemEdit" asp-controller="Carrier" asp-route-carrierId="@Model.Id"><span>Редактировать</span></a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-10">
+                    <div class="col-8 col-md-10">
                         <div class="row blank-row"></div>
                         @if (!string.IsNullOrWhiteSpace(Model.FactAddress))
                         {

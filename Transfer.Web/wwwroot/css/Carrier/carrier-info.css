@@ -6,8 +6,8 @@
 
     .assert-info .go,
     .carrier-info .go {
-        padding-right: 36px;
-        padding-left: 36px;
+        padding-right: 0;
+        padding-left: 0;
     }
 
         .assert-info .go a,

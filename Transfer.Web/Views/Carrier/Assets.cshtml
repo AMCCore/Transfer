@@ -7,12 +7,12 @@
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.OrganisationId)
     <div class="row">
-        <div class="col-6 t-col dark-text">
+        <div class="col-12 col-md-6 t-col dark-text">
             <h4>Активы компании</h4>
         </div>
         @foreach (var c in System.Enum.GetValues(typeof(Transfer.Web.Models.OrganisationAssetType)).OfType<Transfer.Web.Models.OrganisationAssetType>())
         {
-            <div class="t-col col-2 form-group">
+            <div class="t-col col-4 col-md-2 form-group">
                 <input type="radio" asp-for="AssetType" id="Option@((int)c)" class="btn-check" value="@((int)c)" checked="@(c == Model?.AssetType)" onchange="DisableCheckboxes(this)" />
                 <label class="btn btn-default" for="Option@((int)c)">@c.GetEnumDescription()</label>
             </div>
@@ -20,11 +20,11 @@
     </div>
     <div class="row blank-row"></div>
     <div class="row">
-        <div class="t-col offset-9 col-2 text-end form-group">
+        <div class="t-col col-4 offset-5 offset-md-0 col-md-2 text-end form-group">
             Выводить по:
         </div>
-        <div class="t-col col-1 text-end form-group">
-            @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
+        <div class="t-col col-3 col-md-1 text-end form-group">
+            @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
         </div>
     </div>
     <hr style="color: #007896; border: dashed 1px #007896;">
@@ -48,20 +48,6 @@
     {
         <hr style="color: #fff; border: dashed 1px #007896;">
         <div class="row">
-            @*            <div class="col-2">
-        <div class="row">
-        @if (c.Picture.IsNullOrEmpty())
-        {
-        <div class="col-12 r-logo text-center"><img alt="" src="~/images/TR_PER_logo_NName.png" /></div>
-        }
-        else
-        {
-        <div class="col-12 text-center">
-        <div class="r-logo" style="margin: auto; border: solid 1px #0f4c71; height: 140px; width: 135px; border-radius: 18px; background-position: center center; background-size: cover; background-image: url('@Url.Action("GetFile", "File", new { fileId = c.Picture.Value } )');"></div>
-        </div>
-        }
-        </div>
-        </div>*@
             <div class="col-12 assert-info">
                 @if (Model.AssetType == OrganisationAssetType.Bus)
                 {
@@ -112,31 +98,24 @@
                         <div class="col-12 t-col contacts"><a href="mailto: @c.EMail"><i class="far fa-envelope"></i> @c.EMail</a></div>
                     </div>
                 }
-
-                @if (Model.AssetType == OrganisationAssetType.Bus)
-                {
-                    <div class="row">
-                        <div class="col-12 t-col offset-md-10 col-md-2 go">
+                <div class="row">
+                    <div class="col-6 offset-3 offset-md-10 col-md-2 go">
+                        @if (Model.AssetType == OrganisationAssetType.Bus)
+                        {
                             <a asp-action="BusItem" asp-controller="Bus" asp-route-carrierId="@Model.OrganisationId" asp-route-busId="@c.Id"><span>Подробнее</span></a>
-                        </div>
-                    </div>
-                }
-                else if (Model.AssetType == OrganisationAssetType.Driver)
-                {
-                    <div class="row">
-                        <div class="col-12 offset-md-10 col-md-2 go">
+                        }
+                        else if (Model.AssetType == OrganisationAssetType.Driver)
+                        {
                             <a asp-action="DriverItem" asp-controller="Driver" asp-route-carrierId="@Model.OrganisationId" asp-route-driverId="@c.Id"><span>Подробнее</span></a>
-                        </div>
-                    </div>
-                }
-                else if (Model.AssetType == OrganisationAssetType.User)
-                {
-                    <div class="row">
-                        <div class="col-12 offset-md-10 col-md-2 go">
+                        }
+                        else if (Model.AssetType == OrganisationAssetType.User)
+                        {
                             <a asp-action="CarrierAccountItem" asp-controller="Account" asp-route-carrierId="@Model.OrganisationId" asp-route-accountId="@c.Id"><span>Подробнее</span></a>
-                        </div>
+
+                        }
+
                     </div>
-                }
+                </div>
             </div>
         </div>
     }
