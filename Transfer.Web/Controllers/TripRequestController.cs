@@ -51,6 +51,8 @@ public sealed class TripRequestController : BaseStateController
 
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
+        await UnitOfWork.TripRequestStateRegulate();
+
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
 
