@@ -62,7 +62,7 @@
                 <div class="row">
                     <div class="col-12 col-md-9">
                         <div class="row">
-                            <div class="t-col col-12"><span style="font-size: 1.2rem;">Заказ №@c.Identifier (от @c.Name)</span></div>
+                            <div class="t-col col-12"><a asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@c.Id" class="dark-link-basic"><span style="font-size: 1.2rem;">Заказ №@c.Identifier (от @c.Name)</span></a></div>
                         </div>
                         <div class="row blank-row d-md-none d-flex"></div>
                         <div class="row">
@@ -79,7 +79,6 @@
                                         </div>
                                         <div class="row blank-row"></div>
                                     }
-
                                     <div class="col-12 t-col text-center go"><a asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@c.Id"><span>перейти</span></a></div>
                                 </div>
                             </div>

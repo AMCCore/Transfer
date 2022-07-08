@@ -28,6 +28,4 @@ public class DbTripRequestReplay : IEntityBase, IEntityWithDateCreated, ISoftDel
     public Guid CarrierId { get; set; }
 
     public virtual DbOrganisation Carrier { get; set; }
-
-    public DateTime? DateValid { get; set; } = DateTime.Now.AddDays(3);
 }

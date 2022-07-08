@@ -49,36 +49,25 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3">
-                        <div class="row">
-                            <div class="col-12 t-col"><strong>Дата:</strong> @($"{Model.TripDate:dd.MM.yyyy HH:mm}")</div>
-                        </div>
-                        <div class="row blank-row"></div>
-                        <div class="row blank-row"></div>
-                        <div class="row">
-                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestEdit" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>редактировать</span></a></div>
-                        </div>
-                        <div class="row blank-row"></div>
-                        <div class="row">
-                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestDelete" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>отменить</span></a></div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <div class="t-col col-12"><i class="fas fa-map-marked"></i> @Model.AddressFrom</div>
-                            <div class="t-col col-12"><i class="fas fa-map-marked-alt"></i> @Model.AddressTo</div>
-                            @if (!string.IsNullOrWhiteSpace(Model.Description))
-                            {
-                                <div class="t-col col-12"><i class="fas fa-comment-dots"></i> @Model.Description</div>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-3">
+                    <div class="col-12 col-md-9">
                         <div class="col-12 t-col"><strong>Заказ №:</strong> @Model.Identifier</div>
+                        <div class="col-12 t-col"><strong>Дата:</strong> @($"{Model.TripDate:dd.MM.yyyy HH:mm}")</div>
+                        <div class="col-12 t-col"><i class="fas fa-map-marked"></i> @Model.AddressFrom</div>
+                        <div class="col-12 t-col"><i class="fas fa-map-marked-alt"></i> @Model.AddressTo</div>
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <div class="t-col col-12"><i class="fas fa-comment-dots"></i> @Model.Description</div>
+                        }
+                    </div>
+                    <div class="col-12 col-md-3">
                         <div class="col-12 t-col"><strong>Пассажиров:</strong> @Model.Passengers</div>
                         <div class="col-12 t-col">
                             <strong>Особенности поездки:</strong><br />
                             @await Html.PartialAsync("~/Views/Shared/_TripOptions.cshtml", Model.TripOptions)
+                        </div>
+                        <div class="row blank-row"></div>
+                        <div class="row">
+                            <div class="col-12 t-col text-center go"><a asp-action="TripRequestEdit" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>Редактировать</span></a></div>
                         </div>
                     </div>
                 </div>

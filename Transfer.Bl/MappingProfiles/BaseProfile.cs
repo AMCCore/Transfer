@@ -63,6 +63,7 @@ public class BaseProfile : Profile
 
         CreateMap<DbTripRequest, TripRequestOfferDto>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
+            .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
             .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
             .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.IdleTrip.GetEnumGuid())))
             .ForMember(x => x.PaymentType, opt => opt.MapFrom(o => TripPaymentConvert(o.TripOptions)))

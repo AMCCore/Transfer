@@ -165,19 +165,16 @@ public sealed class TripRequestController : BaseStateController
         {
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
-            //return NotFound();
         }
-        if (replay.DateValid <= DateTime.Now)
+        if (replay)
         {
-            TempData[errMsgName] = "Поездка уже прошла";
+            TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
-            //return BadRequest("Times up");
         }
         if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
         {
             TempData[errMsgName] = "Ваше предложение уже учтено";
             return RedirectToAction(nameof(MakeOfferError));
-            //return BadRequest("Already offered");
         }
 
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
@@ -254,7 +251,6 @@ public sealed class TripRequestController : BaseStateController
                 {
                     TripRequestId = entity.Id,
                     CarrierId = orgId,
-                    DateValid = DateTime.Now.AddDays(4),
                 }, CancellationToken.None);
             }
 

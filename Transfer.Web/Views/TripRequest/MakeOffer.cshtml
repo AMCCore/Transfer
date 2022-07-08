@@ -17,7 +17,7 @@
     <div class="row blank-row"></div>
     <div class="row">
         <div class="t-col col-12">
-            <h1 style="color: #0f4c71">Отлик на заказ</h1>
+            <h1 style="color: #0f4c71">Отлик на заказ №@Model.Identifier</h1>
         </div>
     </div>
     <form asp-controller="TripRequest" asp-action="OfferSave" method="post" id="mainSaveForm">
@@ -30,18 +30,19 @@
         <div class="row">
             <div class="col-12">
                 <div class="container trip-request">
-                    <div class="row blank-row"></div>
                     <div class="row">
-                        <div class="col-9">
+                        <div class="col-12 col-md-9">
                             <div class="row">
-                                <div class="t-col col-12"><span style="font-size: 1.2rem;">@Model.ChartererName</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i></div>
+                                <div class="t-col col-12">
+                                    <h5>Данные заказа</h5>
+                                </div>
+                                @*<div class="t-col col-12"><span style="font-size: 1.2rem;">@Model.ChartererName</span> <i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="fas fa-star fs-sm" style="color: #ecbf54"></i><i class="far fa-star fs-sm"></i><i class="far fa-star fs-sm"></i></div>*@
                             </div>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="row">
                                         <div class="t-col col-12"><i class="fas fa-map-marked"></i> @Model.AddressFrom</div>
                                         <div class="t-col col-12"><i class="fas fa-map-marked-alt"></i> @Model.AddressTo</div>
-                                        <div class="t-col col-12"><i class="far fa-user-circle"></i> @Model.ContactFio, <a href="#">@Model.ContactPhone</a>, <a href="#">@Model.ContactEmail</a></div>
                                         @if (!string.IsNullOrWhiteSpace(Model.Description))
                                         {
                                             <div class="t-col col-12"><i class="fas fa-comment"></i> @Html.Raw(Model.Description)</div>
@@ -50,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-12 col-md-3">
                             <div class="row">
                                 <div class="t-col col-12">Дата: @($"{Model.TripDate:dd.MM.yyyy HH:mm}")</div>
                             </div>
