@@ -29,6 +29,8 @@ public class DbStateMachineState : IEntityBase, IEntityWithDateCreated
 
     public bool UseByOrganisation { get; set; } = false;
 
+    public bool UseSystem { get; set; } = false;
+
     public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
 
     [MaxLength(100)]

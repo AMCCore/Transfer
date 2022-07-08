@@ -161,14 +161,19 @@ public sealed class TripRequestController : BaseStateController
     public async Task<IActionResult> MakeOffer(Guid requestId)
     {
         var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
-        if (replay == null || replay.IsDeleted)
+        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived)
         {
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (replay)
+        if (replay.TripRequest.TripDate >= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
         {
-            TempData[errMsgName] = "Поездка не найдена";
+            TempData[errMsgName] = "Поездка уже прошла";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (replay.TripRequest.State != TripRequestStateEnum.Active)
+        {
+            TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
             return RedirectToAction(nameof(MakeOfferError));
         }
         if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
@@ -322,17 +327,6 @@ public sealed class TripRequestController : BaseStateController
     public override IDictionary<Guid, string> GetPossibleStatets(Guid currentState)
     {
         var res = new Dictionary<Guid, string>();
-        var isTripRequestAdmin = HasRight(TripRequestRights.TripRequestAdmin);
-
-
-        if (currentState == TripRequestStateEnum.New.GetEnumGuid())
-        {
-            if (isTripRequestAdmin)
-            {
-                res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Отменить");
-                res.Add(TripRequestStateEnum.ProposalsComplete.GetEnumGuid(), "Закрыть сбор предложений");
-            }
-        }
         return res;
     }
 

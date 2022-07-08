@@ -43,11 +43,6 @@ public static class HistoryLogExtension
             throw new ArgumentNullException(nameof(EntityId));
         }
 
-        if(AccountId.IsNullOrEmpty())
-        {
-            throw new ArgumentNullException(nameof(AccountId));
-        }
-
         await unitOfWork.AddEntityAsync(new DbHistoryLog { 
             AccountId = AccountId,
             EntityId = EntityId,

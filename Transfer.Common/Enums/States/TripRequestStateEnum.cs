@@ -6,26 +6,11 @@ namespace Transfer.Common.Enums.States;
 public enum TripRequestStateEnum
 {
     /// <summary>
-    /// Новый/черновик
-    /// </summary>
-    [Description("Новый/черновик")]
-    [EnumGuid("D18D3114-582F-4E30-A1E2-8E84A9F7F31B")]
-    New,
-
-
-    /// <summary>
     /// Действующий
     /// </summary>
     [Description("Действующий")]
     [EnumGuid("C2BD98B2-CA6E-4C3C-BD75-8D10FD804DA4")]
     Active,
-
-    /// <summary>
-    /// Завершен сбор предложений
-    /// </summary>
-    [Description("Завершен сбор предложений")]
-    [EnumGuid("6F8AE582-7FFA-4F29-91E0-EED64D142EA6")]
-    ProposalsComplete,
 
     /// <summary>
     /// Отменён
@@ -35,9 +20,30 @@ public enum TripRequestStateEnum
     Canceled,
 
     /// <summary>
-    /// Отправлен в ЕРП
+    /// Перемещен в архив
     /// </summary>
-    [Description("Отправлен в ЕРП")]
-    [EnumGuid("89F977CD-6B08-4BC0-9D0B-42DB21F320C3")]
-    InErp,
+    [Description("Перемещен в архив")]
+    [EnumGuid("3DC01BD1-7C95-4F16-B7A9-2EFB86AC7A0E")]
+    Archived,
+
+    /// <summary>
+    /// Просрочен
+    /// </summary>
+    [Description("Просрочен")]
+    [EnumGuid("3857D8C6-BECE-4B39-BF37-3A04A550E093")]
+    Overdue,
+
+    /// <summary>
+    /// Перевозчик выбран
+    /// </summary>
+    [Description("Перевозчик выбран (заключение договора)")]
+    [EnumGuid("63D8EB2C-ADF9-4208-81C9-7EF17C0A905C")]
+    CarrierSelected,
+
+    /// <summary>
+    /// Завершен
+    /// </summary>
+    [Description("Завершен")]
+    [EnumGuid("BA47C059-2686-4D6D-967E-DB36334A36D4")]
+    Completed,
 }

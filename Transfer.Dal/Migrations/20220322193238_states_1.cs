@@ -14,7 +14,7 @@ namespace Transfer.Dal.Migrations
                 table: "TripRequests",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: TripRequestStateEnum.New.GetEnumGuid());
+                defaultValue: TripRequestStateEnum.Active.GetEnumGuid());
 
             migrationBuilder.AddColumn<Guid>(
                 name: "State",
