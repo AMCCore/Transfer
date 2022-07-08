@@ -365,7 +365,7 @@ public sealed class TripRequestController : BaseStateController
             await SendUnChoosenOferToUsers(trip.Id);
 
 
-            return RedirectToAction(nameof(TripRequestEdit), new { requestId = entity.Id });
+            return RedirectToAction(nameof(TripRequestShow), new { requestId = entity.TripRequestId });
         }
 
         return RedirectToHome();
@@ -516,7 +516,7 @@ public sealed class TripRequestController : BaseStateController
     /// <returns></returns>
     private async Task SendChoosenOferToUsers(Guid offerId)
     {
-        var tripId = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.TripRequest.Identifiers.FirstOrDefault()).FirstOrDefaultAsync();
+        var tripId = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.TripRequest.Identifiers.Select(a => a.Identifier).FirstOrDefault()).FirstOrDefaultAsync();
 
         var orgUsers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
             .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();

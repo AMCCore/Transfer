@@ -19,4 +19,6 @@ public sealed class TripRequestOfferSearchResultItem
     public decimal Amount { get; set; }
 
     public Guid CarrierId { get; set; }
+
+    public bool Chosen { get; set; }
 }

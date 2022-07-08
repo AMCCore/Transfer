@@ -17,7 +17,7 @@ public static class TripRequestExtension
         unitOfWork.BeginTransaction();
         var qTrips = unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted);
         qTrips = qTrips.Where(x =>
-        (x.State == TripRequestStateEnum.Active && x.TripDate >= DateTime.Now) //не выбран перевозчик а дата поездки наступила - надо сделать просроченным
+        (x.State == TripRequestStateEnum.Active && x.TripDate < DateTime.Now) //не выбран перевозчик а дата поездки наступила - надо сделать просроченным
         || x.State == TripRequestStateEnum.Canceled //отменён - надо списать в архив
         || x.State == TripRequestStateEnum.Overdue //просрочен - надо списать в архив
         || x.State == TripRequestStateEnum.Completed //завершен - надо списать в архив
