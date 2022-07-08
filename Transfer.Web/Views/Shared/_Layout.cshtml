@@ -24,12 +24,6 @@
                     <a href="/">
                         <i class="fab fa-vk fa-lg"></i>
                     </a>
-@*                    <a href="/">
-                        <i class="fab fa-instagram-square fa-lg"></i>
-                    </a>
-                    <a href="/">
-                        <i class="fab fa-facebook-square fa-lg"></i>
-                    </a>*@
                     <a href="/">
                         <i class="fab fa-telegram fa-lg"></i>
                     </a>
@@ -100,72 +94,86 @@
     <div class="container-fluid bottom">
         <div class="container">
             <div class="row blank-row"></div>
-            <div class="row blank-row"></div>
-            <div class="row blank-row"></div>
-            <div class="row d-flex flex-wrap align-items-center">
-                <div class="col-md-3 t-col">
-                    <a href="/">
-                        <img alt="" src="/images/trsite_logo.png" class="main-logo" />
-                    </a><br />
-                </div>
-                <div class="col-md-2 offset-1 t-col links">
-                    <a asp-controller="Info" asp-action="About">О компании</a>
-                </div>
-                <div class="col-md-2 t-col links">
-                    <a asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
-                </div>
-                <div class="col-md-3 offset-1 t-col contacts">
-                    <span class="d">
-                        <i class="fas fa-phone-alt"></i> <span>8-800-100-67-91</span>
-                    </span>
-                </div>
-            </div>
+            <div class="row blank-row d-md-flex d-none"></div>
+            <div class="row blank-row d-md-flex d-none"></div>
             <div class="row">
-                <div class="col-md-2 offset-4 t-col links">
-                    <a asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
+                <div class="col-12 col-md-3">
+                    <div class="row d-flex d-md-none flex-wrap align-items-center">
+                        <a href="/" style="display: flex; align-items: center; justify-content: center;">
+                            <img alt="" src="/images/trsite_logo.png" class="main-logo" />
+                        </a>
+                    </div>
+                    <div class="row d-none d-md-flex flex-wrap align-items-center">
+                        <a href="/">
+                            <img alt="" src="/images/trsite_logo.png" class="main-logo" />
+                        </a>
+                    </div>
+                    <div class="row blank-row"></div>
+                    <div class="d-block d-md-none col-12 t-col social" style="text-align: center;">
+                        <a href="/">
+                            <i class="fab fa-vk fa-lg"></i>
+                        </a>
+                        <a href="/">
+                            <i class="fab fa-telegram fa-lg"></i>
+                        </a>
+                    </div>
+                    <div class="d-none d-md-block col-12 t-col social">
+                        <a href="/">
+                            <i class="fab fa-vk fa-lg"></i>
+                        </a>
+                        <a href="/">
+                            <i class="fab fa-telegram fa-lg"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-2 t-col links">
-                    <a asp-controller="Info" asp-action="Specials">Спецпредложения</a>
+                <div class="col-12 col-md-3">
+                    <div class="row text-center text-md-start">
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Info" asp-action="About">О компании</a>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="TripRequest" asp-action="Search">Поездки</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3 offset-1 t-col contacts">
-                    <span class="d">
-                        <i class="far fa-envelope"></i> <span>info@tktransfer.com</span>
-                    </span>
+                <div class="col-12 col-md-3">
+                    <div class="row text-center text-md-start">
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Info" asp-action="Normatives">Нормативные акты</a>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Info" asp-action="Specials">Спецпредложения</a>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Info" asp-action="Contacts">Контакты</a>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col links">
+                            <a asp-controller="Info" asp-action="Vacancy">Вакансии</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3 t-col social">
-                    <a href="/">
-                        <i class="fab fa-vk fa-lg"></i>
-                    </a>
-@*                    <a href="/">
-                        <i class="fab fa-instagram-square fa-lg"></i>
-                    </a>
-                    <a href="/">
-                        <i class="fab fa-facebook-square fa-lg"></i>
-                    </a>*@
-                    <a href="/">
-                        <i class="fab fa-telegram fa-lg"></i>
-                    </a>
-                </div>
-                <div class="col-md-2 offset-1 t-col links">
-                    <a asp-controller="Trip" asp-action="Index">Поездки</a>
-                </div>
-                <div class="col-md-2 t-col links">
-                    <a asp-controller="Info" asp-action="Contacts">Контакты</a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2 offset-4 t-col links">
-                    <a asp-controller="Сarrier" asp-action="Search">Перевозчики</a>
-                </div>
-                <div class="col-md-2 t-col links">
-                    <a asp-controller="Info" asp-action="Vacancy">Вакансии</a>
-                </div>
-                <div class="col-md-3 offset-1 t-col contacts">
-                    <span class="d">
-                        <i class="far fa-calendar-alt"></i> <span>Пн-Пт: с 09:00 до 18:00<br />Сб,Вс: выходной</span>
-                    </span>
+                <div class="col-12 col-md-3">
+                    <div class="row text-center text-md-start">
+                        <div class="col-12 col-md-10 offset-md-2 t-col contacts">
+                            <span class="d">
+                                <i class="fas fa-phone-alt"></i> <span>8-800-100-67-91</span>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col contacts">
+                            <span class="d">
+                                <i class="far fa-envelope"></i> <span>info@tktransfer.com</span>
+                            </span>
+                        </div>
+                        <div class="row blank-row d-md-flex d-none"></div>
+                        <div class="col-12 col-md-10 offset-md-2 t-col contacts">
+                            <span class="d">
+                                <i class="far fa-calendar-alt"></i> <span>Пн-Пт: с 09:00 до 18:00<br />Сб,Вс: выходной</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
