@@ -406,7 +406,7 @@ public sealed class TripRequestController : BaseStateController
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (replay.TripRequest.TripDate >= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
+        if (replay.TripRequest.TripDate <= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
         {
             TempData[errMsgName] = "Поездка уже прошла";
             return RedirectToAction(nameof(MakeOfferError));
