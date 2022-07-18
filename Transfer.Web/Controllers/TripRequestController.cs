@@ -286,13 +286,13 @@ public sealed class TripRequestController : BaseStateController
         if (model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
         {
             var reg = await GetOrCreateRegion(model.RegionFromName);
-            entity.RegionFromId = reg.Id;
+            entity.RegionFromId = reg?.Id;
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
         if (model.RegionToId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionToName))
         {
             var reg = await GetOrCreateRegion(model.RegionToName);
-            entity.RegionToId = reg.Id;
+            entity.RegionToId = reg?.Id;
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
         }
     }
@@ -302,11 +302,11 @@ public sealed class TripRequestController : BaseStateController
         var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), CancellationToken.None);
         if (reg == null)
         {
-            reg = new DbRegion
-            {
-                Name = regionName
-            };
-            await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
+            //reg = new DbRegion
+            //{
+            //    Name = regionName
+            //};
+            //await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
         }
         return reg;
     }
@@ -406,7 +406,7 @@ public sealed class TripRequestController : BaseStateController
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (replay.TripRequest.TripDate >= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
+        if (replay.TripRequest.TripDate <= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
         {
             TempData[errMsgName] = "Поездка уже прошла";
             return RedirectToAction(nameof(MakeOfferError));

@@ -25,6 +25,7 @@ internal class Program
         using var package = new ExcelPackage(existingFile);
         var sheet1 = package.Workbook.Worksheets[2];
         int rowCount = sheet1.Dimension.End.Row;
+        int i = 1;
         for (int row = 1; row <= rowCount; row++)
         {
             var regionName = sheet1.Cells[row, 1].Value?.ToString();
@@ -34,131 +35,143 @@ internal class Program
             if (uc.GetSet<DbRegion>().Any(x => x.Name.ToLower() == regionName.ToLower().Trim()))
                 continue;
 
-            System.Console.WriteLine($"{row}, Region:{regionName}");
+            System.Console.WriteLine($"{row}, {i++}, Region:{regionName}");
 
             uc.AddEntity(new DbRegion { 
                 Name = regionName.Trim(),
             });
         }
 
-        sheet1 = package.Workbook.Worksheets[0];
-        rowCount = sheet1.Dimension.End.Row;
-        for (int row = 2; row <= rowCount; row++)
+        if (false)
         {
-            //инн
-            var inn = sheet1.Cells[row, 7].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(inn))
-                continue;
-
-            if (uc.GetSet<DbOrganisation>().Any(x => x.INN == inn.Trim()))
-                continue;
-
-            var regions = sheet1.Cells[row, 2].Value?.ToString();
-            var regNames = regions.ToLower().Split(new string[] { " и ", "," }, StringSplitOptions.TrimEntries).Select(ss => ss.Trim());
-            var regs = uc.GetSet<DbRegion>().Where(x => regNames.Contains(x.Name.ToLower().Trim())).ToList();
-            if(!regs.Any())
+            sheet1 = package.Workbook.Worksheets[0];
+            rowCount = sheet1.Dimension.End.Row;
+            for (int row = 2; row <= rowCount; row++)
             {
-                continue;
-            }
-            var phone = sheet1.Cells[row, 5].Value?.ToString().Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace(" ", string.Empty).Replace("+", string.Empty);
-            if(!string.IsNullOrWhiteSpace(phone))
-            {
-                phone = $"+7{phone[1..]}";
-            }
-            else
-            {
-                continue;
-            }
+                //инн
+                var inn = sheet1.Cells[row, 7].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(inn))
+                    continue;
 
-            var email = sheet1.Cells[row, 6].Value?.ToString().Trim();
-            if (string.IsNullOrWhiteSpace(email))
-                continue;
+                if (uc.GetSet<DbOrganisation>().Any(x => x.INN == inn.Trim()))
+                    continue;
 
-            var cname = sheet1.Cells[row, 1].Value?.ToString().Trim();
+                var regions = sheet1.Cells[row, 2].Value?.ToString();
+                var regNames = regions.ToLower().Split(new string[] { " и ", "," }, StringSplitOptions.TrimEntries).Select(ss => ss.Trim());
+                var regs = uc.GetSet<DbRegion>().Where(x => regNames.Contains(x.Name.ToLower().Trim())).ToList();
+                if (!regs.Any())
+                {
+                    continue;
+                }
+                var phone = sheet1.Cells[row, 5].Value?.ToString().Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty).Replace(" ", string.Empty).Replace("+", string.Empty);
+                if (!string.IsNullOrWhiteSpace(phone))
+                {
+                    phone = $"+7{phone[1..]}";
+                }
+                else
+                {
+                    continue;
+                }
 
-            System.Console.WriteLine($"{row}, Org:{cname} | {inn}");
+                var email = sheet1.Cells[row, 6].Value?.ToString().Trim();
+                if (string.IsNullOrWhiteSpace(email))
+                    continue;
 
-            var o = uc.AddEntity(new DbOrganisation { 
-                Name = cname,
-                FullName = sheet1.Cells[row, 3].Value?.ToString().Trim(),
-                Address = sheet1.Cells[row, 4].Value?.ToString().Trim(),
-                FactAddress = sheet1.Cells[row, 4].Value?.ToString().Trim(),
-                Phone = phone,
-                Email = email,
-                INN = inn.Trim(),
-                DirectorFio = "Неизвестен",
-                DirectorPosition = "Директор",
-                State = OrganisationStateEnum.Checked,
-                IsDeleted = false
-            });
+                var cname = sheet1.Cells[row, 1].Value?.ToString().Trim();
 
-            foreach(var r in regs)
-            {
-                uc.AddEntity(new DbOrganisationWorkingArea { 
-                    Organisation = o,
-                    Region = r
+                System.Console.WriteLine($"{row}, Org:{cname} | {inn}");
+
+                var o = uc.AddEntity(new DbOrganisation
+                {
+                    Name = cname,
+                    FullName = sheet1.Cells[row, 3].Value?.ToString().Trim(),
+                    Address = sheet1.Cells[row, 4].Value?.ToString().Trim(),
+                    FactAddress = sheet1.Cells[row, 4].Value?.ToString().Trim(),
+                    Phone = phone,
+                    Email = email,
+                    INN = inn.Trim(),
+                    DirectorFio = "Неизвестен",
+                    DirectorPosition = "Директор",
+                    State = OrganisationStateEnum.Checked,
+                    IsDeleted = false
                 });
+
+                foreach (var r in regs)
+                {
+                    uc.AddEntity(new DbOrganisationWorkingArea
+                    {
+                        Organisation = o,
+                        Region = r
+                    });
+                }
+
+                var u = uc.DoAddUser(new AddUser.AUser
+                {
+                    CompanyName = cname,
+                    FirstName = "Неизвестен",
+                    Phone = phone,
+                    Email = email
+                });
+
+                uc.AddEntity(new DbOrganisationAccount { Organisation = o, AccountType = Common.Enums.OrganisationAccountTypeEnum.Director, AccountId = u });
             }
 
-            var u = uc.DoAddUser(new AddUser.AUser { 
-                CompanyName = cname,
-                FirstName = "Неизвестен",
-                Phone = phone,
-                Email = email
-            });
-
-            uc.AddEntity(new DbOrganisationAccount { Organisation = o, AccountType = Common.Enums.OrganisationAccountTypeEnum.Director, AccountId = u });
         }
 
-        sheet1 = package.Workbook.Worksheets[1];
-        rowCount = sheet1.Dimension.End.Row;
-        for (int row = 2; row <= rowCount; row++)
+        if (false)
         {
-            var orgName = sheet1.Cells[row, 1].Value?.ToString();
-            var org = uc.GetSet<DbOrganisation>().FirstOrDefault(x => x.Name == orgName);
-            if (org == null)
-                continue;
+            sheet1 = package.Workbook.Worksheets[1];
+            rowCount = sheet1.Dimension.End.Row;
+            for (int row = 2; row <= rowCount; row++)
+            {
+                var orgName = sheet1.Cells[row, 1].Value?.ToString();
+                var org = uc.GetSet<DbOrganisation>().FirstOrDefault(x => x.Name == orgName);
+                if (org == null)
+                    continue;
 
-            var make = sheet1.Cells[row, 2].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(make))
-                continue;
+                var make = sheet1.Cells[row, 2].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(make))
+                    continue;
 
-            var model = sheet1.Cells[row, 3].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(model))
-                model = "Неизвестная";
+                var model = sheet1.Cells[row, 3].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(model))
+                    model = "Неизвестная";
 
-            var number = sheet1.Cells[row, 4].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(number))
-                continue;
+                var number = sheet1.Cells[row, 4].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(number))
+                    continue;
 
-            number = number.Replace(" ", string.Empty);
-            if (uc.GetSet<DbBus>().Any(x => !x.IsDeleted && x.LicenseNumber.ToLower() == number.ToLower()))
-                continue;
+                number = number.Replace(" ", string.Empty);
+                if (uc.GetSet<DbBus>().Any(x => !x.IsDeleted && x.LicenseNumber.ToLower() == number.ToLower()))
+                    continue;
 
-            var year = sheet1.Cells[row, 5].Value?.ToString();
-            if (string.IsNullOrWhiteSpace(year))
-                continue;
+                var year = sheet1.Cells[row, 5].Value?.ToString();
+                if (string.IsNullOrWhiteSpace(year))
+                    continue;
 
-            var capacity = sheet1.Cells[row, 6].Value?.ToString();
-            int.TryParse(capacity, out int capacityNum);
+                var capacity = sheet1.Cells[row, 6].Value?.ToString();
+                int.TryParse(capacity, out int capacityNum);
 
-            System.Console.WriteLine($"{row}, tc:{make} | {number.ToUpper()}");
+                System.Console.WriteLine($"{row}, tc:{make} | {number.ToUpper()}");
 
-            uc.AddEntity(new DbBus { 
-                Make = make,
-                LicenseNumber = number.ToUpper(),
-                Model = model,
-                Yaer = Convert.ToInt32(year),
-                PeopleCopacity = capacityNum,
-                Organisation = org,
-                IsDeleted = false,
-                State = BusStateEnum.Checked
-           });
+                uc.AddEntity(new DbBus
+                {
+                    Make = make,
+                    LicenseNumber = number.ToUpper(),
+                    Model = model,
+                    Yaer = Convert.ToInt32(year),
+                    PeopleCopacity = capacityNum,
+                    Organisation = org,
+                    IsDeleted = false,
+                    State = BusStateEnum.Checked
+                });
+
+            }
 
         }
 
 
-        transaction.Rollback();
+        transaction.Commit();
         return;
 
         var admin = uc.GetSet<DbAccount>().FirstOrDefault(x => x.Id == Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76"));
