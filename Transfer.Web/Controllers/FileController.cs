@@ -16,6 +16,7 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using Transfer.Common.Settings;
 using System.Collections.Generic;
+using MimeTypes;
 
 namespace Transfer.Web.Controllers;
 
@@ -107,11 +108,13 @@ public class FileController : BaseController
 
     private static readonly Dictionary<string, string> static_lib = new()
     {
-        { "sd9dzh", "Договор ВОУ (агентское вознаграждение).docx" },
-        { "6thrai", "Лицензионное соглашение.docx" },
-        { "v8ls7e", "Политика конфиденциальности.docx" },
-        { "5r125k", "Партнерское соглашение на осуществление перевозок.docx" },
-        { "62s5ut", "Договор ВОУ (абонентская плата).docx" },
+        { "sd9dzh", "Договор ВОУ (агентское вознаграждение).pdf" },
+        { "6thrai", "Лицензионное соглашение.pdf" },
+        { "v8ls7e", "Политика конфиденциальности.pdf" },
+        { "5r125k", "Партнерское соглашение на осуществление перевозок.pdf" },
+        { "62s5ut", "Договор ВОУ (абонентская плата).pdf" },
+        { "ibh87t", "Оферта о заключении договора фрахтования транспортных средств для перевозки пассажиров и багажа с использованием Платформы.pdf" },
+        { "4ks6wz", "Соглашение об использовании Платформы.pdf" }
     };
 
     [HttpGet]
@@ -129,7 +132,7 @@ public class FileController : BaseController
                 using var ms = new MemoryStream();
                 fileStream.CopyTo(ms);
                 var byts = ms.ToArray();
-                return File(byts, "application/octet-stream", static_lib[code], true);
+                return File(byts, MimeTypeMap.GetMimeType(ext), static_lib[code], true);
             }
         }
         
