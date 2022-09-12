@@ -14,15 +14,21 @@ internal static class AddUser
     { 
         public string FirstName { get; set; }
 
+        public string LastName { get; set; }
+
+        public string MiddleName { get; set; }
+
         public string Email { get; set; }
 
         public string Phone { get; set; }
 
         public string CompanyName { get; set; }
+
+        public string Password { get; set; }
     }
 
 
-    public static void DoAddUser(this IUnitOfWork uc)
+    private static void DoAddUser(this IUnitOfWork uc)
     {
         var u = new DbAccount
         {
@@ -47,24 +53,31 @@ internal static class AddUser
 
     public static Guid DoAddUser(this IUnitOfWork uc, AUser user)
     {
-        var pwrd = Password.Generate();
+        System.Console.WriteLine($"{user.FirstName} {user.LastName} {user.Email} pass:{user.Password}");
+
+        if (string.IsNullOrWhiteSpace(user.Password))
+        {
+            var pwrd = Password.Generate();
+            user.Password = pwrd;
+        }
 
         var u = new DbAccount
         {
             Email = user.Email,
-            Password = BCrypt.Net.BCrypt.HashString(pwrd),
+            Password = BCrypt.Net.BCrypt.HashString(user.Password),
             PersonData = new DbPersonData
             {
                 FirstName = user.FirstName,
-                LastName = $" (оператор {user.CompanyName})",
-                MiddleName = " ",
+                LastName = user.LastName,
+                MiddleName = user.MiddleName,
                 DocumentSeries = " ",
                 DocumentNumber = " ",
                 DocumentIssurer = " ",
                 DocumentSubDivisionCode = " ",
                 DocumentDateOfIssue = DateTime.MinValue,
                 RegistrationAddress = " ",
-            }
+            },
+            LastUpdateTick = -1
         };
 
         uc.AddEntity(u);
