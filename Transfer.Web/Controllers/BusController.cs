@@ -205,7 +205,7 @@ public class BusController : BaseController
         }
         if (filter.PeopleCopacity.HasValue && filter.PeopleCopacity > 0)
         {
-            query = query.Where(x => x.PeopleCopacity >= filter.Year);
+            query = query.Where(x => x.PeopleCopacity >= filter.PeopleCopacity);
         }
 
         var totalCount = await query.CountAsync(CancellationToken.None);
