@@ -9,6 +9,7 @@ using Transfer.Bl.Dto.Driver;
 using Transfer.Bl.Dto.Organisation;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common.Enums;
+using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
@@ -141,8 +142,8 @@ public class BaseProfile : Profile
 
         CreateMap<DbAccount, OrganisationAssetDto>()
             .ForMember(x => x.Picture, opt => opt.Ignore())
+            .ForMember(x => x.TgUse, opt => opt.MapFrom(o => o.AccountRights.Any(x => x.RightId == AccountAccessRights.TelegramBotUsage.GetEnumGuid())))
             .ForMember(x => x.Name, opt => opt.MapFrom(o => o.PersonData != null ? $"{o.PersonData.LastName} {o.PersonData.FirstName} {o.PersonData.MiddleName}".Trim() : string.Empty));
-
 
         CreateMap<DbBus, BusDto>()
             .ForMember(x => x.OsagoFileId, opt => opt.MapFrom(o => o.BusFiles.Where(p => !p.IsDeleted && p.FileType == BusFileTypeEnum.Inshurance).Select(p => p.FileId).FirstOrDefault()))

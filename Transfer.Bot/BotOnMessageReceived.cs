@@ -35,7 +35,7 @@ namespace Transfer.Bot
             if(user == null)
             {
                 //email
-                var ruser = await unitOfWork.GetSet<DbAccount>().Include(x => x.AccountRights).FirstOrDefaultAsync(x => x.Email == message.Text);
+                var ruser = await unitOfWork.GetSet<DbAccount>().Include(x => x.AccountRights).FirstOrDefaultAsync(x => x.Email.ToLower() == message.Text.ToLower());
                 //registration 1
                 if (ruser == null)
                 {

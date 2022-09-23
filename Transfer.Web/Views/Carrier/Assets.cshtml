@@ -24,7 +24,7 @@
             Выводить по:
         </div>
         <div class="t-col col-3 col-md-1 text-end form-group">
-            @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
+            @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
         </div>
     </div>
     <hr style="color: #007896; border: dashed 1px #007896;">
@@ -70,7 +70,14 @@
                     <div class="row">
                         <div class="col-12 t-col dark-text contacts">
                             <a asp-action="CarrierAccountItem" asp-controller="Account" asp-route-carrierId="@Model.OrganisationId" asp-route-accountId="@c.Id">@c.Name</a>
+                            @if(c.TgUse)
+                            {
+                                <i class="fab fa-telegram-plane" style="color: #ecbf54;"></i>
+                            }
                         </div>
+@*                        <div class="col-12 col-md-2 t-col dark-text contacts">
+                            <a asp-action="CarrierAccountItem" asp-controller="Account" asp-route-carrierId="@Model.OrganisationId" asp-route-accountId="@c.Id">Удалить <i class="fas fa-times-circle"></i></a>
+                        </div>*@
                     </div>
                 }
                 @if (!string.IsNullOrWhiteSpace(c.LicenseNumber))
@@ -128,14 +135,17 @@
             Model.Results = null;
             Model.PageNumber = page;
             return Url.Action("SearchCarrierAssets", "Carrier", Model);
-            }, new PagedListRenderOptions {
+            }, PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+            new PagedListRenderOptions {
             DisplayItemSliceAndTotal = false,
             ItemSliceAndTotalFormat = "Всего записей: {2} ",
             DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
             DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
             LinkToPreviousPageFormat = "Назад",
             LinkToNextPageFormat = "Вперед"
-            })
+
+            },
+            new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "CarrierAssetsSearch", InsertionMode = InsertionMode.Replace }))
         </div>
     </div>
 </form>

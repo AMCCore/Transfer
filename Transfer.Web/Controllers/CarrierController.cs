@@ -274,7 +274,7 @@ public class CarrierController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> SearchCarrierAssets([FromForm] OrganisationAssetsSearchFilter filter)
+    public async Task<IActionResult> SearchCarrierAssets(OrganisationAssetsSearchFilter filter)
     {
         var result = await GetAssetsDataFromDb(UnitOfWork, Mapper, TransferSettings, filter);
 

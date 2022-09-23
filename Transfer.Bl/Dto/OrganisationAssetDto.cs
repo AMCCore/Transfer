@@ -23,5 +23,7 @@ namespace Transfer.Bl.Dto
         public string Phone { get; set; }
 
         public string EMail { get; set; }
+
+        public bool TgUse { get; set; } = false;
     }
 }
