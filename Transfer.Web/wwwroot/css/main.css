@@ -417,6 +417,8 @@ a.link-light-yellow-du {
 
     .pagination-container li a {
         margin-top: -2px;
+        text-decoration: underline;
+        color: #000;
     }
 
     .pagination-container li.active {
