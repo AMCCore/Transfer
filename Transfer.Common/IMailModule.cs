@@ -8,5 +8,5 @@ namespace Transfer.Common;
 
 public interface IMailModule
 {
-    Task SendEmailPlainTextAsync(string body, string subject, string recipient);
+    Task SendEmailPlainTextAsync(string body, string subject, string recipient, bool isHtml = false);
 }

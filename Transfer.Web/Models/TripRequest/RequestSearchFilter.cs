@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Transfer.Bl.Dto.TripRequest;
+using Transfer.Web.Models.Enums;
 
 namespace Transfer.Web.Models.TripRequest;
 
@@ -14,11 +15,5 @@ public class RequestSearchFilter : BaseFilterModel<TripRequestSearchResultItem>
     {
     }
 
-    public bool OrderByName { get; set; }
-
-    public bool OrderByRating { get; set; }
-
-    public bool OrderByChecked { get; set; }
-
-    public bool OrderByChild { get; set; }
+    public int OrderBy { get; set; } = (int)TripRequestSearchOrderEnum.OrderByDateStartAsc;
 }

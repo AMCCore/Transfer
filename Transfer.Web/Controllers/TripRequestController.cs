@@ -22,6 +22,7 @@ using Transfer.Dal.Entities;
 using Transfer.Dal.Helpers;
 using Transfer.Web.Extensions;
 using Transfer.Web.Models;
+using Transfer.Web.Models.Enums;
 using Transfer.Web.Models.TripRequest;
 using Transfer.Web.Services;
 
@@ -54,31 +55,35 @@ public sealed class TripRequestController : BaseStateController
         await UnitOfWork.TripRequestStateRegulate();
 
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
-        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).OrderBy(x => x.DateCreated).AsQueryable();
+        var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
 
         query = query.Where(x => x.State == TripRequestStateEnum.Active || x.State == TripRequestStateEnum.CarrierSelected);
 
-        if (filter.OrderByName)
+        if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateStartAsc)
         {
-            query = query.OrderBy(x => x.СhartererName).ThenBy(x => x.Charterer.Name);
+            query = query.OrderBy(x => x.TripDate).ThenBy(x => x.DateCreated);
+        }
+        else if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateStartDesc)
+        {
+            query = query.OrderByDescending(x => x.TripDate).ThenBy(x => x.DateCreated);
+        }
+        else if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateCreatedAsc)
+        {
+            query = query.OrderBy(x => x.DateCreated);
+        }
+        else if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateCreatedDesc)
+        {
+            query = query.OrderByDescending(x => x.DateCreated);
         }
 
-        if (filter.OrderByRating)
-        {
-            //query = query.OrderBy(x => x.Rating).ThenBy(x => x.Name);
-        }
+        //query = query.OrderBy(x => x.СhartererName).ThenBy(x => x.Charterer.Name);
 
-        if (filter.OrderByChecked)
-        {
-            //query = query.OrderBy(x => x.Rating).ThenBy(x => x.Name);
-        }
-
-        if (filter.OrderByChild)
-        {
-            query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid()))
-                .ThenBy(x => x.СhartererName)
-                .ThenBy(x => x.Charterer.Name);
-        }
+        //if (filter.OrderByChild)
+        //{
+        //    query = query.OrderByDescending(x => x.TripOptions.Any(y => y.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid()))
+        //        .ThenBy(x => x.СhartererName)
+        //        .ThenBy(x => x.Charterer.Name);
+        //}
 
         var totalCount = await query.CountAsync(CancellationToken.None);
         var entity = await query.Skip(filter.StartRecord)

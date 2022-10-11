@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace Transfer.Bot
 {
     public static class BotOnMessageReceived
     {
+        public const string letter = "<html><head><style>p {color: white;} .yellowlink { color: #ECBF54;} .button { cursor:pointer; text-decoration-line: none; text-decoration-color: #1B0E49; color: #1B0E49; display: block; text-align: center; line-height: 34px; width: 130px; height: 36px; background-color: #ECBF54; border-radius: 18px; } a.button { text-decoration-line: none; text-decoration-color: #1B0E49; } </style>" +
+            "</head><body style=\"background: linear-gradient(89.35deg, #1B0E49 22.47%, #0F4C71 94.84%); font-family: Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans ,sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;\"><div style=\"margin-left: 20px; margin-top: 20px; margin-left: 20px; margin-bottom: 20px;\"><div style=\"display: flex; flex-direction: column;\"><div style=\"padding: 0px;\"><img src=\"https://nexttripto.ru/images/trsite_logo.png\" style=\"display:block\"/></div><div><h2 style=\"color: white;\">Приветствуем вас</h2></div></div>" +
+            "<p>Поступил запрос на подключение к телеграм боту данного адреса электронной почты.</p><p>Чтобы подтвердить подключение перейдите по ссылке <a class=\"yellowlink\" href=\"%link1%\" target=\"self\">перейти</a> или нажмите на кнопку</p><a class=\"button\" href=\"%link1%\" target=\"_self\"><div class=\"button\"><b>Подтвердить</b></div></a>" +
+            "<p>При переходе по ссылке Вы подтверждаете свое согласие с условиями <b>Партнёрского соглашения</b> (<a class=\"yellowlink\" href='https://nexttripto.ru/static/5r125k' target=\"_blank\">https://nexttripto.ru/static/5r125k</a>)</p></div></body></html>";
+
         public static async Task OnMessageReceived(this ITelegramBotClient bot, Message message, IUnitOfWork unitOfWork, ILogger logger = null, IMailModule mailModule = null)
         {
             logger?.LogInformation("Receive message type: {messageType}", message.Type);
@@ -57,7 +63,7 @@ namespace Transfer.Bot
                 //registration 2
                 else if(!ruser.AccountRights.Any(x => x.RightId == AccountAccessRights.TelegramBotUsage.GetEnumGuid()))
                 {
-                    await mailModule.SendEmailPlainTextAsync($"<h2>Приветствуем вас</h2></br></br>Поступил запрос на подключение к телеграм боту.</br></br> Чтобы подтвердить перейдите по ссылке</br></br> <a href=\"https://nexttripto.ru/TgAccept/{ruser.Id}\" target=\"self\">перейти</a></br></br>При переходе по ссылке Вы подтверждаете свое согласие с условиями <b>Партнёрского соглашения</b> (https://nexttripto.ru/static/5r125k).", "Запрос на подтверждение использования телеграм бота", ruser.Email);
+                    await mailModule.SendEmailPlainTextAsync(letter.Replace("%link1%", $"https://nexttripto.ru/TgAccept/{ruser.Id}"), "Запрос на подтверждение использования телеграм бота", ruser.Email, true);
 
                     await bot.SendTextMessageAsync(
                         chatId: message.From.Id,

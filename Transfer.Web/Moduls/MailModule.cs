@@ -22,7 +22,7 @@ public class MailModule : IMailModule
         _logger = logger;
     }
 
-    public async Task SendEmailPlainTextAsync(string body, string subject, string recipient)
+    public async Task SendEmailPlainTextAsync(string body, string subject, string recipient, bool isHtml = false)
     {
         var email = new MimeMessage
         {
@@ -32,7 +32,11 @@ public class MailModule : IMailModule
         email.Sender.Name = _mailSettings.DisplayName;
         email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
         email.Subject = subject;
-        email.Body = new TextPart(TextFormat.Html) { Text = body };
+        //email.Body = new TextPart(TextFormat) { Text = body };
+        if(isHtml)
+            email.Body = new TextPart(TextFormat.Html) { Text = body };
+        else
+            email.Body = new TextPart(TextFormat.Text) { Text = body };
         using var smtp = new SmtpClient();
         smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.Auto);
         smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);

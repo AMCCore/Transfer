@@ -1,5 +1,6 @@
 ﻿@model Transfer.Web.Models.TripRequest.RequestSearchFilter
 
+@using Transfer.Web.Models.Enums
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 @using Transfer.Bl.Dto;
@@ -9,36 +10,17 @@
 @Html.HiddenFor(x => x.PageNumber)
 <div class="row blank-row"></div>
 <div class="row ordering">
-    <div class="t-col col-12 col-md-3">
-        Параметры сортировки запросов:
+    <div class="t-col col-12 col-md-1">
+        Сортировать:
     </div>
-    <div class="t-col col-12 col-md-6">
-        @Html.CheckBoxFor(x => x.OrderByName, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
-        <label class="btn btn-sm" for="OrderByName">
-            <i class="fas fa-caret-down"></i>
-            <i class="fas fa-sort-alpha-down"></i>
-        </label>
-        &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByRating, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
-        <label class="btn btn-sm" for="OrderByRating">
-            <i class="fas fa-caret-down"></i>
-            <i class="fas fa-star"></i>
-        </label>
-        &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByChecked, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
-        <label class="btn btn-sm" for="OrderByChecked">
-            <i class="fas fa-caret-down"></i>
-            <i class="fas fa-lock-open"></i>
-        </label>
-        &nbsp;&nbsp;&nbsp;
-        @Html.CheckBoxFor(x => x.OrderByChild, new { @class="btn-check", autocomplete="off", onclick="DisableCheckboxes(this)" })
-        <label class="btn btn-sm" for="OrderByChild">
-            <i class="fas fa-caret-down"></i>
-            <i class="fas fa-child"></i>
-        </label>
+    <div class="t-col col-12 col-md-2 form-group">
+        @Html.DropDownListFor(x => x.OrderBy, new List<SelectListItem> { new SelectListItem("Отправляются раньше", ((int)TripRequestSearchOrderEnum.OrderByDateStartAsc).ToString()), 
+        new SelectListItem("Отправляются позже", ((int)TripRequestSearchOrderEnum.OrderByDateStartDesc).ToString()),
+        new SelectListItem("Созданы раньше", ((int)TripRequestSearchOrderEnum.OrderByDateCreatedAsc).ToString()),
+        new SelectListItem("Созданы позже", ((int)TripRequestSearchOrderEnum.OrderByDateCreatedDesc).ToString()) }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
     <div class="row blank-row d-md-none d-flex"></div>
-    <div class="t-col col-4 offset-5 offset-md-0 col-md-2 text-end form-group">
+    <div class="t-col col-4 offset-5 offset-md-6 col-md-2 text-end form-group">
         Выводить по:
     </div>
     <div class="t-col col-3 col-md-1 text-end form-group">
