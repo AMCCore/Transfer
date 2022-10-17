@@ -14,11 +14,14 @@ img {
 .input-group-icon .input-group-text {
     background-color: #fff;
     padding-top: .6rem;
-    padding-bottom: 0;
+    padding-bottom: .6rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    color: #007896;
 }
 
-.input-group-icon input {
-    border-left: solid 1px #fff;
+.input-group input {
+    border-left: solid 0px #fff;
 }
 
 .blank-row {

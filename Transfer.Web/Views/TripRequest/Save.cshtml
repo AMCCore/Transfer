@@ -59,8 +59,10 @@
                     </div>
                     <div class="row">
                         <div class="t-col col-12 form-group">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-search input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
+                                </span>
                                 <input asp-for="ChartererName" class="form-control" readonly="@(!Model.ChartererId.IsNullOrEmpty())" autocomplete="off" placeholder="Начните вводить полное наименование компании ЮЛ или ИП или ФИО" />
                             </div>
                         </div>
@@ -74,8 +76,10 @@
                             Контактное лицо:
                         </div>
                         <div class="col-12">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-user-alt input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
+                                </span>
                                 <input type="tel" asp-for="ContactFio" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
@@ -87,8 +91,10 @@
                             Email:
                         </div>
                         <div class="col-12">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-envelope input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
+                                </span>
                                 <input type="email" asp-for="ContactEmail" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
@@ -100,8 +106,10 @@
                             Контакный телефон: <span class="red-text">*</span>
                         </div>
                         <div class="col-12">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-phone-alt input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
+                                </span>
                                 <input asp-for="ContactPhone" readonly="@(!Model.ChartererId.IsNullOrEmpty())" class="form-control" />
                             </div>
                         </div>
@@ -121,8 +129,10 @@
                     </div>
                     <div class="row">
                         <div class="t-col col-12 form-group">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-map-marked input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
+                                </span>
                                 <select asp-for="AddressFromFias" class="form-control input-addr" autocomplete="off">
                                     @if (!string.IsNullOrWhiteSpace(Model.AddressFrom))
                                     {
@@ -146,8 +156,10 @@
                     </div>
                     <div class="row">
                         <div class="t-col col-12 form-group">
-                            <div class="input-group input-group-icon">
-                                <i class="fas fa-map-marked-alt input-group-text"></i>
+                            <div class="input-group">
+                                <span class="input-group-append input-group-icon">
+                                    <div class="input-group-text"><i class="fas fa-map-marked-alt fa-lg"></i></div>
+                                </span>
                                 <select asp-for="AddressToFias" class="form-control input-addr" autocomplete="off">
                                     @if (!string.IsNullOrWhiteSpace(Model.AddressTo))
                                     {
