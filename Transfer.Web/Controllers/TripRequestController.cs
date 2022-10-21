@@ -208,6 +208,7 @@ public sealed class TripRequestController : BaseStateController
             }
 
             await SendReplaysToUsers(entity.Id);
+            await SendReplaysToWatchers(entity.Id);
             await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
         }
         else
@@ -338,7 +339,7 @@ public sealed class TripRequestController : BaseStateController
             await UnitOfWork.SaveChangesAsync();
             await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", nextState.Description);
 
-            if(nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
+            if (nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
             {
                 await SendChancelOferToUsers(entity.Id);
             }
@@ -518,6 +519,40 @@ public sealed class TripRequestController : BaseStateController
             }
         }
     }
+
+    /// <summary>
+    /// Уведомление о новом заказе в ситеме
+    /// </summary>
+    /// <param name="tripRequestId"></param>
+    /// <returns></returns>
+    private async Task SendReplaysToWatchers(Guid tripRequestId)
+    {
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+
+        var botNotificationsAdmins = await UnitOfWork.GetSet<DbAccount>().Where(x => x.AccountRights.Any(y => y.RightId == AdminAccessRights.BotNotifications.GetEnumGuid()))
+            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync(CancellationToken.None);
+
+        foreach (var orgUser in botNotificationsAdmins)
+        {
+            if (long.TryParse(orgUser.Value, out long chatId))
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"Новый заказ №{trip.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
+                sb.AppendLine($"Заказчик: {(!trip.ChartererId.IsNullOrEmpty() ? trip.Charterer.Name : trip.СhartererName)}");
+                sb.AppendLine($"Дата отправления: {trip.TripDate:dd.MM.yyyy HH:mm}");
+                sb.AppendLine($"Место отправления: {trip.AddressFrom}");
+                sb.AppendLine($"Место прибытия: {trip.AddressTo}");
+                sb.AppendLine($"Кол-во пассажиров: {trip.Passengers}");
+
+                _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = chatId,
+                    Message = sb.ToString()
+                });
+            }
+        }
+    }
+
 
     /// <summary>
     /// Отправка уведомаления о выиграном заказе
