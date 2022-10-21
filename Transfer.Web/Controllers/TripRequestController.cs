@@ -485,7 +485,12 @@ public sealed class TripRequestController : BaseStateController
             var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
                 .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
 
-            foreach (var orgUser in orgUsers)
+            var botNotificationsAdmins = await UnitOfWork.GetSet<DbAccount>().Where(x => x.AccountRights.Any(y => y.RightId == AdminAccessRights.BotNotifications.GetEnumGuid()))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+
+            orgUsers.AddRange(botNotificationsAdmins);
+
+            foreach (var orgUser in orgUsers.DistinctBy(x => x.Id).ToList())
             {
                 if (long.TryParse(orgUser.Value, out long chatId))
                 {
