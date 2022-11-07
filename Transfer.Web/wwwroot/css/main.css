@@ -401,6 +401,10 @@ a.link-light-yellow-du {
             border-bottom: none;
         }
 
+.pagination-container > ul.pagination {
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
 
 .pagination-container li {
     height: 36px;
@@ -411,6 +415,7 @@ a.link-light-yellow-du {
     padding: 0 16px;
     border-radius: 18px;
     display: flex;
+    margin-bottom: 1rem;
 }
 
     .pagination-container li:hover {
