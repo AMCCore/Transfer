@@ -1,4 +1,5 @@
-﻿@model Transfer.Bl.Dto.Report.BaseReportDto;
+﻿@using Transfer.Bl.Dto.Report
+@model Transfer.Bl.Dto.Report.BaseReportDto<InputDataReportDto>;
 
 @section Scripts {
     <script src="~/js/BasicSave.js" crossorigin="anonymous"></script>
@@ -74,9 +75,53 @@
                     <button type="submit" id="sub_file" class="button-one">Сформировать Excel</button>
                 </div>
             </div>
-
-                <div class="row blank-row"></div>
-            </div>
-        </form>
-        <div class="row blank-row"></div>
-    </div>
+            <div class="row blank-row"></div>
+        </div>
+    </form>
+    <div class="row blank-row"></div>
+    @if (Model.Results.Any())
+    {
+        <hr style="color: #fff; border: dashed 1px #007896;">
+        <div class="row">
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <td>Дата (внесения данных)</td>
+                        <td>Пользователь</td>
+                        <td>Перевозчик</td>
+                        <td>ТС марка</td>
+                        <td>ТС модель</td>
+                        <td>Год</td>
+                        <td>Гос. номер </td>
+                        <td>Посад. мест</td>
+                        <td>СТС</td>
+                        <td>ОСАГО</td>
+                        <td>ОСГОП</td>
+                        <td>Диагност. Карта</td>
+                        <td>Фото</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.Results)
+                    {
+                        <tr>
+                            <td>@($"{c.DateInput:dd.MM.yyyy}")</td>
+                            <td>@c.Manager</td>
+                            <td>@c.Carrier</td>
+                            <td>@c.Make</td>
+                            <td>@c.Model</td>
+                            <td>@c.Yaer</td>
+                            <td>@c.LicenseNumber</td>
+                            <td>@c.PeopleCopacity</td>
+                            <td>@c.Reg</td>
+                            <td>@($"{c.OSAGOToDate:dd.MM.yyyy}")</td>
+                            <td>@($"{c.OSGOPToDate:dd.MM.yyyy}")</td>
+                            <td>@($"{c.TOToDate:dd.MM.yyyy}")</td>
+                            <td>@c.FotoCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

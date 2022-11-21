@@ -11,7 +11,7 @@ using Transfer.Common.Enums.States;
 namespace Transfer.Dal.Entities;
 
 [Table("Buses")]
-public class DbBus : IEntityBase, ISoftDeleteEntity
+public class DbBus : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
 {
     [Key]
     public Guid Id { get; set; }
@@ -19,6 +19,8 @@ public class DbBus : IEntityBase, ISoftDeleteEntity
     public long LastUpdateTick { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public DateTime DateCreated { get; set; }
 
     public virtual DbOrganisation? Organisation { get; set; }
 

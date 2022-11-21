@@ -11,7 +11,7 @@ using Transfer.Common.Enums.States;
 namespace Transfer.Dal.Entities;
 
 [Table("Organisations")]
-public class DbOrganisation : IEntityBase, ISoftDeleteEntity
+public class DbOrganisation : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
 {
     [Key]
     public Guid Id { get; set; }
@@ -19,6 +19,8 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity
     public long LastUpdateTick { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public DateTime DateCreated { get; set; }
 
     /// <summary>
     ///     Наименование

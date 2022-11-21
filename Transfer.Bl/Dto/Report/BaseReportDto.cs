@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.Report;
 
-public class BaseReportDto
+public class BaseReportDto<T>
 {
     [DataType(DataType.Date)]
     public DateTime? DateFrom { get; set; }
@@ -20,4 +20,6 @@ public class BaseReportDto
     public string Action { get; set; }
 
     public bool AsFile { get; set; } = false;
+
+    public List<T> Results { get; set; } = new List<T>();
 }

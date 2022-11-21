@@ -8,7 +8,7 @@ using Transfer.Common.Enums.States;
 namespace Transfer.Dal.Entities
 {
     [Table("Drivers")]
-    public class DbDriver : IEntityBase, ISoftDeleteEntity
+    public class DbDriver : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
     {
         [Key]
         public Guid Id { get; set; }
@@ -16,7 +16,9 @@ namespace Transfer.Dal.Entities
         public long LastUpdateTick { get; set; }
 
         public bool IsDeleted { get; set; }
-        
+
+        public DateTime DateCreated { get; set; }
+
         public virtual DbOrganisation? Organisation { get; set; }
         
         [ForeignKey(nameof(Organisation))]
