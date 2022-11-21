@@ -11,6 +11,14 @@ img {
     height: auto;
 }
 
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    text-align: center;
+}
+
 .input-group-icon .input-group-text {
     background-color: #fff;
     padding-top: .6rem;

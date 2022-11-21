@@ -530,7 +530,7 @@ public sealed class TripRequestController : BaseStateController
         var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
 
         var botNotificationsAdmins = await UnitOfWork.GetSet<DbAccount>().Where(x => x.AccountRights.Any(y => y.RightId == AdminAccessRights.BotNotifications.GetEnumGuid()))
-            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync(CancellationToken.None);
+            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).DistinctBy(x => x.Value).ToListAsync(CancellationToken.None);
 
         foreach (var orgUser in botNotificationsAdmins)
         {
