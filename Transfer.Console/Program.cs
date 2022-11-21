@@ -19,81 +19,95 @@ internal class Program
 
         using var transaction = uc.Context.Database.BeginTransaction();
 
-        uc.NotChangeLastUpdateTick = true;
+        uc.NotChangeLastUpdateTick = false;
 
-
-        uc.DoAddUser(new AddUser.AUser {
-            LastName = "Старкова",
-            FirstName = "Екатерина",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "m2@tktransfer.ru"
-        });
-
-        uc.DoAddUser(new AddUser.AUser
+        if(false)
         {
-            LastName = "Баранов",
-            FirstName = "Вячеслав",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "m4@tktransfer.ru"
-        });
+            var ee = uc.GetSet<DbDriver>().ToList();
+            foreach(var e in ee)
+            {
+                e.DateCreated = new DateTime(e.LastUpdateTick);
+                uc.SaveChanges();
+            }
+        }
 
-        uc.DoAddUser(new AddUser.AUser
+        if(false)
         {
-            LastName = "Никифорова",
-            FirstName = "Елена",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "m3@tktransfer.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Старкова",
+                FirstName = "Екатерина",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "m2@tktransfer.ru"
+            });
 
-        uc.DoAddUser(new AddUser.AUser
-        {
-            LastName = "Чурилов",
-            FirstName = "Сергей",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "m6@tktransfer.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Баранов",
+                FirstName = "Вячеслав",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "m4@tktransfer.ru"
+            });
 
-        uc.DoAddUser(new AddUser.AUser
-        {
-            LastName = "Марчихина",
-            FirstName = "Ольга",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "top@tktransfer.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Никифорова",
+                FirstName = "Елена",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "m3@tktransfer.ru"
+            });
 
-        uc.DoAddUser(new AddUser.AUser
-        {
-            LastName = "Федоров",
-            FirstName = "Алексей",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "anapa-tktransfer@yandex.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Чурилов",
+                FirstName = "Сергей",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "m6@tktransfer.ru"
+            });
 
-        uc.DoAddUser(new AddUser.AUser
-        {
-            LastName = "Закирова",
-            FirstName = "Мария",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "operator@tktransfer.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Марчихина",
+                FirstName = "Ольга",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "top@tktransfer.ru"
+            });
 
-        uc.DoAddUser(new AddUser.AUser
-        {
-            LastName = "Гавриков",
-            FirstName = "Александр",
-            MiddleName = " ",
-            Password = Password.Generate(),
-            Email = "m5@tktransfer.ru"
-        });
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Федоров",
+                FirstName = "Алексей",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "anapa-tktransfer@yandex.ru"
+            });
 
-        if (false)
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Закирова",
+                FirstName = "Мария",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "operator@tktransfer.ru"
+            });
+
+            uc.DoAddUser(new AddUser.AUser
+            {
+                LastName = "Гавриков",
+                FirstName = "Александр",
+                MiddleName = " ",
+                Password = Password.Generate(),
+                Email = "m5@tktransfer.ru"
+            });
+
+        }
+
+        if(false)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
