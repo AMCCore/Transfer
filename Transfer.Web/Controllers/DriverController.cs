@@ -64,6 +64,7 @@ public class DriverController : BaseController
             driverModel.IsDeleted = false;
             var driver = Mapper.Map<DbDriver>(driverModel);
             driver.OrganisationId = driverModel.OrganisationId;
+            driver.CreatorId = Security.CurrentAccountId;
             await UnitOfWork.AddEntityAsync(driver, CancellationToken.None);
         }
         else

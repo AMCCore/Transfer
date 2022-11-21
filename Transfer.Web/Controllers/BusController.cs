@@ -74,6 +74,7 @@ public class BusController : BaseController
             busModel.IsDeleted = false;
             var bus = Mapper.Map<DbBus>(busModel);
             bus.OrganisationId = busModel.OrganisationId;
+            bus.CreatorId = Security.CurrentAccountId;
 
             await UnitOfWork.AddEntityAsync(bus, CancellationToken.None);
         }

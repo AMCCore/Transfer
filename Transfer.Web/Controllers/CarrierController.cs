@@ -152,6 +152,7 @@ public class CarrierController : BaseController
         {
             var org = Mapper.Map<DbOrganisation>(model);
             org.Id = Guid.NewGuid();
+            org.CreatorId = Security.CurrentAccountId;
             model.Id = org.Id;
             //временно разрешить организации без email
             if (string.IsNullOrWhiteSpace(org.Email))
