@@ -105,10 +105,14 @@ public class AccountController : BaseController
             if (account.LastUpdateTick != accountModel.LastUpdateTick)
                 throw new InvalidOperationException();
 
+            if (await UnitOfWork.GetSet<DbAccount>().AnyAsync(x => x.Email.ToLower() == accountModel.Email.ToLower() && x.Id != accountModel.Id))
+                throw new InvalidOperationException();
+
             account.Phone = accountModel.Phone;
             account.PersonData.FirstName = accountModel.FirstName;
             account.PersonData.LastName = accountModel.LastName;
             account.PersonData.MiddleName = accountModel.MiddleName ?? string.Empty;
+            account.Email = accountModel.Email;
 
             await UnitOfWork.SaveChangesAsync();
         }
