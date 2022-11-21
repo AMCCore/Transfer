@@ -22,6 +22,11 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity, IEntityWithDateCre
 
     public DateTime DateCreated { get; set; }
 
+    [ForeignKey(nameof(Creator))]
+    public Guid? CreatorId { get; set; }
+
+    public virtual DbAccount? Creator { get; set; }
+
     /// <summary>
     ///     Наименование
     /// </summary>

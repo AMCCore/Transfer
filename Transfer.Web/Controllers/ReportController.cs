@@ -4,13 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using Transfer.Common.Settings;
-using Transfer.Common;
 using Transfer.Bl.Dto.Report;
-using Transfer.Common.Extensions;
-using AspNetCore;
-using Transfer.Dal.Entities;
-using System.Linq;
+using Transfer.Common;
+using Transfer.Common.Settings;
 
 namespace Transfer.Web.Controllers;
 
@@ -40,7 +36,7 @@ public class ReportController : BaseController
     [Route("DataInputGen")]
     public IActionResult DataInputGen([FromForm] BaseReportDto<InputDataReportDto> model)
     {
-        var _res = UnitOfWork.GetSet<DbBus>().Where(x => !x.IsDeleted);
+        //var _res = UnitOfWork.GetSet<DbBus>().Where(x => !x.IsDeleted);
 
         if(model.AsFile)
         {

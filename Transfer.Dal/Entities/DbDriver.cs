@@ -19,6 +19,11 @@ namespace Transfer.Dal.Entities
 
         public DateTime DateCreated { get; set; }
 
+        [ForeignKey(nameof(Creator))]
+        public Guid? CreatorId { get; set; }
+
+        public virtual DbAccount? Creator { get; set; }
+
         public virtual DbOrganisation? Organisation { get; set; }
         
         [ForeignKey(nameof(Organisation))]

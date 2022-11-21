@@ -24,6 +24,11 @@ public class DbBus : IEntityBase, ISoftDeleteEntity, IEntityWithDateCreated
 
     public virtual DbOrganisation? Organisation { get; set; }
 
+    [ForeignKey(nameof(Creator))]
+    public Guid? CreatorId { get; set; }
+
+    public virtual DbAccount? Creator { get; set; }
+
     [ForeignKey(nameof(Organisation))]
     public Guid? OrganisationId { get; set; }
 

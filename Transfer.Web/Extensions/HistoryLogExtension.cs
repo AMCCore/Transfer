@@ -12,7 +12,7 @@ public static class HistoryLogExtension
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityWithDateCreated Entity, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, string ActionName, string Description = null)
     {
         await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description);
     }
@@ -20,7 +20,7 @@ public static class HistoryLogExtension
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityWithDateCreated Entity, Guid AccountId, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, Guid AccountId, string ActionName, string Description = null)
     {
         await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description);
     }
