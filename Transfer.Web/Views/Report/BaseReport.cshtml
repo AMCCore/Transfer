@@ -1,0 +1,82 @@
+﻿@model Transfer.Bl.Dto.Report.BaseReportDto;
+
+@section Scripts {
+    <script src="~/js/BasicSave.js" crossorigin="anonymous"></script>
+    <script src="~/js/Reports/BaseReportSave.js" crossorigin="anonymous"></script>
+}
+
+    <div class="container">
+        <div class="row blank-row"></div>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12 crumbs">
+                ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Report" asp-action="Index">Отчеты</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;@Model.Name
+            </div>
+        </div>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12 col-md-6 crb-avatar">
+                Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+            </div>
+        </div>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12">
+                <h1 style="color: #0f4c71">@Model.Name</h1>
+            </div>
+        </div>
+        <div class="row blank-row"></div>
+        <form asp-controller="Report" asp-action="@Model.Action" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.AsFile)
+            @Html.HiddenFor(x => x.Action)
+            @Html.HiddenFor(x => x.Name)
+
+            <div class="container the-form">
+                <div class="row blank-row"></div>
+                <div class="row form-row">
+                    <div class="t-col col-12 col-md-2 form-group">
+                        <div class="row">
+                            <div class="col-12 white-text">
+                                C даты:
+                            </div>
+                            <div class="col-12 white-text">
+                                <div class="input-group input-group-icon">
+                                    <input asp-for="DateFrom" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="t-col col-12 col-md-2 form-group">
+                        <div class="row">
+                            <div class="col-12 white-text">
+                                По дату:
+                            </div>
+                            <div class="col-12 white-text">
+                                <div class="input-group input-group-icon">
+                                    <input asp-for="DateTo" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="t-col the-error col-6 col-md-8">
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))
+                    {
+                        <i class="fas fa-exclamation-triangle"></i> @ViewBag.ErrorMsg
+                    }
+                </div>
+                <div class="t-col col-6 col-md-2 text-end">
+                    <button type="submit" class="button-one">Сформировать</button>
+                </div>
+                <div class="t-col col-6 col-md-2 text-end">
+                    <button type="submit" id="sub_file" class="button-one">Сформировать Excel</button>
+                </div>
+            </div>
+
+                <div class="row blank-row"></div>
+            </div>
+        </form>
+        <div class="row blank-row"></div>
+    </div>

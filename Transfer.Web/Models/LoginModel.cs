@@ -2,7 +2,7 @@
 
 namespace Transfer.Web.Models;
 
-public class LoginModel
+public sealed class LoginModel
 {
     [Required]
     [Display(Name = "Username")]
@@ -12,7 +12,7 @@ public class LoginModel
     [DataType(DataType.Password)]
     public string Password { get; set; }
 
-    public bool RememberLogin { get; set; }
+    public bool RememberLogin { get; set; } = true;
 
     public string ReturnUrl { get; set; }
 }

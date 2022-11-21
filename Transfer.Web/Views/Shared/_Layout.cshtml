@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Transfer.Common.Enums.AccessRights
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -63,13 +64,18 @@
             </div>
             <div class="row blank-row"></div>
             <div class="row">
-                @if (Transfer.Web.Moduls.Security.IsAuthenticated)
+                @if (Security.IsAuthenticated)
                 {
                     <div class="main-menu row">
                         <a class="col-md-2 text-center" asp-controller="TripRequest" asp-action="Search">Поездки</a>
                         <a class="col-md-3 text-center" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
                         <a class="col-md-3 text-center" asp-controller="Bus" asp-action="Search">Поиск ТС</a>
-                        <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
+                        @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { ReportAccessRights.DataInputReport }))
+                        {
+                            <a class="col-md-2 text-center" asp-controller="Report" asp-action="Index">Отчеты</a>
+                        } else {
+                            <a class="col-md-2 text-center" asp-controller="Account" asp-action="Reviews">Проверки</a>
+                        }
                         <a class="col-md-2 text-center" asp-controller="Account" asp-action="Index">Личный кабинет</a>
                     </div>
                 }

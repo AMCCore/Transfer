@@ -105,5 +105,16 @@ namespace Transfer.Common.Security
 
             return _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] as IDictionary<Guid, IList<Guid>>;
         }
+
+        public bool HasAnyRightForSomeOrganisation(IEnumerable<Enum> rights, Guid? organisation = null)
+        {
+            var ex_rights = GetRights();
+            if (ex_rights.Any(x => x.Value.Any(y => y == AdminAccessRights.IsAdmin.GetEnumGuid())))
+            {
+                return true;
+            }
+
+            return ex_rights.Any(s => (s.Key == organisation || organisation.IsNullOrEmpty()) && s.Value.Any(x => rights.Any(y => y.GetEnumGuid() == x)));
+        }
     }
 }

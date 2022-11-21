@@ -23,6 +23,11 @@
         bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null);
 
         /// <summary>
+        /// Проверка наличия любого из прав
+        /// </summary>
+        bool HasAnyRightForSomeOrganisation(IEnumerable<Enum> rights, Guid? organisation = null);
+
+        /// <summary>
         /// Список организаций для которых имеется право
         /// </summary>
         Guid[] HasOrganisationsForRight(Enum right);
