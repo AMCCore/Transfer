@@ -58,7 +58,7 @@ public class AuthController : BaseController
                     {
                         ExpiresUtc = DateTime.UtcNow.AddHours(10),
                         IsPersistent = objLoginModel.RememberLogin,
-                        AllowRefresh = true
+                        AllowRefresh = true,
                     });
 
                 //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };

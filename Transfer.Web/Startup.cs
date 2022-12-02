@@ -72,7 +72,7 @@ public class Startup
                 x.Cookie.HttpOnly = false;
                 x.LoginPath = "/";
                 x.SlidingExpiration = true;
-                x.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                x.ExpireTimeSpan = TimeSpan.FromHours(12);
             });
 
         #if !DEBUG
