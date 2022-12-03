@@ -38,6 +38,15 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
         _transaction = Context.Database.BeginTransaction();
     }
 
+    public async Task BeginTransactionAsync(CancellationToken token = default)
+    {
+        if (_transaction != null)
+        {
+            throw new TransactionException("The transaction has been already begun");
+        }
+        _transaction = await Context.Database.BeginTransactionAsync(token);
+    }
+
     public bool NotChangeLastUpdateTick { get; set; }
 
     public DbContext Context => _context;
@@ -56,6 +65,12 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
     {
         SaveChanges();
         _transaction?.Commit();
+    }
+
+    public async Task CommitAsync(CancellationToken token = default)
+    {
+        await SaveChangesAsync(token);
+        _transaction?.CommitAsync(token);
     }
 
     public void DetachAllEntitys()
@@ -86,17 +101,33 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
         _transaction?.Rollback();
     }
 
+    public async Task RollBackAsync(CancellationToken token = default)
+    {
+        await _transaction?.RollbackAsync(token);
+    }
+
     public void RollBack(bool allChanges)
     {
         RollBack();
-        if (!allChanges)
+        if (allChanges)
         {
-            return;
+            foreach (var entry in Context.ChangeTracker.Entries())
+            {
+                entry.State = EntityState.Detached;
+            }
         }
 
-        foreach (var entry in Context.ChangeTracker.Entries())
+    }
+
+    public async Task RollBackAsync(bool allChanges, CancellationToken token = default)
+    {
+        await RollBackAsync(token);
+        if (allChanges)
         {
-            entry.State = EntityState.Detached;
+            foreach (var entry in Context.ChangeTracker.Entries())
+            {
+                entry.State = EntityState.Detached;
+            }
         }
     }
 

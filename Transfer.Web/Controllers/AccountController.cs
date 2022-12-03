@@ -14,6 +14,7 @@ using Transfer.Common;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
+using Transfer.Web.Extensions;
 
 namespace Transfer.Web.Controllers;
 
@@ -137,5 +138,33 @@ public class AccountController : BaseController
         res.OrganisationName = org.Name;
 
         return View("CarrierAccountSave", res);
+    }
+
+    [HttpGet]
+    [Route("Carrier/{carrierId}/Account/{accountId}/Delete")]
+    public async Task<IActionResult> CarrierAccountItemDelete([Required] Guid carrierId, [Required] Guid accountId)
+    {
+        var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
+        if (org == null)
+            return NotFound();
+
+        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == org.Id) && ss.Id == accountId, CancellationToken.None);
+        if (entity == null)
+            return NotFound();
+
+        await UnitOfWork.BeginTransactionAsync(CancellationToken.None);
+
+        entity.IsDeleted = true;
+        await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+
+        foreach(var el in entity.ExternalLogins)
+        {
+            el.IsDeleted = true;
+            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        }
+
+        await UnitOfWork.CommitAsync(CancellationToken.None);
+
+        return RedirectToAction(nameof(CarrierController.CarrierItem), typeof(CarrierController).ControllerName(), new { carrierId = org.Id });
     }
 }

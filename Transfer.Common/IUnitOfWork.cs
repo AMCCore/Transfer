@@ -15,11 +15,19 @@ namespace Transfer.Common
 
         void Commit();
 
+        Task CommitAsync(CancellationToken token = default);
+
         void RollBack();
 
+        Task RollBackAsync(CancellationToken token = default);
+        
         void RollBack(bool allChanges);
 
+        Task RollBackAsync(bool allChanges, CancellationToken token = default);
+
         void BeginTransaction();
+
+        Task BeginTransactionAsync(CancellationToken token = default);
 
         void SaveChanges();
 

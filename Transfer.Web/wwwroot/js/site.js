@@ -46,6 +46,25 @@ function DisableCheckboxes(e) {
         elem.closest('form').submit();
     }
 }
+function ConfirmPopup(link, title, body) {
+    if (link === undefined || link.length < 1)
+        return;
+    var pop = $('#confirm-action');
+    if (title && title.length > 1) {
+        pop.find('h4').html(title);
+    }
+    else {
+        pop.find('h4').html('Подтвердите действие');
+    }
+    if (body && body.length > 1) {
+        pop.find('.body').html(body);
+    }
+    else {
+        pop.find('.body').html('');
+    }
+    pop.find("a.btn-confirm").attr("href", link);
+    pop.modal('show');
+}
 $(function () {
     $(".phone_mask").mask('+7 (000) 000-0000', { placeholder: "+7 (___) ___-____" });
     $('.email_mask').mask("A", {

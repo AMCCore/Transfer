@@ -514,6 +514,16 @@ a.link-light-yellow-du {
         color: #fff;
     }
 
+    .the-form .button-one-red {
+        border-radius: 18px;
+        line-height: 34px;
+        width: 100%;
+        border: 1px solid #bd2130;
+        background-color: #c82333;
+        text-align: center;
+        color: #fff;
+    }
+
     .the-form input.input-validation-error {
         border: 1px solid #b94a48;
     }
