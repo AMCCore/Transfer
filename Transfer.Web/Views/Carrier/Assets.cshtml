@@ -3,7 +3,7 @@
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 
-<form id="CarrierAssetsSearch" class="carrier-actives-filter" asp-controller="Carrier" asp-action="SearchCarrierAssets" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierAssetsSearch">
+<form id="CarrierAssetsSearch" class="carrier-actives-filter filter-options-buttons" asp-controller="Carrier" asp-action="SearchCarrierAssets" data-ajax="true" data-ajax-method="POST" data-ajax-update="#CarrierAssetsSearch">
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.OrganisationId)
     <div class="row">

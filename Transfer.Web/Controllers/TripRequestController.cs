@@ -57,7 +57,22 @@ public sealed class TripRequestController : BaseStateController
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
 
-        query = query.Where(x => x.State == TripRequestStateEnum.Active || x.State == TripRequestStateEnum.CarrierSelected);
+        if (filter.State == (int)TripRequestSearchStateEnum.StateNew)
+        {
+            query = query.Where(x => x.State == TripRequestStateEnum.Active);
+        }
+        else if (filter.State == (int)TripRequestSearchStateEnum.StateComplete)
+        {
+            query = query.Where(x => x.State == TripRequestStateEnum.Completed);
+        }
+        else if (filter.State == (int)TripRequestSearchStateEnum.StateOnair)
+        {
+            query = query.Where(x => x.State == TripRequestStateEnum.CarrierSelected);
+        }
+        else if (filter.State == (int)TripRequestSearchStateEnum.StateCanceled)
+        {
+            query = query.Where(x => x.State == TripRequestStateEnum.Canceled || x.State == TripRequestStateEnum.Overdue || x.State == TripRequestStateEnum.Archived);
+        }
 
         if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateStartAsc)
         {

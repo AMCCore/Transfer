@@ -582,3 +582,45 @@ a.dwn-link {
 .col-p-u-i:hover .i-button {
     display: block;
 }
+
+.btn-check[type="radio"]:checked + label {
+    background-color: #000;
+    border: 1px solid #000;
+    color: #fff !important;
+}
+
+.filter-options-buttons .btn {
+    width: 100%;
+    line-height: 36px;
+    border-radius: 18px;
+    padding: 0;
+    border: 1px solid #007896;
+    color: #000;
+}
+
+    .filter-options-buttons .btn:hover {
+        border: 1px solid #ecbf54;
+        background-color: #ecbf54;
+        color: #000 !important;
+    }
+
+.filter-options-buttons .form-select {
+    color: #0f4c71;
+    border: solid 1px #007896;
+}
+
+.filter-options-buttons .new-assert-link {
+    height: 72px;
+    width: 72px;
+    margin: auto;
+    line-height: 72px;
+    background-color: #ecbf54;
+    color: #007896;
+    border-radius: 18px;
+    border: solid 1px #ecbf54;
+}
+
+    .filter-options-buttons .new-assert-link:hover {
+        background-color: #fff;
+        border: solid 1px #007896;
+    }

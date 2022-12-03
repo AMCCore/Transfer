@@ -7,28 +7,28 @@
     <link rel="stylesheet" href="~/css/TripRequest/Search.css" />
 }
 
-<div class="container">
-    <div class="row blank-row"></div>
-    <div class="row blank-row"></div>
-    <div class="row">
-        <div class="t-col col-12 crumbs">
-            ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripRequest" asp-action="Search">Поездки</a>
+    <div class="container">
+        <div class="row blank-row"></div>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12 crumbs">
+                ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="TripRequest" asp-action="Search">Поездки</a>
+            </div>
         </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row">
-        <div class="t-col col-12 col-md-6 crb-avatar">
-            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-12 col-md-6 crb-avatar">
+                Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+            </div>
         </div>
-    </div>
-    <div class="row blank-row"></div>
-    <div class="row">
-        <div class="t-col col-10">
-            <h1 style="color: #0f4c71">Актуальные запросы на поездки</h1>
+        <div class="row blank-row"></div>
+        <div class="row">
+            <div class="t-col col-10">
+                <h1 style="color: #0f4c71">Актуальные запросы на поездки</h1>
+            </div>
         </div>
+        <div class="row blank-row"></div>
+        <form id="TripRequestSearch" class="filter-options-buttons" asp-controller="TripRequest" asp-action="Search" data-ajax="true" data-ajax-method="POST" data-ajax-update="#TripRequestSearch">
+            @await Html.PartialAsync("~/Views/TripRequest/SearchResults.cshtml", Model)
+        </form>
     </div>
-    <div class="row blank-row"></div>
-    <form id="TripRequestSearch" asp-controller="TripRequest" asp-action="Search" data-ajax="true" data-ajax-method="POST" data-ajax-update="#TripRequestSearch">
-        @await Html.PartialAsync("~/Views/TripRequest/SearchResults.cshtml", Model)
-    </form>
-</div>
