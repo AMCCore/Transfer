@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Extensions;
+using X.PagedList;
 
 namespace Transfer.Web.Controllers;
 
@@ -157,11 +159,8 @@ public class AccountController : BaseController
         entity.IsDeleted = true;
         await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
-        foreach(var el in entity.ExternalLogins)
-        {
-            el.IsDeleted = true;
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
-        }
+        var els = await entity.ExternalLogins.ToListAsync(CancellationToken.None);
+        await UnitOfWork.DeleteListAsync(els, CancellationToken.None);
 
         await UnitOfWork.CommitAsync(CancellationToken.None);
 

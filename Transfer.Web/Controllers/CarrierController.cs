@@ -148,6 +148,15 @@ public class CarrierController : BaseController
             return View("CarrierEdit", model);
         }
 
+        if (!string.IsNullOrWhiteSpace(model.INN) && await UnitOfWork.GetSet<DbOrganisation>().AnyAsync(x => x.Id != model.Id && !x.IsDeleted && x.INN.ToLower() == model.INN.ToLower()))
+        {
+            ViewBag.ErrorMsg = "Организация с таким ИНН уже существует";
+            ViewBag.Regions = await GetRegionsAsync();
+            return View("CarrierEdit", model);
+        }
+
+        await UnitOfWork.BeginTransactionAsync();
+
         if (model.Id.IsNullOrEmpty())
         {
             var org = Mapper.Map<DbOrganisation>(model);
@@ -222,6 +231,8 @@ public class CarrierController : BaseController
 
         //регионы работы
         await SetCarrierWorkingArea(model.Id, model.WorkingAreas);
+
+        await UnitOfWork.CommitAsync();
 
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
