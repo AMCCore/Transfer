@@ -6,13 +6,16 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto.Report;
 using Transfer.Common;
+using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
+using Transfer.Web.Moduls;
 
 namespace Transfer.Web.Controllers;
 
@@ -34,6 +37,11 @@ public class ReportController : BaseController
     [Route("DataInput")]
     public IActionResult DataInput()
     {
+        if(!Security.HasRightForSomeOrganisation(ReportAccessRights.DataInputReport))
+        {
+            return Forbid();
+        }
+
         return View("DataInput", new BaseReportDto<InputDataReportDto> { DateFrom = DateTime.Now.AddDays(-7), DateTo = DateTime.Now, Name = "Отчет о внесении перевозчиков", Action = "DataInputGen" });
     }
 
@@ -42,6 +50,11 @@ public class ReportController : BaseController
     [Route("DataInputGen")]
     public async Task<IActionResult> DataInputGen([FromForm] BaseReportDto<InputDataReportDto> model)
     {
+        if (!Security.HasRightForSomeOrganisation(ReportAccessRights.DataInputReport))
+        {
+            return Forbid();
+        }
+
         var q = UnitOfWork.GetSet<DbBus>().Where(x => !x.IsDeleted).AsQueryable();
         if(model.DateFrom.HasValue)
         {
@@ -132,4 +145,24 @@ public class ReportController : BaseController
         }
     }
 
+
+    [HttpGet]
+    [Route("TripRequests")]
+    public IActionResult TripRequests()
+    {
+        if (!Security.HasRightForSomeOrganisation(ReportAccessRights.DataInputReport))
+        {
+            return Forbid();
+        }
+
+        return View("TripRequests", new BaseReportDto<TripRequestsReportDto> { DateFrom = DateTime.Now.AddDays(-7), DateTo = DateTime.Now, Name = "Отчет о внесении запросов на перевозки", Action = "TripRequestsGen" });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Route("TripRequestsGen")]
+    public async Task<IActionResult> TripRequestsGen([FromForm] BaseReportDto<TripRequestsReportDto> model)
+    {
+        throw new NotImplementedException();
+    }
 }

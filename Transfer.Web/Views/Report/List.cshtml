@@ -21,7 +21,7 @@
     </div>
     <div class="row blank-row"></div>
     <div class="row blank-row"></div>
-    @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { ReportAccessRights.DataInputReport }))
+    @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { ReportAccessRights.DataInputReport, ReportAccessRights.TripRequestReport }))
     {
         <div class="row">
             <div class="col-12">
@@ -29,12 +29,14 @@
                     <div class="t-col col-12">
                         <a asp-action="DataInput" asp-controller="Report" class="dark-link-basic"><span style="font-size: 1.2rem;">Отчет о внесении перевозчиков</span></a>
                     </div>
+                    <div class="t-col col-12">
+                        <a asp-action="TripRequests" asp-controller="Report" class="dark-link-basic"><span style="font-size: 1.2rem;">Отчет о внесении запросов на перевозки</span></a>
+                    </div>
                 </div>
             </div>
         </div>
         <hr style="color: #fff; border: dashed 1px #007896;">
     }
-    <div class="row blank-row"></div>
     <div class="row blank-row"></div>
     <div class="row blank-row"></div>
     <div class="row blank-row"></div>

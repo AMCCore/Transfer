@@ -24,6 +24,7 @@ using Transfer.Web.Extensions;
 using Transfer.Web.Models;
 using Transfer.Web.Models.Enums;
 using Transfer.Web.Models.TripRequest;
+using Transfer.Web.Moduls;
 using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers;
@@ -194,6 +195,8 @@ public sealed class TripRequestController : BaseStateController
 
         if (model.Id.IsNullOrEmpty())
         {
+            await UnitOfWork.BeginTransactionAsync(CancellationToken.None);
+
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
             if (string.IsNullOrWhiteSpace(entity.ContactFio))
@@ -208,8 +211,8 @@ public sealed class TripRequestController : BaseStateController
                 TripRequestId = model.Id
             }, CancellationToken.None);
 
-            await SetTripOptions(entity, model);
-            await SetTripRegions(entity, model);
+            await SetTripOptions(entity, model, CancellationToken.None);
+            await SetTripRegions(entity, model, CancellationToken.None);
 
             var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
                 .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(CancellationToken.None);
@@ -222,13 +225,15 @@ public sealed class TripRequestController : BaseStateController
                 }, CancellationToken.None);
             }
 
+            await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
+            await UnitOfWork.CommitAsync();
+
             await SendReplaysToUsers(entity.Id);
             await SendReplaysToWatchers(entity.Id);
-            await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
         }
         else
         {
-            throw new NotSupportedException();
+            return BadRequest();
 
             var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == model.Id, CancellationToken.None);
 
@@ -236,8 +241,8 @@ public sealed class TripRequestController : BaseStateController
                 throw new InvalidOperationException();
 
             Mapper.Map(model, entity);
-            await SetTripOptions(entity, model);
-            await SetTripRegions(entity, model);
+            await SetTripOptions(entity, model, CancellationToken.None);
+            await SetTripRegions(entity, model, CancellationToken.None);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
             await UnitOfWork.AddToHistoryLog(entity, "Запроса на перевозку изменён");
         }
@@ -245,11 +250,11 @@ public sealed class TripRequestController : BaseStateController
         return RedirectToAction(nameof(TripRequestEdit), new { requestId = model.Id });
     }
 
-    private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model)
+    private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
     {
-        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(CancellationToken.None))
+        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(token))
         {
-            await UnitOfWork.DeleteAsync(to, CancellationToken.None);
+            await UnitOfWork.DeleteAsync(to, token);
         }
         if (model.ChildTrip)
         {
@@ -258,7 +263,7 @@ public sealed class TripRequestController : BaseStateController
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
-            }, CancellationToken.None);
+            }, token);
         }
         if (model.StandTrip)
         {
@@ -267,7 +272,7 @@ public sealed class TripRequestController : BaseStateController
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptionsEnum.IdleTrip.GetEnumGuid()
-            }, CancellationToken.None);
+            }, token);
         }
         if (model.PaymentType == (int)PaymentTypeEnum.Card)
         {
@@ -276,7 +281,7 @@ public sealed class TripRequestController : BaseStateController
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
-            }, CancellationToken.None);
+            }, token);
 
         }
         else if (model.PaymentType == (int)PaymentTypeEnum.Cash)
@@ -286,7 +291,7 @@ public sealed class TripRequestController : BaseStateController
                 Id = Guid.NewGuid(),
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
-            }, CancellationToken.None);
+            }, token);
         }
     }
 
@@ -302,25 +307,25 @@ public sealed class TripRequestController : BaseStateController
     /// <summary>
     /// Установка регионов 
     /// </summary>
-    private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model)
+    private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
     {
         if (model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
         {
-            var reg = await GetOrCreateRegion(model.RegionFromName);
+            var reg = await GetOrCreateRegion(model.RegionFromName, token);
             entity.RegionFromId = reg?.Id;
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.SaveChangesAsync(token);
         }
         if (model.RegionToId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionToName))
         {
-            var reg = await GetOrCreateRegion(model.RegionToName);
+            var reg = await GetOrCreateRegion(model.RegionToName, token);
             entity.RegionToId = reg?.Id;
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.SaveChangesAsync(token);
         }
     }
 
-    private async Task<DbRegion> GetOrCreateRegion(string regionName)
+    private async Task<DbRegion> GetOrCreateRegion(string regionName, CancellationToken token = default)
     {
-        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), CancellationToken.None);
+        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), token);
         if (reg == null)
         {
             //reg = new DbRegion

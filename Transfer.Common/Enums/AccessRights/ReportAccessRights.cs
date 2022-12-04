@@ -16,4 +16,11 @@ public enum ReportAccessRights
     [Description("Отчет о внесении перевозчиков")]
     [EnumGuid("65CAE23E-2057-40EA-8967-BEFE0CF8E41F")]
     DataInputReport,
+
+    /// <summary>
+    /// Отчет о внесении запросов на перевозки
+    /// </summary>
+    [Description("Отчет о внесении запросов на перевозки")]
+    [EnumGuid("C8567735-785F-4416-9509-AAEC72AFC2EB")]
+    TripRequestReport,
 }
