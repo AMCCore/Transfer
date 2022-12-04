@@ -87,18 +87,17 @@
                 <thead>
                     <tr>
                         <td>Дата (внесения данных)</td>
+                        <td>Заказ №</td>
+                        <td>Заказчик</td>
+                        <td>Дата и время подачи</td>
+                        <td>Начальный пункт маршрута</td>
+                        <td>Конечный пункт маршрута</td>
+                        <td>Стоимость, руб</td>
+                        <td>Посадочных мест</td>
+                        <td>Перевозка детей</td>
+                        <td>Отклики</td>
+                        <td>Статус</td>
                         <td>Пользователь</td>
-                        <td>Перевозчик</td>
-                        <td>ТС марка</td>
-                        <td>ТС модель</td>
-                        <td>Год</td>
-                        <td>Гос. номер</td>
-                        <td>Посад. мест</td>
-                        <td>СТС</td>
-                        <td>ОСАГО</td>
-                        <td>ОСГОП</td>
-                        <td>Диагност. Карта</td>
-                        <td>Фото</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,18 +105,17 @@
                     {
                         <tr>
                             <td>@($"{c.DateInput:dd.MM.yyyy}")</td>
+                            <td><a href="@Url.Action("TripRequestShow", "TripRequest", new {requestId = c.TripRequestId } )" target="_blank">@c.Identifier</a></td>
+                            <td>@c.Requester</td>
+                            <td>@($"{c.DateStart:dd.MM.yyyy hh:MM}")</td>
+                            <td>@c.AddressStart</td>
+                            <td>@c.AddressFinish</td>
+                            <td>@(c.Offer > 0 ? c.Offer.ToString() : string.Empty)</td>
+                            <td>@c.PeopleCopacity</td>
+                            <td>@(c.ChildTrip ? "да" : "нет")</td>
+                            <td>@c.OfferCount</td>
+                            <td>@c.StateName</td>
                             <td>@c.Manager</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                         </tr>
                     }
                 </tbody>

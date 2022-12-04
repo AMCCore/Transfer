@@ -12,7 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto.Report;
 using Transfer.Common;
+using Transfer.Common.Enums;
 using Transfer.Common.Enums.AccessRights;
+using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
 using Transfer.Web.Moduls;
@@ -163,6 +165,94 @@ public class ReportController : BaseController
     [Route("TripRequestsGen")]
     public async Task<IActionResult> TripRequestsGen([FromForm] BaseReportDto<TripRequestsReportDto> model)
     {
-        throw new NotImplementedException();
+        if (!Security.HasRightForSomeOrganisation(ReportAccessRights.TripRequestReport))
+        {
+            return Forbid();
+        }
+
+        var q = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
+        if (model.DateFrom.HasValue)
+        {
+            q = q.Where(x => x.DateCreated >= model.DateFrom);
+        }
+        if (model.DateTo.HasValue)
+        {
+            q = q.Where(x => x.DateCreated < model.DateTo.Value.Date.AddDays(1));
+        }
+
+        var q3 = UnitOfWork.GetSet<DbAccount>().AsQueryable();
+        var q2 = UnitOfWork.GetSet<DbHistoryLog>().OrderBy(x => x.DateCreated).AsQueryable();
+
+        var res = await q.OrderByDescending(x => x.DateCreated).Select(a => new TripRequestsReportDto
+        {
+            DateInput = a.DateCreated,
+            DateStart = a.TripDate,
+            AddressFinish = a.AddressTo,
+            AddressStart = a.AddressFrom,
+            ChildTrip = a.TripOptions.Any(x => x.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid()),
+            Identifier = a.Identifiers.OrderByDescending(x => x.LastUpdateTick).Select(x => x.Identifier).First(),
+            PeopleCopacity = a.Passengers,
+            OfferCount = a.TripRequestOffers.Count(x => !x.IsDeleted),
+            TripRequestId = a.Id,
+            State = a.State,
+            Offer = a.TripRequestOffers.Where(x => !x.IsDeleted && x.Chosen).Select(x => x.Amount).FirstOrDefault(),
+            Manager = q3.Where(y => y.Id == q2.Where(x => x.EntityId == a.Id).Select(x => x.AccountId).FirstOrDefault()).Select(y => $"{y.PersonData.LastName} {y.PersonData.FirstName} {y.PersonData.MiddleName}").FirstOrDefault(),
+            Requester = a.СhartererName,
+        }).ToListAsync();
+        model.Results = res;
+
+        if(model.AsFile)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Отчет о внесении запросов на перевозки");
+            worksheet.Cells[1, 1].Value = "Дата (внесения данных)";
+            worksheet.Cells[1, 2].Value = "Заказ №";
+            worksheet.Cells[1, 3].Value = "Заказчик";
+            worksheet.Cells[1, 4].Value = "Дата и время подачи";
+            worksheet.Cells[1, 5].Value = "Начальный пункт маршрута";
+            worksheet.Cells[1, 6].Value = "Конечный пункт маршрута";
+            worksheet.Cells[1, 7].Value = "Стоимость, руб";
+            worksheet.Cells[1, 8].Value = "Посадочных мест";
+            worksheet.Cells[1, 9].Value = "Перевозка детей";
+            worksheet.Cells[1, 10].Value = "Отклики";
+            worksheet.Cells[1, 11].Value = "Статус";
+            worksheet.Cells[1, 12].Value = "Пользователь";
+
+            worksheet.Cells[1, 1, 1, 12].Style.Font.Bold = true;
+            worksheet.Cells[1, 1, 1, 12].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+            var i = 2;
+
+            foreach (var z in res)
+            {
+                worksheet.Cells[i, 1].Value = z.DateInput.Date;
+                worksheet.Cells[i, 1].Style.Numberformat.Format = "MM/dd/yyyy";
+                worksheet.Cells[i, 2].Value = z.Identifier;
+                worksheet.Cells[i, 3].Value = z.Requester;
+                worksheet.Cells[i, 4].Value = z.DateStart;
+                worksheet.Cells[i, 4].Style.Numberformat.Format = "MM/dd/yyyy";
+                worksheet.Cells[i, 5].Value = z.AddressStart;
+                worksheet.Cells[i, 6].Value = z.AddressFinish;
+                worksheet.Cells[i, 7].Value = z.Offer > 0 ? z.Offer : 0;
+                worksheet.Cells[i, 8].Value = z.PeopleCopacity;
+                worksheet.Cells[i, 9].Value = z.ChildTrip ? "да" : "нет";
+                worksheet.Cells[i, 10].Value = z.OfferCount;
+                worksheet.Cells[i, 11].Value = z.StateName;
+                worksheet.Cells[i, 12].Value = z.Manager;
+
+                i++;
+            }
+
+            var fileStream = new MemoryStream();
+            await package.SaveAsAsync(fileStream);
+            fileStream.Position = 0;
+
+            return File(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
+        }
+
+
+
+        return View("TripRequests", model);
     }
 }

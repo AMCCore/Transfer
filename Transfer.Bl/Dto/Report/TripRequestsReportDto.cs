@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transfer.Common.Enums.States;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Bl.Dto.Report;
 
@@ -53,6 +55,11 @@ public class TripRequestsReportDto
     public decimal Offer { get; set; }
 
     /// <summary>
+    /// Кол-во откликов
+    /// </summary>
+    public int OfferCount { get; set; }
+
+    /// <summary>
     /// Кол-во посадочных мест
     /// </summary>
     public int PeopleCopacity { get; set; }
@@ -70,5 +77,11 @@ public class TripRequestsReportDto
     /// <summary>
     /// Статус
     /// </summary>
-    public string State { get; set; }
+    public TripRequestStateEnum State { get; set; }
+
+    /// <summary>
+    /// Статус
+    /// </summary>
+    public string StateName => State.GetEnumDescription();
+
 }
