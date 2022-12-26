@@ -9,20 +9,20 @@
 <div class="row blank-row"></div>
 @Html.HiddenFor(x => x.PageNumber)
 <div class="row">
-    <div class="col-12 col-md-4 t-col dark-text"></div>
-    <div class="t-col col-4 col-md-2 form-group">
+    <div class="col-12 col-lg-4 t-col dark-text"></div>
+    <div class="t-col col-12 col-md-6 col-lg-2 form-group">
         <input type="radio" asp-for="State" id="Option1" class="btn-check" value="1" checked="@(1 == Model?.State)" onchange="DisableCheckboxes(this)" />
         <label class="btn btn-default" for="Option1">Новые</label>
     </div>
-    <div class="t-col col-4 col-md-2 form-group">
+    <div class="t-col col-12 col-md-6 col-lg-2 form-group">
         <input type="radio" asp-for="State" id="Option2" class="btn-check" value="2" checked="@(2 == Model?.State)" onchange="DisableCheckboxes(this)" />
         <label class="btn btn-default" for="Option2">Выполненные</label>
     </div>
-    <div class="t-col col-4 col-md-2 form-group">
+    <div class="t-col col-12 col-md-6 col-lg-2 form-group">
         <input type="radio" asp-for="State" id="Option3" class="btn-check" value="3" checked="@(3 == Model?.State)" onchange="DisableCheckboxes(this)" />
         <label class="btn btn-default" for="Option3">Выполняются</label>
     </div>
-    <div class="t-col col-4 col-md-2 form-group">
+    <div class="t-col col-12 col-md-6 col-lg-2  form-group">
         <input type="radio" asp-for="State" id="Option4" class="btn-check" value="4" checked="@(4 == Model?.State)" onchange="DisableCheckboxes(this)" />
         <label class="btn btn-default" for="Option4">Невыполненные</label>
     </div>
