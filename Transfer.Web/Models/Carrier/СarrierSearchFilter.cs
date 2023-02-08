@@ -13,6 +13,8 @@ public class CarrierSearchFilter : BaseFilterModel<CarrierSearchResultItem>
 
     public string Name { get; set; }
 
+    public string Inn { get; set; }
+
     public string City { get; set; }
 
     public bool OrderByName { get; set; }

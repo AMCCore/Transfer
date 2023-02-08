@@ -9,21 +9,30 @@
         <div class="row blank-row"></div>
         <div class="row blank-row"></div>
         <div class="row">
-            <div class="t-col col-12 col-md-6 form-group">
+            <div class="t-col col-12 col-md-4 form-group">
                 <div class="input-group">
                     <span class="input-group-append input-group-icon">
                         <div class="input-group-text"><i class="fas fa-map-marker-alt fa-lg"></i></div>
                     </span>
-                    <input asp-for="City" class="form-control" placeholder="Где расположена компания?" />
+                    <input asp-for="Inn" class="form-control" placeholder="ИНН компании?" />
                 </div>
             </div>
             <div class="row blank-row d-md-none d-flex"></div>
-            <div class="t-col col-12 col-md-6 form-group">
+            <div class="t-col col-12 col-md-4 form-group">
                 <div class="input-group">
                     <span class="input-group-append input-group-icon">
                         <div class="input-group-text"><i class="fas fa-map-marked fa-lg"></i></div>
                     </span>
                     <input asp-for="Name" class="form-control" placeholder="Как называется компания?" />
+                </div>
+            </div>
+            <div class="row blank-row d-md-none d-flex"></div>
+            <div class="t-col col-12 col-md-4 form-group">
+                <div class="input-group">
+                    <span class="input-group-append input-group-icon">
+                        <div class="input-group-text"><i class="fas fa-map-marker-alt fa-lg"></i></div>
+                    </span>
+                    <input asp-for="City" class="form-control" placeholder="Где расположена компания?" />
                 </div>
             </div>
         </div>
