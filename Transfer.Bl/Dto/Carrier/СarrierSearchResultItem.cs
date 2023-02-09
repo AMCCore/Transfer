@@ -23,5 +23,7 @@ namespace Transfer.Bl.Dto.Carrier
         public bool Checked { get; set; }
 
         public Guid? Picture { get; set; }
+
+        public bool HasTelegram { get; set; }
     }
 }

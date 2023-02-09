@@ -26,7 +26,8 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => o.DirectorFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => o.Email))
             .ForMember(x => x.ContactPosition, opt => opt.MapFrom(o => o.DirectorPosition))
-            .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone));
+            .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => o.Phone))
+            .ForMember(x => x.HasTelegram, opt => opt.MapFrom(o => o.Accounts != null ? o.Accounts.Any(oo => oo.Account != null ? (!oo.Account.IsDeleted && oo.Account.ExternalLogins.Any(ooo => !ooo.IsDeleted && ooo.LoginType == ExternalLoginTypeEnum.Telegram && ooo.Value != null)) : false) : false));
 
         CreateMap<DbOrganisation, TripRequestSearchOrganisationDto>()
             .ForMember(x => x.OrganisationId, opt => opt.MapFrom(o => o.Id))
