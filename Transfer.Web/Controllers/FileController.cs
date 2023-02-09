@@ -80,20 +80,20 @@ public class FileController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFile([FromQuery][Required] Guid fileId)
+    public async Task<IActionResult> GetFile([FromQuery][Required] Guid fileId, CancellationToken token = default)
     {
-        var entitys = await UnitOfWork.GetSet<DbFile>().Where(x => !x.OrganisationFiles.Any() && !x.DriverFiles.Any() && x.DateCreated <= DateTime.Now.AddDays(-33)).ToListAsync(CancellationToken.None);
+        var entitys = await UnitOfWork.GetSet<DbFile>().Where(x => !x.OrganisationFiles.Any() && !x.DriverFiles.Any() && !x.BusFiles.Any() && x.DateCreated <= DateTime.Now.AddDays(-33)).ToListAsync(token);
         foreach(var e in entitys)
         {
             var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{e.DateCreated.Year}/{e.Id}.{e.Extention}";
             if(System.IO.File.Exists(path))
             {
-                await UnitOfWork.DeleteAsync(e, CancellationToken.None);
                 System.IO.File.Delete(path);
             }
+            await UnitOfWork.DeleteAsync(e, token);
         }
 
-        var entity = await UnitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbFile>().FirstOrDefaultAsync(a => a.Id == fileId, token);
         if (entity != null)
         {
             var path = $"{_appEnvironment.WebRootPath}{TransferSettings.FileStoragePath}/{entity.DateCreated.Year}/{entity.Id}.{entity.Extention}";

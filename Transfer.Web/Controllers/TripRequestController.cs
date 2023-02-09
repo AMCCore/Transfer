@@ -543,9 +543,12 @@ public sealed class TripRequestController : BaseStateController
     private async Task SendReplaysToWatchers(Guid tripRequestId)
     {
         var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+        var ttd = AdminAccessRights.BotNotifications.GetEnumGuid();
 
-        var botNotificationsAdmins = await UnitOfWork.GetSet<DbAccount>().Where(x => x.AccountRights.Any(y => y.RightId == AdminAccessRights.BotNotifications.GetEnumGuid()))
-            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).DistinctBy(x => x.Value).ToListAsync(CancellationToken.None);
+        var q2 = UnitOfWork.GetSet<DbAccount>().Where(x => !x.IsDeleted && x.AccountRights.Any(y => y.RightId == ttd)).Select(x => x.Id).AsQueryable();
+
+        var botNotificationsAdmins = await UnitOfWork.GetSet<DbExternalLogin>().Where(x => !x.IsDeleted && q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram)
+            .DistinctBy(x => x.Value).ToListAsync(CancellationToken.None);
 
         foreach (var orgUser in botNotificationsAdmins)
         {
