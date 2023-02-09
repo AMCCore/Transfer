@@ -47,7 +47,8 @@ public class CarrierController : BaseController
 
         if (!string.IsNullOrWhiteSpace(filter.City))
         {
-            query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()) || x.FactAddress.ToLower().Contains(filter.City.ToLower()) || x.City.ToLower().Contains(filter.City.ToLower()));
+            //query = query.Where(x => x.Address.ToLower().Contains(filter.City.ToLower()) || x.FactAddress.ToLower().Contains(filter.City.ToLower()) || x.City.ToLower().Contains(filter.City.ToLower()));
+            query = query.Where(x => !x.WorkingArea.Any() || x.WorkingArea.Any(x => x.Region.Name.ToLower().Contains(filter.City.ToLower())));
         }
 
 
