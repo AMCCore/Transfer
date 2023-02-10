@@ -185,7 +185,7 @@ public sealed class TripRequestController : BaseStateController
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("TripRequest/Save")]
-    public async Task<IActionResult> Save([FromForm] TripRequestDto model)
+    public async Task<IActionResult> Save([FromForm] TripRequestDto model, CancellationToken token = default)
     {
         if (!ModelState.IsValid)
         {
@@ -195,7 +195,7 @@ public sealed class TripRequestController : BaseStateController
 
         if (model.Id.IsNullOrEmpty())
         {
-            await UnitOfWork.BeginTransactionAsync(CancellationToken.None);
+            await UnitOfWork.BeginTransactionAsync(token);
 
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
@@ -204,32 +204,32 @@ public sealed class TripRequestController : BaseStateController
                 entity.ContactFio = entity.СhartererName;
             }
 
-            await UnitOfWork.AddEntityAsync(entity, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(entity, token);
 
             await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier
             {
                 TripRequestId = model.Id
-            }, CancellationToken.None);
+            }, token);
 
-            await SetTripOptions(entity, model, CancellationToken.None);
-            await SetTripRegions(entity, model, CancellationToken.None);
+            await SetTripOptions(entity, model, token);
+            await SetTripRegions(entity, model, token);
 
             var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
-                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(CancellationToken.None);
+                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(token);
             foreach (var orgId in appropriateOrgIds)
             {
                 await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
                 {
                     TripRequestId = entity.Id,
                     CarrierId = orgId,
-                }, CancellationToken.None);
+                }, token);
             }
 
             await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
-            await UnitOfWork.CommitAsync();
+            await UnitOfWork.CommitAsync(token);
 
-            await SendReplaysToUsers(entity.Id);
-            await SendReplaysToWatchers(entity.Id);
+            await SendReplaysToUsers(entity.Id, token);
+            await SendReplaysToWatchers(entity.Id, token);
         }
         else
         {
@@ -494,17 +494,17 @@ public sealed class TripRequestController : BaseStateController
     /// </summary>
     /// <param name="tripRequestId"></param>
     /// <returns></returns>
-    private async Task SendReplaysToUsers(Guid tripRequestId)
+    private async Task SendReplaysToUsers(Guid tripRequestId, CancellationToken token = default)
     {
         var replays = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.TripRequestId == tripRequestId && !x.IsDeleted && !x.Carrier.IsDeleted)
-            .Select(x => x.Id).ToListAsync();
+            .Select(x => x.Id).ToListAsync(token);
 
-        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId, token);
 
         foreach (var replay in replays)
         {
             var orgUsers = await UnitOfWork.GetSet<DbTripRequestReplay>().Where(x => x.Id == replay).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
-                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync(token);
 
             foreach (var orgUser in orgUsers.DistinctBy(x => x.Value).ToList())
             {
@@ -540,17 +540,16 @@ public sealed class TripRequestController : BaseStateController
     /// </summary>
     /// <param name="tripRequestId"></param>
     /// <returns></returns>
-    private async Task SendReplaysToWatchers(Guid tripRequestId)
+    private async Task SendReplaysToWatchers(Guid tripRequestId, CancellationToken token = default)
     {
-        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId);
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId, token);
         var ttd = AdminAccessRights.BotNotifications.GetEnumGuid();
 
         var q2 = UnitOfWork.GetSet<DbAccount>().Where(x => !x.IsDeleted && x.AccountRights.Any(y => y.RightId == ttd)).Select(x => x.Id).AsQueryable();
 
-        var botNotificationsAdmins = await UnitOfWork.GetSet<DbExternalLogin>().Where(x => !x.IsDeleted && q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram)
-            .DistinctBy(x => x.Value).ToListAsync(CancellationToken.None);
+        var botNotificationsAdmins = await UnitOfWork.GetSet<DbExternalLogin>().Where(x => !x.IsDeleted && q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
 
-        foreach (var orgUser in botNotificationsAdmins)
+        foreach (var orgUser in botNotificationsAdmins.DistinctBy(x => x.Value).ToList())
         {
             if (long.TryParse(orgUser.Value, out long chatId))
             {
