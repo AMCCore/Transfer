@@ -56,7 +56,8 @@ public class DbStateMachineAction : IEntityBase, ISoftDeleteEntity
     public StateMachineEnum StateMachine { get; set; }
 
     [ForeignKey(nameof(ToState))]
-    public virtual Guid? ToStateId { get; set; }
+    [Required]
+    public virtual Guid ToStateId { get; set; }
 
     [InverseProperty(nameof(DbStateMachineState.Actions))]
     public virtual DbStateMachineState ToState { get; set; }

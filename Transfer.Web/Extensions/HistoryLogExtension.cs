@@ -12,9 +12,9 @@ public static class HistoryLogExtension
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, string ActionName, string Description = null, CancellationToken token = default)
     {
-        await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description);
+        await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description, token);
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public static class HistoryLogExtension
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, Guid EntityId, Guid AccountId, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, Guid EntityId, Guid AccountId, string ActionName, string Description = null, CancellationToken token = default)
     {
         if(EntityId.IsNullOrEmpty())
         {
@@ -48,6 +48,6 @@ public static class HistoryLogExtension
             EntityId = EntityId,
             Description = Description,
             ActionName = ActionName,
-        }, CancellationToken.None);
+        }, token);
     }
 }

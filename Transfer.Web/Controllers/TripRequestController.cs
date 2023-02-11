@@ -158,20 +158,6 @@ public sealed class TripRequestController : BaseStateController
     }
 
     [HttpGet]
-    [Route("TripRequest/Delete/{requestId}")]
-    public async Task<IActionResult> TripRequestDelete(Guid requestId)
-    {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
-        if (entity == null)
-            return NotFound();
-
-        entity.IsDeleted = true;
-
-        await UnitOfWork.SaveChangesAsync();
-        return RedirectToAction(nameof(Search));
-    }
-
-    [HttpGet]
     [Route("TripRequest/New")]
     public IActionResult NewTripRequest()
     {
@@ -255,6 +241,34 @@ public sealed class TripRequestController : BaseStateController
         return RedirectToAction(nameof(TripRequestEdit), new { requestId = model.Id });
     }
 
+    [HttpGet]
+    [Route("TripRequest/StateChange")]
+    public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId, CancellationToken token = default)
+    {
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId).FirstOrDefaultAsync(token);
+        if (entity == null)
+            throw new ArgumentNullException(nameof(requestId));
+
+        var nextState = await UnitOfWork.GetSet<DbStateMachineAction>()
+            .Where(x => !x.IsSystemAction && x.StateMachine == StateMachineEnum.TripRequest && x.ToStateId == stateId &&
+            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.ActionState)).FirstOrDefaultAsync(token);
+
+        if(nextState == null)
+            throw new ArgumentNullException(nameof(requestId));
+
+        entity.ActionState = nextState.ToState.Id;
+        //временная мера
+        if (nextState.ToStateId == Guid.Parse("92B66995-F591-4C6F-90B2-F222B9CEAD2D"))
+        {
+            entity.State = TripRequestStateEnum.Canceled;
+        }
+        await UnitOfWork.SaveChangesAsync(token);
+        await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {nextState.ToState.Name}", token);
+
+        return RedirectToAction(nameof(TripRequestShow), new { requestId = requestId });
+    }
+
+
     private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
     {
         foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(token))
@@ -333,13 +347,8 @@ public sealed class TripRequestController : BaseStateController
         return reg;
     }
 
-    //[HttpGet]
-    //[Route("TripRequest/StateChange")]
-    //public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId)
     //{
-    //    var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId && !ss.IsDeleted).FirstOrDefaultAsync();
-    //    if (entity == null)
-    //        throw new ArgumentNullException(nameof(requestId));
+
 
     //    var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
     //    q = q.Where(x => x.StateFrom == entity.State.GetEnumGuid());
@@ -673,4 +682,18 @@ public sealed class TripRequestController : BaseStateController
     }
 
     #endregion
+
+    //[HttpGet]
+    //[Route("TripRequest/Delete/{requestId}")]
+    //public async Task<IActionResult> TripRequestDelete(Guid requestId)
+    //{
+    //    var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+    //    if (entity == null)
+    //        return NotFound();
+
+    //    entity.IsDeleted = true;
+
+    //    await UnitOfWork.SaveChangesAsync();
+    //    return RedirectToAction(nameof(Search));
+    //}
 }

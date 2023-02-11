@@ -28,7 +28,7 @@ public abstract class BaseStateController : BaseController
         var ns = await q.ToListAsync(token);
 
         model.NextStates = ns.Select(x => new NextStateDto{
-                NextStateId = x.ToStateId.Value, ButtonName = x.ActionName, ConfirmText = (!string.IsNullOrWhiteSpace(x.ConfirmText) ? x.ConfirmText : null)
+                NextStateId = x.ToStateId, ButtonName = x.ActionName, ConfirmText = (!string.IsNullOrWhiteSpace(x.ConfirmText) ? x.ConfirmText : null)
             }).ToList();
     }
 }
