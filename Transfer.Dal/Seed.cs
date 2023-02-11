@@ -244,6 +244,74 @@ namespace Transfer.Dal
 
         private static void SetTripRequestUserStatets(this IUnitOfWork uw)
         {
+            var tripRequestUserStatets = new List<DbStateMachineState>
+            {
+                new DbStateMachineState {
+                    Id = Guid.Parse("66FD6072-3F96-46B8-87F1-E29D915B1C34"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Новый заказ",
+                    Description = "Cбор предложений/откликов перевозчиков"
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("19AA45E1-6CEF-4F80-B058-39639DC9CED1"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Перевозчик выбран",
+                    Description = "Заключение договора"
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("A04D4A33-344D-40DF-BCD8-0B36C32DBAC7"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Выполнен",
+                    Description = "Ожидание подтверждения"
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("10410CA1-47E7-4DD3-99B5-338A39AF71B1"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Завершен",
+                    Description = null
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("92B66995-F591-4C6F-90B2-F222B9CEAD2D"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Отменен",
+                    Description = null
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("55453A63-978B-4E4C-B94B-F1606E534AED"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Просрочен",
+                    Description = null
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("A005D7AC-9B2D-4234-A78A-0FDCF3659C5F"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Изменение перевозчика",
+                    Description = null
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("EF160963-32C5-4734-9CD4-4FB7B73E01F5"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Завершен без подтверждения",
+                    Description = null
+                },
+                new DbStateMachineState {
+                    Id = Guid.Parse("950C380C-55E2-4D97-82A7-CCF3F8A87D72"),
+                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+                    IsDeleted = false,
+                    Name = "Перемещен в архив",
+                    Description = null
+                },
+            };
+            uw.AddIfNotExists(tripRequestUserStatets);
+
             //var tripRequestUserStatets = new List<DbStateMachineState> {
             //    //новая поездка
             //    new DbStateMachineState {
