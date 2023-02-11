@@ -131,29 +131,29 @@ public sealed class TripRequestController : BaseStateController
 
     [HttpGet]
     [Route("TripRequest/{requestId}")]
-    public async Task<IActionResult> TripRequestShow(Guid requestId)
+    public async Task<IActionResult> TripRequestShow(Guid requestId, CancellationToken token = default)
     {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
         if (entity == null)
             return NotFound();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
-        await SetNextStates(model);
+        await SetNextStates(model, StateMachineEnum.TripRequest, token);
 
-        model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync();
+        model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
         return View("Show", model);
     }
 
     [HttpGet]
     [Route("TripRequest/Edit/{requestId}")]
-    public async Task<IActionResult> TripRequestEdit(Guid requestId)
+    public async Task<IActionResult> TripRequestEdit(Guid requestId, CancellationToken token = default)
     {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
         if (entity == null)
             return NotFound();
 
         var model = Mapper.Map<TripRequestDto>(entity);
-        await SetNextStates(model);
+        await SetNextStates(model, StateMachineEnum.TripRequest, token);
         return View("Save", model);
     }
 
@@ -178,7 +178,7 @@ public sealed class TripRequestController : BaseStateController
         return View("Save", new TripRequestDto
         {
             TripDate = DateTime.Now.AddDays(1).ChangeTime(9, 0),
-            PaymentType = (int)PaymentTypeEnum.Card
+            PaymentType = (int)PaymentTypeEnum.Checking,
         });
     }
 
@@ -199,13 +199,16 @@ public sealed class TripRequestController : BaseStateController
 
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
+
+            //временная мера
+            entity.ActionState = Guid.Parse("66FD6072-3F96-46B8-87F1-E29D915B1C34");
+            
             if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
                 entity.ContactFio = entity.СhartererName;
             }
 
             await UnitOfWork.AddEntityAsync(entity, token);
-
             await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier
             {
                 TripRequestId = model.Id
@@ -230,6 +233,8 @@ public sealed class TripRequestController : BaseStateController
 
             await SendReplaysToUsers(entity.Id, token);
             await SendReplaysToWatchers(entity.Id, token);
+
+            return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
         else
         {
@@ -415,9 +420,9 @@ public sealed class TripRequestController : BaseStateController
     [AllowAnonymous]
     [HttpGet]
     [Route("MakeOffer/{requestId}")]
-    public async Task<IActionResult> MakeOffer(Guid requestId)
+    public async Task<IActionResult> MakeOffer(Guid requestId, CancellationToken token = default)
     {
-        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId);
+        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId, token);
         if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived)
         {
             TempData[errMsgName] = "Поездка не найдена";
@@ -433,14 +438,14 @@ public sealed class TripRequestController : BaseStateController
             TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId))
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId, token))
         {
             TempData[errMsgName] = "Ваше предложение уже учтено";
             return RedirectToAction(nameof(MakeOfferError));
         }
 
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
-        await SetNextStates(model);
+        await SetNextStates(model, StateMachineEnum.TripRequest, token);
         model.CarrierId = replay.CarrierId;
         return View("MakeOffer", model);
     }
