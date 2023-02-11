@@ -33,13 +33,13 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbDriver>().Property(d => d.State).HasConversion(new GuidEnumConverter<DriverStateEnum>());
             modelBuilder.Entity<DbOrganisation>().Property(d => d.State).HasConversion(new GuidEnumConverter<OrganisationStateEnum>());
             modelBuilder.Entity<DbTripRequest>().Property(d => d.State).HasConversion(new GuidEnumConverter<TripRequestStateEnum>());
-            modelBuilder.Entity<DbStateMachineState>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
+            //modelBuilder.Entity<DbStateMachineState>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
 
             modelBuilder.Entity<DbAccountRight>().HasIndex(a => new { a.AccountId, a.RightId, a.OrganisationId }).IsUnique();
             modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.TripRequestId }).IsUnique();
             modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.Identifier }).IsUnique();
-            modelBuilder.Entity<DbStateMachineState>().HasIndex(a => new { a.StateFrom, a.StateTo, a.UseByOrganisation }).IsUnique();
-            modelBuilder.Entity<DbStateMachineStateRight>().HasIndex(a => new { a.StateMachineStateId, a.RightId }).IsUnique();
+            //modelBuilder.Entity<DbStateMachineState>().HasIndex(a => new { a.StateFrom, a.StateTo, a.UseByOrganisation }).IsUnique();
+            //modelBuilder.Entity<DbStateMachineStateRight>().HasIndex(a => new { a.StateMachineStateId, a.RightId }).IsUnique();
 
             modelBuilder.DisableCascadeDeleteConvention();
 

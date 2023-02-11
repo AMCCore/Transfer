@@ -244,93 +244,93 @@ namespace Transfer.Dal
 
         private static void SetTripRequestUserStatets(this IUnitOfWork uw)
         {
-            var tripRequestUserStatets = new List<DbStateMachineState> {
-                //новая поездка
-                new DbStateMachineState {
-                    Id = Guid.Parse("0EA2A18A-D7E7-4725-9BB4-42816C855040"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
-                    ConfirmText = "Вы уверены что хотите отменить запрос?",
-                    ButtonName = "Отменить",
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.Active.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()}",
-                    UseBySystem = false,
-                    UseByAuthorized = true,
-                    UseByOrganisation = false,
-                    UseByOwner = true,
-                },
-                //выбор перевозчика - переход не из машины статусов
+            //var tripRequestUserStatets = new List<DbStateMachineState> {
+            //    //новая поездка
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("0EA2A18A-D7E7-4725-9BB4-42816C855040"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
+            //        ConfirmText = "Вы уверены что хотите отменить запрос?",
+            //        ButtonName = "Отменить",
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.Active.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()}",
+            //        UseBySystem = false,
+            //        UseByAuthorized = true,
+            //        UseByOrganisation = false,
+            //        UseByOwner = true,
+            //    },
+            //    //выбор перевозчика - переход не из машины статусов
 
-                //перевозчик выбран
-                new DbStateMachineState {
-                    Id = Guid.Parse("9346C55E-105C-4F46-ACB4-346699DE7B4F"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Completed.GetEnumGuid(),
-                    ButtonName = "Завершить",
-                    ConfirmText = "Вы уверены что хотите завершить поездку?",
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Completed.GetEnumDescription()}",
-                    UseBySystem = false,
-                    UseByAuthorized = true,
-                    UseByOrganisation = false,
-                    UseByOwner = true,
-                },
-                new DbStateMachineState {
-                    Id = Guid.Parse("E037B97D-BAC7-42FC-AC90-81DC33952B53"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
-                    ButtonName = "Отменить",
-                    ConfirmText = "Вы уверены что хотите отменить запрос?",
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()}",
-                    UseBySystem = false,
-                    UseByAuthorized = true,
-                    UseByOrganisation = false,
-                    UseByOwner = true,
-                },
+            //    //перевозчик выбран
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("9346C55E-105C-4F46-ACB4-346699DE7B4F"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Completed.GetEnumGuid(),
+            //        ButtonName = "Завершить",
+            //        ConfirmText = "Вы уверены что хотите завершить поездку?",
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Completed.GetEnumDescription()}",
+            //        UseBySystem = false,
+            //        UseByAuthorized = true,
+            //        UseByOrganisation = false,
+            //        UseByOwner = true,
+            //    },
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("E037B97D-BAC7-42FC-AC90-81DC33952B53"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
+            //        ButtonName = "Отменить",
+            //        ConfirmText = "Вы уверены что хотите отменить запрос?",
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.CarrierSelected.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()}",
+            //        UseBySystem = false,
+            //        UseByAuthorized = true,
+            //        UseByOrganisation = false,
+            //        UseByOwner = true,
+            //    },
 
-            };
+            //};
 
-            var add = new List<DbStateMachineState> {
-                new DbStateMachineState {
-                    Id = Guid.Parse("8F5042C5-19C7-4F11-9581-96661F054FE6"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumGuid(),
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.Active.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumDescription()}",
-                    UseBySystem = true,
-                    UseByAuthorized = false,
-                    UseByOrganisation = false,
-                    UseByOwner = false,
-                },
+            //var add = new List<DbStateMachineState> {
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("8F5042C5-19C7-4F11-9581-96661F054FE6"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumGuid(),
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.Active.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumDescription()}",
+            //        UseBySystem = true,
+            //        UseByAuthorized = false,
+            //        UseByOrganisation = false,
+            //        UseByOwner = false,
+            //    },
 
-                //отменённая поездка
-                new DbStateMachineState {
-                    Id = Guid.Parse("757EAF33-2E50-41D8-9F1D-88297D69E357"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Archived.GetEnumGuid(),
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Archived.GetEnumDescription()}",
-                    UseBySystem = true,
-                    UseByAuthorized = false,
-                    UseByOrganisation = false,
-                    UseByOwner = false,
-                },
-                //просроченная поездка
-                new DbStateMachineState {
-                    Id = Guid.Parse("3BA46311-1C13-4454-88BE-10C8089F99F8"),
-                    StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
-                    StateFrom = Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumGuid(),
-                    StateTo = Common.Enums.States.TripRequestStateEnum.Archived.GetEnumGuid(),
-                    Description = $"{Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Archived.GetEnumDescription()}",
-                    UseBySystem = true,
-                    UseByAuthorized = false,
-                    UseByOrganisation = false,
-                    UseByOwner = false,
-                },
-            };
+            //    //отменённая поездка
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("757EAF33-2E50-41D8-9F1D-88297D69E357"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Archived.GetEnumGuid(),
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.Canceled.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Archived.GetEnumDescription()}",
+            //        UseBySystem = true,
+            //        UseByAuthorized = false,
+            //        UseByOrganisation = false,
+            //        UseByOwner = false,
+            //    },
+            //    //просроченная поездка
+            //    new DbStateMachineState {
+            //        Id = Guid.Parse("3BA46311-1C13-4454-88BE-10C8089F99F8"),
+            //        StateMachine = Common.Enums.States.StateMachineEnum.TripRequest,
+            //        StateFrom = Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumGuid(),
+            //        StateTo = Common.Enums.States.TripRequestStateEnum.Archived.GetEnumGuid(),
+            //        Description = $"{Common.Enums.States.TripRequestStateEnum.Overdue.GetEnumDescription()} -> {Common.Enums.States.TripRequestStateEnum.Archived.GetEnumDescription()}",
+            //        UseBySystem = true,
+            //        UseByAuthorized = false,
+            //        UseByOrganisation = false,
+            //        UseByOwner = false,
+            //    },
+            //};
 
-            uw.AddIfNotExists(tripRequestUserStatets);
+            //uw.AddIfNotExists(tripRequestUserStatets);
 
             //uw.AddOrUpdate(tripRequestUserStatets, (source, destination) =>
             //{

@@ -23,7 +23,7 @@ namespace Transfer.Dal.Entities
 
         public virtual ICollection<DbAccountRight> AccountRights { get; set; } = new List<DbAccountRight>();
 
-        public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
+        //public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
 
         internal static DbRight CreateForSeed(Enum right, bool isDeleted = false)
         {

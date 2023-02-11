@@ -295,15 +295,6 @@ public sealed class TripRequestController : BaseStateController
         }
     }
 
-    public override async Task<ICollection<NextStateDto>> GetPossibleStatets(Guid currentState)
-    {
-        var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
-        q = q.Where(x => x.StateFrom == currentState);
-        q = q.Where(x => !x.UseBySystem);
-
-        return await q.Select(x => new NextStateDto { ButtonName = x.ButtonName, ConfirmText = x.ConfirmText, NextStateId = x.StateTo, NeedSaveButton = false }).ToListAsync();
-    }
-
     /// <summary>
     /// Установка регионов 
     /// </summary>
@@ -337,38 +328,38 @@ public sealed class TripRequestController : BaseStateController
         return reg;
     }
 
-    [HttpGet]
-    [Route("TripRequest/StateChange")]
-    public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId)
-    {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId && !ss.IsDeleted).FirstOrDefaultAsync();
-        if (entity == null)
-            throw new ArgumentNullException(nameof(requestId));
+    //[HttpGet]
+    //[Route("TripRequest/StateChange")]
+    //public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId)
+    //{
+    //    var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId && !ss.IsDeleted).FirstOrDefaultAsync();
+    //    if (entity == null)
+    //        throw new ArgumentNullException(nameof(requestId));
 
-        var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
-        q = q.Where(x => x.StateFrom == entity.State.GetEnumGuid());
-        q = q.Where(x => x.StateTo == stateId);
-        if (await q.CountAsync() != 1)
-            throw new ArgumentOutOfRangeException();
+    //    var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
+    //    q = q.Where(x => x.StateFrom == entity.State.GetEnumGuid());
+    //    q = q.Where(x => x.StateTo == stateId);
+    //    if (await q.CountAsync() != 1)
+    //        throw new ArgumentOutOfRangeException();
 
-        var nextState = await q.FirstOrDefaultAsync();
+    //    var nextState = await q.FirstOrDefaultAsync();
 
-        if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin))
-        {
-            entity.State = GuidEnumConverter<TripRequestStateEnum>.ConvertToEnum(nextState.StateTo);
-            await UnitOfWork.SaveChangesAsync();
-            await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", nextState.Description);
+    //    if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin))
+    //    {
+    //        entity.State = GuidEnumConverter<TripRequestStateEnum>.ConvertToEnum(nextState.StateTo);
+    //        await UnitOfWork.SaveChangesAsync();
+    //        await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", nextState.Description);
 
-            if (nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
-            {
-                await SendChancelOferToUsers(entity.Id);
-            }
+    //        if (nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
+    //        {
+    //            await SendChancelOferToUsers(entity.Id);
+    //        }
 
-            return RedirectToAction(nameof(Search));
-        }
+    //        return RedirectToAction(nameof(Search));
+    //    }
 
-        return RedirectToHome();
-    }
+    //    return RedirectToHome();
+    //}
 
     [HttpGet]
     [Route("TripRequest/{requestId}/CarrierChoose/{offerId}")]
