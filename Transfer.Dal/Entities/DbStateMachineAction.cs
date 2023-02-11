@@ -24,7 +24,6 @@ public class DbStateMachineAction : IEntityBase, ISoftDeleteEntity
     /// <summary>
     ///     Действие
     /// </summary>
-    [Display(Description = "Действие")]
     [MaxLength(1000, ErrorMessage = "\"Действие\" не может быть больше 1000 символов")]
     [Required(ErrorMessage = "\"Действие\" не может быть пустым")]
     public virtual string ActionName { get; set; }
@@ -32,14 +31,18 @@ public class DbStateMachineAction : IEntityBase, ISoftDeleteEntity
     /// <summary>
     ///     Текст
     /// </summary>
-    [Display(Description = "Текст")]
     [MaxLength(1000, ErrorMessage = "\"Текст\" не может быть больше 1000 символов")]
     public virtual string? Description { get; set; }
 
     /// <summary>
+    ///     Текст подтверждения
+    /// </summary>
+    [MaxLength(1000, ErrorMessage = "\"Текст\" не может быть больше 1000 символов")]
+    public virtual string? ConfirmText { get; set; }
+
+    /// <summary>
     ///     Код действия
     /// </summary>
-    [Display(Description = "Код действия")]
     [MaxLength(1000, ErrorMessage = "\"Код действия\" не может быть больше 1000 символов")]
     [Required(ErrorMessage = "\"Код действия\" не может быть пустым")]
     public virtual string ActionCode { get; set; }
@@ -60,4 +63,10 @@ public class DbStateMachineAction : IEntityBase, ISoftDeleteEntity
 
     [InverseProperty(nameof(DbStateMachineFromStatus.StateMachineAction))]
     public virtual ICollection<DbStateMachineFromStatus> FromStates { get; set; } = new List<DbStateMachineFromStatus>();
+
+    /// <summary>
+    ///     Порядок сортировки
+    /// </summary>
+    [Required]
+    public int SortingOrder { get; set; } = 0;
 }
