@@ -58,6 +58,9 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public TripRequestStateEnum State { get; set; } = TripRequestStateEnum.Active;
 
+    [Required]
+    public Guid ActionState { get; set; }
+
     public virtual DbRegion? RegionFrom { get; set; }
 
     [ForeignKey(nameof(RegionFrom))]

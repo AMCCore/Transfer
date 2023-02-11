@@ -61,7 +61,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState));
 
         CreateMap<DbTripRequest, TripRequestOfferDto>()
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
@@ -73,7 +73,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState));
 
         CreateMap<DbTripRequest, TripRequestWithOffersDto>()
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
@@ -86,7 +86,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.DirectorFio : o.ContactFio))
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Email : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone))
-            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State.GetEnumGuid()));
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState));
 
         CreateMap<TripRequestDto, DbTripRequest>()
             .ForMember(x => x.ContactFio, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactFio))
