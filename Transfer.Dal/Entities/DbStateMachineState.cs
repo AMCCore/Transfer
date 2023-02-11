@@ -28,7 +28,15 @@ public class DbStateMachineState : IEntityBase, ISoftDeleteEntity
     /// </summary>
     [Display(Description = "Наименование")]
     [MaxLength(1000, ErrorMessage = "\"Наименование\" не может быть больше 1000 символов")]
+    [Required]
     public virtual string Name { get; set; }
+
+    /// <summary>
+    ///     Наименование
+    /// </summary>
+    [Display(Description = "Наименование")]
+    [MaxLength(1000, ErrorMessage = "\"Наименование\" не может быть больше 1000 символов")]
+    public virtual string? Description { get; set; }
 
     public StateMachineEnum StateMachine { get; set; }
 }
