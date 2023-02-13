@@ -68,7 +68,7 @@
                         </div>
                         <div class="row blank-row d-md-none d-flex"></div>
                         <div class="row">
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <div class="row">
                                     @if (c.Picture.IsNullOrEmpty())
                                     {
@@ -84,7 +84,7 @@
                                     <div class="col-12 t-col text-center go"><a asp-action="TripRequestShow" asp-controller="TripRequest" asp-route-requestId="@c.Id"><span>перейти</span></a></div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-9">
+                            <div class="col-6 col-md-8">
                                 <div class="row">
                                     <div class="t-col col-12"><i class="fas fa-comment-dots"></i> Откликов: @c.ReplaysCount</div>
                                     <div class="t-col col-12"><i class="fas fa-map-marked"></i> @c.AddressFrom</div>

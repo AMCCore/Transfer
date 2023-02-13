@@ -9,20 +9,20 @@
 }
 
 <div class="container">
-    <div class="row blank-row"></div>
-    <div class="row blank-row"></div>
+    <!--<div class="row blank-row"></div>
+    <div class="row blank-row"></div>-->
     <div class="row">
         <div class="t-col col-12 crumbs">
             ---&nbsp;&nbsp;&nbsp;<a asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a asp-controller="Carrier" asp-action="Search">Перевозчики</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<span>@Model.Name</span>
         </div>
     </div>
-    <div class="row blank-row"></div>
+        <!--<div class="row blank-row"></div>-->
     <div class="row">
         <div class="t-col col-12 col-md-6 crb-avatar">
             Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
         </div>
     </div>
-    <div class="row blank-row"></div>
+        <!--<div class="row blank-row"></div>-->
     <div class="row">
         <div class="t-col col-12">
             <h1 style="color: #0f4c71">@Model.Name</h1>
@@ -34,7 +34,7 @@
             <div class="container carrier-info">
                 <div class="row blank-row"></div>
                 <div class="row">
-                    <div class="col-4 col-md-2">
+                    <div class="col-4 col-md-3">
                         <div class="row">
                             @if (Model.LogoFileId.IsNullOrEmpty())
                             {
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-8 col-md-10">
+                    <div class="col-8 col-md-9">
                         <div class="row blank-row"></div>
                         @if (!string.IsNullOrWhiteSpace(Model.FactAddress))
                         {
