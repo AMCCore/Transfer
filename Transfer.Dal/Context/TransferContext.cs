@@ -32,7 +32,7 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbBus>().Property(d => d.State).HasConversion(new GuidEnumConverter<BusStateEnum>());
             modelBuilder.Entity<DbDriver>().Property(d => d.State).HasConversion(new GuidEnumConverter<DriverStateEnum>());
             modelBuilder.Entity<DbOrganisation>().Property(d => d.State).HasConversion(new GuidEnumConverter<OrganisationStateEnum>());
-            modelBuilder.Entity<DbTripRequest>().Property(d => d.State).HasConversion(new GuidEnumConverter<TripRequestStateEnum>());
+            //modelBuilder.Entity<DbTripRequest>().Property(d => d.State).HasConversion(new GuidEnumConverter<TripRequestStateEnum>());
             modelBuilder.Entity<DbStateMachineState>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
             modelBuilder.Entity<DbStateMachineAction>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
             modelBuilder.Entity<DbStateMachineFromStatus>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());

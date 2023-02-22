@@ -58,21 +58,22 @@ public sealed class TripRequestController : BaseStateController
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
 
+        //статусы
         if (filter.State == (int)TripRequestSearchStateEnum.StateNew)
         {
-            query = query.Where(x => x.State == TripRequestStateEnum.Active);
+            //query = query.Where(x => x.State == TripRequestStateEnum.Active);
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateComplete)
         {
-            query = query.Where(x => x.State == TripRequestStateEnum.Completed);
+            //query = query.Where(x => x.State == TripRequestStateEnum.Completed);
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateOnair)
         {
-            query = query.Where(x => x.State == TripRequestStateEnum.CarrierSelected);
+            //query = query.Where(x => x.State == TripRequestStateEnum.CarrierSelected);
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateCanceled)
         {
-            query = query.Where(x => x.State == TripRequestStateEnum.Canceled || x.State == TripRequestStateEnum.Overdue || x.State == TripRequestStateEnum.Archived);
+            //query = query.Where(x => x.State == TripRequestStateEnum.Canceled || x.State == TripRequestStateEnum.Overdue || x.State == TripRequestStateEnum.Archived);
         }
 
         if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateStartAsc)
@@ -187,7 +188,7 @@ public sealed class TripRequestController : BaseStateController
             var entity = Mapper.Map<DbTripRequest>(model);
 
             //временная мера
-            entity.ActionState = Guid.Parse("66FD6072-3F96-46B8-87F1-E29D915B1C34");
+            //entity.ActionState = Guid.Parse("66FD6072-3F96-46B8-87F1-E29D915B1C34");
             
             if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
@@ -251,17 +252,17 @@ public sealed class TripRequestController : BaseStateController
 
         var nextState = await UnitOfWork.GetSet<DbStateMachineAction>()
             .Where(x => !x.IsSystemAction && x.StateMachine == StateMachineEnum.TripRequest && x.ToStateId == stateId &&
-            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.ActionState)).FirstOrDefaultAsync(token);
+            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.State)).FirstOrDefaultAsync(token);
 
         if(nextState == null)
             throw new ArgumentNullException(nameof(requestId));
 
-        entity.ActionState = nextState.ToState.Id;
+        //entity.ActionState = nextState.ToState.Id;
         //временная мера
-        if (nextState.ToStateId == Guid.Parse("92B66995-F591-4C6F-90B2-F222B9CEAD2D"))
-        {
-            entity.State = TripRequestStateEnum.Canceled;
-        }
+        //if (nextState.ToStateId == Guid.Parse("92B66995-F591-4C6F-90B2-F222B9CEAD2D"))
+        //{
+        //    entity.State = TripRequestStateEnum.Canceled;
+        //}
         await UnitOfWork.SaveChangesAsync(token);
         await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {nextState.ToState.Name}", token);
 
@@ -385,10 +386,11 @@ public sealed class TripRequestController : BaseStateController
 
         var trip = entity.TripRequest;
 
-        if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin) && trip.State == TripRequestStateEnum.Active)
+        //if (Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin) && trip.State == TripRequestStateEnum.Active)
+        if (Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin))
         {
             entity.Chosen = true;
-            trip.State = TripRequestStateEnum.CarrierSelected;
+            //trip.State = TripRequestStateEnum.CarrierSelected;
             await UnitOfWork.SaveChangesAsync();
             await UnitOfWork.AddToHistoryLog(trip, "Перевозчик выбран", $"Перевозчик: {entity.Carrier.Name}({entity.Carrier.Id}), сумма предложения: {entity.Amount}");
 
@@ -432,17 +434,17 @@ public sealed class TripRequestController : BaseStateController
     public async Task<IActionResult> MakeOffer(Guid requestId, CancellationToken token = default)
     {
         var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId, token);
-        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived)
+        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived.GetEnumGuid())
         {
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (replay.TripRequest.TripDate <= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed)
+        if (replay.TripRequest.TripDate <= DateTime.Now || replay.TripRequest.State == TripRequestStateEnum.Completed.GetEnumGuid())
         {
             TempData[errMsgName] = "Поездка уже прошла";
             return RedirectToAction(nameof(MakeOfferError));
         }
-        if (replay.TripRequest.State != TripRequestStateEnum.Active)
+        if (replay.TripRequest.State != TripRequestStateEnum.Active.GetEnumGuid())
         {
             TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
             return RedirectToAction(nameof(MakeOfferError));

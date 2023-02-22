@@ -58,7 +58,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("PersonDataId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbAccountRight", b =>
@@ -89,7 +89,7 @@ namespace Transfer.Dal.Migrations
                         .IsUnique()
                         .HasFilter("[RightId] IS NOT NULL AND [OrganisationId] IS NOT NULL");
 
-                    b.ToTable("AccountRights");
+                    b.ToTable("AccountRights", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbBankDetails", b =>
@@ -139,7 +139,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("BankDetails");
+                    b.ToTable("BankDetails", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbBus", b =>
@@ -235,7 +235,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("Buses");
+                    b.ToTable("Buses", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbBusFile", b =>
@@ -273,7 +273,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("UploaderId");
 
-                    b.ToTable("BusFiles");
+                    b.ToTable("BusFiles", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbDriver", b =>
@@ -340,7 +340,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("PersonDataId");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbDriverFile", b =>
@@ -378,7 +378,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("UploaderId");
 
-                    b.ToTable("DriverFiles");
+                    b.ToTable("DriverFiles", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbDriversLicense", b =>
@@ -426,7 +426,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("DriverId");
 
-                    b.ToTable("DriverLicenses");
+                    b.ToTable("DriverLicenses", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbExternalLogin", b =>
@@ -463,7 +463,7 @@ namespace Transfer.Dal.Migrations
                     b.HasIndex("LoginType", "Value")
                         .IsUnique();
 
-                    b.ToTable("ExternalLogins");
+                    b.ToTable("ExternalLogins", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbFile", b =>
@@ -492,7 +492,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbHistoryLog", b =>
@@ -524,7 +524,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HistoryLogs");
+                    b.ToTable("HistoryLogs", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisation", b =>
@@ -611,7 +611,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Organisations");
+                    b.ToTable("Organisations", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationAccount", b =>
@@ -638,7 +638,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("OrganisationAccounts");
+                    b.ToTable("OrganisationAccounts", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationFile", b =>
@@ -676,7 +676,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("UploaderId");
 
-                    b.ToTable("OrganisationFiles");
+                    b.ToTable("OrganisationFiles", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbOrganisationWorkingArea", b =>
@@ -700,7 +700,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("OrganisationWorkingAreas");
+                    b.ToTable("OrganisationWorkingAreas", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbPersonData", b =>
@@ -771,7 +771,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PersonDatas");
+                    b.ToTable("PersonDatas", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbRegion", b =>
@@ -795,7 +795,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("ParrentRegionId");
 
-                    b.ToTable("Regions");
+                    b.ToTable("Regions", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbRight", b =>
@@ -817,92 +817,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rights");
-                });
-
-            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineAction", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ActionCode")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("ActionName")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("ConfirmText")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSystemAction")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("LastUpdateTick")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("SortingOrder")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("StateMachine")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ToStateId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ToStateId");
-
-                    b.ToTable("StateMachineActions");
-                });
-
-            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineFromStatus", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("FromStateId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("LastUpdateTick")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("RightCode")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("StateMachine")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("StateMachineActionId")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FromStateId");
-
-                    b.HasIndex("StateMachineActionId");
-
-                    b.ToTable("StateMachineFromStatuses");
+                    b.ToTable("Rights", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineState", b =>
@@ -911,27 +826,86 @@ namespace Transfer.Dal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("ButtonName")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<string>("ConfirmText")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("LastUpdateTick")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<Guid>("StateFrom")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("StateMachine")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("StateTo")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("UseByAuthorized")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("UseByOrganisation")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("UseByOwner")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("UseBySystem")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
-                    b.ToTable("StateMachineStates");
+                    b.HasIndex("StateFrom", "StateTo", "UseByOrganisation")
+                        .IsUnique();
+
+                    b.ToTable("StateMachineStates", (string)null);
+                });
+
+            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineStateRight", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("LastUpdateTick")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("OrganisationId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RightId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StateMachineStateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.HasIndex("RightId");
+
+                    b.HasIndex("StateMachineStateId", "RightId")
+                        .IsUnique();
+
+                    b.ToTable("StateMachineStateRights", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTgActionState", b =>
@@ -963,7 +937,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("TgActionStates");
+                    b.ToTable("TgActionStates", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripOption", b =>
@@ -985,16 +959,13 @@ namespace Transfer.Dal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TripOptions");
+                    b.ToTable("TripOptions", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ActionState")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AddressFrom")
@@ -1064,7 +1035,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("RegionToId");
 
-                    b.ToTable("TripRequests");
+                    b.ToTable("TripRequests", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestIdentifier", b =>
@@ -1093,7 +1064,7 @@ namespace Transfer.Dal.Migrations
                     b.HasIndex("TripRequestId")
                         .IsUnique();
 
-                    b.ToTable("TripRequestIdentifiers");
+                    b.ToTable("TripRequestIdentifiers", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestOffer", b =>
@@ -1132,7 +1103,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("TripRequestId");
 
-                    b.ToTable("TripRequestOffers");
+                    b.ToTable("TripRequestOffers", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestOption", b =>
@@ -1156,7 +1127,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("TripRequestId");
 
-                    b.ToTable("TripRequestOptions");
+                    b.ToTable("TripRequestOptions", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequestReplay", b =>
@@ -1186,7 +1157,7 @@ namespace Transfer.Dal.Migrations
 
                     b.HasIndex("TripRequestId");
 
-                    b.ToTable("TripRequestReplays");
+                    b.ToTable("TripRequestReplays", (string)null);
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbAccount", b =>
@@ -1254,7 +1225,7 @@ namespace Transfer.Dal.Migrations
                         .IsRequired();
 
                     b.HasOne("Transfer.Dal.Entities.DbFile", "File")
-                        .WithMany("BusFiles")
+                        .WithMany()
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1423,34 +1394,31 @@ namespace Transfer.Dal.Migrations
                     b.Navigation("ParrentRegion");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineAction", b =>
+            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineStateRight", b =>
                 {
-                    b.HasOne("Transfer.Dal.Entities.DbStateMachineState", "ToState")
-                        .WithMany("Actions")
-                        .HasForeignKey("ToStateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ToState");
-                });
-
-            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineFromStatus", b =>
-                {
-                    b.HasOne("Transfer.Dal.Entities.DbStateMachineState", "FromState")
+                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Organisation")
                         .WithMany()
-                        .HasForeignKey("FromStateId")
+                        .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Transfer.Dal.Entities.DbStateMachineAction", "StateMachineAction")
-                        .WithMany("FromStates")
-                        .HasForeignKey("StateMachineActionId")
+                    b.HasOne("Transfer.Dal.Entities.DbRight", "Right")
+                        .WithMany("StateMachineStateRights")
+                        .HasForeignKey("RightId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("FromState");
+                    b.HasOne("Transfer.Dal.Entities.DbStateMachineState", "StateMachineState")
+                        .WithMany("StateMachineStateRights")
+                        .HasForeignKey("StateMachineStateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("StateMachineAction");
+                    b.Navigation("Organisation");
+
+                    b.Navigation("Right");
+
+                    b.Navigation("StateMachineState");
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTgActionState", b =>
@@ -1572,8 +1540,6 @@ namespace Transfer.Dal.Migrations
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbFile", b =>
                 {
-                    b.Navigation("BusFiles");
-
                     b.Navigation("DriverFiles");
 
                     b.Navigation("OrganisationFiles");
@@ -1621,16 +1587,13 @@ namespace Transfer.Dal.Migrations
             modelBuilder.Entity("Transfer.Dal.Entities.DbRight", b =>
                 {
                     b.Navigation("AccountRights");
-                });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineAction", b =>
-                {
-                    b.Navigation("FromStates");
+                    b.Navigation("StateMachineStateRights");
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineState", b =>
                 {
-                    b.Navigation("Actions");
+                    b.Navigation("StateMachineStateRights");
                 });
 
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripOption", b =>
