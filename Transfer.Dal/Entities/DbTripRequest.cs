@@ -70,4 +70,7 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public Guid? RegionToId { get; set; }
 
     public virtual ICollection<DbTripRequestIdentifier> Identifiers { get; set; } = new List<DbTripRequestIdentifier>();
+
+    [NotMapped]
+    public 
 }

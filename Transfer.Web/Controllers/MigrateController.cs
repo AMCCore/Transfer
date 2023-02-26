@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Transfer.Common;
 using Transfer.Dal;
+using Transfer.Dal.Seeds;
 
 namespace Transfer.Web.Controllers;
 

@@ -9,11 +9,11 @@ using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
-namespace Transfer.Dal
+namespace Transfer.Dal.Seeds
 {
-    public static partial class Seed
+    public static class MainSeed
     {
-        private static Guid adminId = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76");
+        internal static readonly Guid adminId = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76");
 
         public static void SeedData(this IUnitOfWork uw, bool createDefaultUser = false)
         {
@@ -242,7 +242,7 @@ namespace Transfer.Dal
             }
         }
 
-        private static void SetTripRequestUserStatets(this IUnitOfWork uw)
+        private static void ssdsdsdsSetTripRequestUserStatets(this IUnitOfWork uw)
         {
             var tripRequestUserStatets = new List<DbStateMachineState>
             {

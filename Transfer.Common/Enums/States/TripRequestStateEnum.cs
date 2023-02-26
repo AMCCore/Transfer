@@ -6,6 +6,13 @@ namespace Transfer.Common.Enums.States;
 public enum TripRequestStateEnum
 {
     /// <summary>
+    /// Новый
+    /// </summary>
+    [Description("Новый")]
+    [EnumGuid("66FD6072-3F96-46B8-87F1-E29D915B1C34")]
+    New,
+
+    /// <summary>
     /// Действующий
     /// </summary>
     [Description("Действующий")]
@@ -34,9 +41,9 @@ public enum TripRequestStateEnum
     Overdue,
 
     /// <summary>
-    /// Перевозчик выбран
+    /// Перевозчик выбран (заключение договора)
     /// </summary>
-    [Description("Перевозчик выбран (заключение договора)")]
+    [Description("Перевозчик выбран")]
     [EnumGuid("63D8EB2C-ADF9-4208-81C9-7EF17C0A905C")]
     CarrierSelected,
 
@@ -46,4 +53,18 @@ public enum TripRequestStateEnum
     [Description("Завершен")]
     [EnumGuid("BA47C059-2686-4D6D-967E-DB36334A36D4")]
     Completed,
+
+    /// <summary>
+    /// Выполнен
+    /// </summary>
+    [Description("Выполнен")]
+    [EnumGuid("A04D4A33-344D-40DF-BCD8-0B36C32DBAC7")]
+    Done,
+
+    /// <summary>
+    /// Завершен без подтверждения
+    /// </summary>
+    [Description("Завершен без подтверждения")]
+    [EnumGuid("EF160963-32C5-4734-9CD4-4FB7B73E01F5")]
+    CompletedNoConfirm,
 }
