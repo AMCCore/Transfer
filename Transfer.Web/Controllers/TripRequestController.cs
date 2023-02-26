@@ -187,8 +187,7 @@ public sealed class TripRequestController : BaseStateController
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
 
-            //временная мера
-            //entity.ActionState = Guid.Parse("66FD6072-3F96-46B8-87F1-E29D915B1C34");
+            entity.StateEnum = TripRequestStateEnum.New; 
             
             if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
@@ -257,12 +256,7 @@ public sealed class TripRequestController : BaseStateController
         if(nextState == null)
             throw new ArgumentNullException(nameof(requestId));
 
-        //entity.ActionState = nextState.ToState.Id;
-        //временная мера
-        //if (nextState.ToStateId == Guid.Parse("92B66995-F591-4C6F-90B2-F222B9CEAD2D"))
-        //{
-        //    entity.State = TripRequestStateEnum.Canceled;
-        //}
+        entity.State = nextState.ToState.Id;
         await UnitOfWork.SaveChangesAsync(token);
         await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {nextState.ToState.Name}", token);
 
