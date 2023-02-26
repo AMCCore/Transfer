@@ -88,5 +88,242 @@ internal static class TripRequestUserStateSeed
             },
         };
         uw.AddIfNotExists(tripRequestUserStates);
+
+        #region --> отменён
+
+        var ga = Guid.Parse("94D3666E-70C2-4F85-B5A1-A4733A0A1AAD");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "cancel",
+            ActionName = "Отменить",
+            Description = null,
+            IsSystemAction = false,
+            ToStateId = TripRequestStateEnum.Canceled.GetEnumGuid(),
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("84A58E87-8B2F-42DF-8086-4367F7E9DD87"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.New.GetEnumGuid(),
+                StateMachineActionId = ga
+            });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("5658448A-4C24-4A5A-8628-E90DEFFB5138"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
+                StateMachineActionId = ga
+            });
+
+        #endregion
+
+        #region --> просрочен
+
+        ga = Guid.Parse("9A1CDF22-B861-4246-AF2E-DC27237AB41B");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "overdue",
+            ActionName = "Просрочить",
+            IsSystemAction = true,
+            Description = null,
+            ToStateId = TripRequestStateEnum.Overdue.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("B52C828C-2F1D-4C99-BFE8-2E73EC2476F5"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.New.GetEnumGuid(),
+                StateMachineActionId = ga
+            },
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("84A58E87-8B2F-42DF-8086-4367F7E9DD87"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> перевозчик выбран
+        
+        ga = Guid.Parse("00AE0C75-94F1-447E-866D-23DD149C60C0");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "chooseCarrier",
+            ActionName = "Выбрать перевозчика",
+            IsSystemAction = false,
+            Description = null,
+            ToStateId = TripRequestStateEnum.CarrierSelected.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("56130327-0D8A-4961-ABDE-DE5801D99365"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> выполнен
+
+        ga = Guid.Parse("568BC33D-FF44-4939-9786-D48DDFE8B966");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "completed",
+            ActionName = "Выполнить",
+            IsSystemAction = false,
+            Description = null,
+            ToStateId = TripRequestStateEnum.Done.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("81DE65CE-F563-476A-B088-9880D6B0F47B"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> завершен
+
+        ga = Guid.Parse("568BC33D-FF44-4939-9786-D48DDFE8B966");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "completed",
+            ActionName = "Завершить",
+            IsSystemAction = false,
+            Description = null,
+            ToStateId = TripRequestStateEnum.Completed.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("FB76E480-1896-474B-AD91-AD4EA2E298E3"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Done.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> Завершен без подтверждения
+
+        ga = Guid.Parse("35580EB4-6A8A-4B97-BA44-2C5193A3DD4E");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "completedWithoutConfirm",
+            ActionName = "Завершить без подтверждения",
+            IsSystemAction = false,
+            Description = null,
+            ToStateId = TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("C5C56A00-B0F2-43F1-99FA-2015C72020F1"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Done.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> архивные
+
+        ga = Guid.Parse("AA851CAF-4346-4126-8501-0D6EB74FE4FD");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "archive",
+            ActionName = "Переместить в архив",
+            IsSystemAction = true,
+            Description = null,
+            ToStateId = TripRequestStateEnum.Archived.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("32487569-C8F7-444C-BAA6-6D3821254A21"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Canceled.GetEnumGuid(),
+                StateMachineActionId = ga
+            },
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("552FCCC0-A248-4AA7-AF4B-0C33A5F6EA5A"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Overdue.GetEnumGuid(),
+                StateMachineActionId = ga
+            },
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("C773DFF2-C0D9-40E1-907A-AC09E12E687D"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.Completed.GetEnumGuid(),
+                StateMachineActionId = ga
+            },
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("C9FE2A90-8DE9-4D5B-A5F0-39F52D8DAB9A"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
     }
 }

@@ -53,7 +53,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ReplaysCount, opt => opt.MapFrom(o => o.TripRequestOffers.Count()));
 
         CreateMap<DbTripRequest, TripRequestDto>()
-            //.ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState))
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State))
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
             .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
             .ForMember(x => x.StandTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.IdleTrip.GetEnumGuid())))
@@ -64,7 +64,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone));
 
         CreateMap<DbTripRequest, TripRequestOfferDto>()
-            //.ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState))
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State))
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
             .ForMember(x => x.ChildTrip, opt => opt.MapFrom(o => o.TripOptions.Any(z => z.TripOptionId == TripOptionsEnum.ChildTrip.GetEnumGuid())))
@@ -76,7 +76,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? o.Charterer.Phone : o.ContactPhone));
 
         CreateMap<DbTripRequest, TripRequestWithOffersDto>()
-            //.ForMember(x => x.State, opt => opt.MapFrom(o => o.ActionState))
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State))
             .ForMember(x => x.Identifier, opt => opt.MapFrom(o => o.Identifiers.Select(a => a.Identifier).FirstOrDefault()))
             .ForMember(x => x.Offers, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.MapFrom(o => o.TripOptions.Select(a => a.TripOption).ToList()))
@@ -93,7 +93,7 @@ public class BaseProfile : Profile
             .ForMember(x => x.ContactEmail, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactEmail))
             .ForMember(x => x.ContactPhone, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ContactPhone))
             .ForMember(x => x.СhartererName, opt => opt.MapFrom(o => !o.ChartererId.IsNullOrEmpty() ? null : o.ChartererName))
-            //.ForMember(x => x.State, opt => opt.Ignore())
+            .ForMember(x => x.State, opt => opt.MapFrom(o => o.State))
             .ForMember(x => x.RegionFromId, opt => opt.Ignore())
             .ForMember(x => x.RegionToId, opt => opt.Ignore())
             .ForMember(x => x.TripOptions, opt => opt.Ignore());

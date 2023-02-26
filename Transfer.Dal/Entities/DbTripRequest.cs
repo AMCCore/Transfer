@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Transfer.Common;
 using Transfer.Common.Enums.States;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Dal.Entities;
 
@@ -72,5 +73,15 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public virtual ICollection<DbTripRequestIdentifier> Identifiers { get; set; } = new List<DbTripRequestIdentifier>();
 
     [NotMapped]
-    public 
+    public TripRequestStateEnum StateEnum
+    {
+        get
+        {
+            return State.ConvertGuidToEnum<TripRequestStateEnum>();
+        }
+        set
+        {
+            State = value.GetEnumGuid();
+        }
+    }
 }
