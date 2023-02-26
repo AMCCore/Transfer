@@ -102,6 +102,7 @@ internal static class TripRequestUserStateSeed
             Description = null,
             IsSystemAction = false,
             ToStateId = TripRequestStateEnum.Canceled.GetEnumGuid(),
+            ConfirmText = "Уверены что хотите отменить?",
         });
 
         uw.AddIfNotExists(
@@ -320,6 +321,35 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid(),
+                StateMachineActionId = ga
+            }
+        );
+
+        #endregion
+
+        #region --> действующий
+
+        ga = Guid.Parse("1b0f2235-15fd-43c9-bdd3-d8f7bb1a4df0");
+        uw.AddIfNotExists(new DbStateMachineAction
+        {
+            Id = ga,
+            IsDeleted = false,
+            StateMachine = StateMachineEnum.TripRequest,
+            ActionCode = "archive",
+            ActionName = "Начать сбор предложений",
+            ConfirmText = "Уверены что хотите начать сбор предложений?",
+            IsSystemAction = false,
+            Description = null,
+            ToStateId = TripRequestStateEnum.Active.GetEnumGuid()
+        });
+
+        uw.AddIfNotExists(
+            new DbStateMachineFromStatus
+            {
+                Id = Guid.Parse("8cf11f40-3a4a-41b2-8c6b-accb9892fc02"),
+                IsDeleted = false,
+                StateMachine = StateMachineEnum.TripRequest,
+                FromStateId = TripRequestStateEnum.New.GetEnumGuid(),
                 StateMachineActionId = ga
             }
         );
