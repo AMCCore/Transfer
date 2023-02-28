@@ -173,7 +173,7 @@ internal static class TripRequestUserStateSeed
             StateMachine = StateMachineEnum.TripRequest,
             ActionCode = "chooseCarrier",
             ActionName = "Выбрать перевозчика",
-            IsSystemAction = false,
+            IsSystemAction = true,
             Description = null,
             ToStateId = TripRequestStateEnum.CarrierSelected.GetEnumGuid()
         });
@@ -199,7 +199,7 @@ internal static class TripRequestUserStateSeed
             Id = ga,
             IsDeleted = false,
             StateMachine = StateMachineEnum.TripRequest,
-            ActionCode = "completed",
+            ActionCode = "done",
             ActionName = "Выполнить",
             IsSystemAction = false,
             Description = null,
@@ -221,13 +221,13 @@ internal static class TripRequestUserStateSeed
 
         #region --> завершен
 
-        ga = Guid.Parse("568BC33D-FF44-4939-9786-D48DDFE8B966");
+        ga = Guid.Parse("b4f89bef-4720-4342-99fb-e7530fa33fbc");
         uw.AddIfNotExists(new DbStateMachineAction
         {
             Id = ga,
             IsDeleted = false,
             StateMachine = StateMachineEnum.TripRequest,
-            ActionCode = "completed",
+            ActionCode = "complete",
             ActionName = "Завершить",
             IsSystemAction = false,
             Description = null,
@@ -237,7 +237,7 @@ internal static class TripRequestUserStateSeed
         uw.AddIfNotExists(
             new DbStateMachineFromStatus
             {
-                Id = Guid.Parse("FB76E480-1896-474B-AD91-AD4EA2E298E3"),
+                Id = Guid.Parse("a7ec4838-a5cd-4841-ac06-f608ac90b484"),
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.Done.GetEnumGuid(),

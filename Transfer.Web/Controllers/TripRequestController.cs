@@ -187,7 +187,7 @@ public sealed class TripRequestController : BaseStateController
             model.Id = Guid.NewGuid();
             var entity = Mapper.Map<DbTripRequest>(model);
 
-            entity.StateEnum = TripRequestStateEnum.New; 
+            entity.StateEnum = TripRequestStateEnum.Active; 
             
             if (string.IsNullOrWhiteSpace(entity.ContactFio))
             {
