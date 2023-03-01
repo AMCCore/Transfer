@@ -20,17 +20,17 @@ public static class HistoryLogExtension
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, Guid AccountId, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, IEntityBase Entity, Guid AccountId, string ActionName, string Description = null, CancellationToken token = default)
     {
-        await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description);
+        await unitOfWork.AddToHistoryLog(Entity.Id, Moduls.Security.CurrentAccountId, ActionName, Description, token);
     }
 
     /// <summary>
     /// Add object log information
     /// </summary>
-    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, Guid EntityId, string ActionName, string Description = null)
+    public async static Task AddToHistoryLog(this IUnitOfWork unitOfWork, Guid EntityId, string ActionName, string Description = null, CancellationToken token = default)
     {
-        await unitOfWork.AddToHistoryLog(EntityId, Moduls.Security.CurrentAccountId, ActionName, Description);
+        await unitOfWork.AddToHistoryLog(EntityId, Moduls.Security.CurrentAccountId, ActionName, Description, token);
     }
 
     /// <summary>

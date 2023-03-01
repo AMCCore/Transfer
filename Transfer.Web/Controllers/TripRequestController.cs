@@ -211,9 +211,23 @@ public sealed class TripRequestController : BaseStateController
             await SetTripOptions(entity, model, token);
             await SetTripRegions(entity, model, token);
 
-            var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
-                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value))
-                .Select(x => x.Id).ToListAsync(token);
+            var appropriateOrgIdsq = UnitOfWork.GetSet<DbOrganisation>().AsQueryable();
+            var regs = new List<Guid>();
+            if(entity.RegionFromId.HasValue)
+            {
+                regs.Add(entity.RegionFromId.Value);
+            }
+            if (entity.RegionToId.HasValue)
+            {
+                regs.Add(entity.RegionToId.Value);
+            }
+
+            if (regs.Any())
+            {
+                appropriateOrgIdsq = appropriateOrgIdsq.Where(x => x.WorkingArea.Any(wa => regs.Contains(wa.RegionId)));
+            }
+
+            var appropriateOrgIds = await appropriateOrgIdsq.Select(x => x.Id).ToListAsync(token);
 
             foreach (var orgId in appropriateOrgIds)
             {
@@ -340,9 +354,13 @@ public sealed class TripRequestController : BaseStateController
 
     private async Task<DbRegion> GetOrCreateRegion(string regionName, CancellationToken token = default)
     {
+        if (string.IsNullOrWhiteSpace(regionName))
+            return null;
+
         var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), token);
         if (reg == null)
         {
+            await UnitOfWork.AddToHistoryLog(SystemEventEnum.UnknownRegionName.GetEnumGuid(), "Из ФИСА пришел нераспознанный регион", $"{regionName}", token);
             //reg = new DbRegion
             //{
             //    Name = regionName
@@ -351,34 +369,6 @@ public sealed class TripRequestController : BaseStateController
         }
         return reg;
     }
-
-    //{
-
-
-    //    var q = UnitOfWork.GetSet<DbStateMachineState>().Where(x => x.StateMachine == StateMachineEnum.TripRequest);
-    //    q = q.Where(x => x.StateFrom == entity.State.GetEnumGuid());
-    //    q = q.Where(x => x.StateTo == stateId);
-    //    if (await q.CountAsync() != 1)
-    //        throw new ArgumentOutOfRangeException();
-
-    //    var nextState = await q.FirstOrDefaultAsync();
-
-    //    if (Moduls.Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin))
-    //    {
-    //        entity.State = GuidEnumConverter<TripRequestStateEnum>.ConvertToEnum(nextState.StateTo);
-    //        await UnitOfWork.SaveChangesAsync();
-    //        await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", nextState.Description);
-
-    //        if (nextState.StateTo == TripRequestStateEnum.Canceled.GetEnumGuid())
-    //        {
-    //            await SendChancelOferToUsers(entity.Id);
-    //        }
-
-    //        return RedirectToAction(nameof(Search));
-    //    }
-
-    //    return RedirectToHome();
-    //}
 
     [HttpGet]
     [Route("TripRequest/{requestId}/CarrierChoose/{offerId}")]
