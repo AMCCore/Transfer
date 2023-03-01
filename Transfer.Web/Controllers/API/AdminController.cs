@@ -11,6 +11,12 @@ using System;
 using Transfer.Dal.Entities;
 using Transfer.Dal.Migrations;
 using Transfer.Common.Extensions;
+using System.Threading;
+using Transfer.Dal;
+using System.Linq;
+using Transfer.Common.Enums.States;
+using Microsoft.EntityFrameworkCore;
+using Transfer.Web.Extensions;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -33,8 +39,35 @@ public class AdminController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     [Route(nameof(CheckHealth))]
-    public IActionResult CheckHealth()
+    public async Task<IActionResult> CheckHealth(CancellationToken token = default)
     {
+        try
+        {
+            var d1 = DateTime.Now;
+            var trr1 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > d1).ToListAsync(token);
+            foreach (var tr in trr1)
+            {
+                tr.State = TripRequestStateEnum.Overdue.GetEnumGuid();
+                await _unitOfWork.SaveChangesAsync(token);
+                await _unitOfWork.AddToHistoryLog(tr, "Статус запроса на перевозку изменён системой (дата поездки наступила а перевозчик не выбран)", $"Новый статус: {TripRequestStateEnum.Overdue.GetEnumDescription()}", token);
+            }
+
+            var d2 = d1.AddHours(-24);
+            var sts = new[] { TripRequestStateEnum.Overdue.GetEnumGuid(), TripRequestStateEnum.Canceled.GetEnumGuid(), TripRequestStateEnum.Completed.GetEnumGuid(), TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid() };
+            var trr2 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => sts.Contains(x.State) && x.LastUpdateTick <= d2.Ticks).ToListAsync(token);
+
+            foreach (var tr in trr1)
+            {
+                tr.State = TripRequestStateEnum.Archived.GetEnumGuid();
+                await _unitOfWork.SaveChangesAsync(token);
+                await _unitOfWork.AddToHistoryLog(tr, "Статус запроса на перевозку изменён системой (Перенесено в архив)", $"Новый статус: {TripRequestStateEnum.Archived.GetEnumDescription()}", token);
+            }
+        }
+        catch
+        {
+
+        }
+
         return Ok();
     }
 
