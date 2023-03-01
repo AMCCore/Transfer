@@ -214,21 +214,21 @@ public sealed class TripRequestController : BaseStateController
             var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
                 .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value))
                 .Select(x => x.Id).ToListAsync(token);
-            
-            //foreach (var orgId in appropriateOrgIds)
-            //{
-            //    await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
-            //    {
-            //        TripRequestId = entity.Id,
-            //        CarrierId = orgId,
-            //    }, token);
-            //}
+
+            foreach (var orgId in appropriateOrgIds)
+            {
+                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+                {
+                    TripRequestId = entity.Id,
+                    CarrierId = orgId,
+                }, token);
+            }
 
             await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
             await UnitOfWork.CommitAsync(token);
 
-            //await SendReplaysToUsers(entity.Id, token);
-            //await SendReplaysToWatchers(entity.Id, token);
+            await SendReplaysToUsers(entity.Id, token);
+            await SendReplaysToWatchers(entity.Id, token);
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
