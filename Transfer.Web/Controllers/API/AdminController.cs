@@ -52,7 +52,7 @@ public class AdminController : ControllerBase
                 await _unitOfWork.AddToHistoryLog(tr, "Статус запроса на перевозку изменён системой (дата поездки наступила а перевозчик не выбран)", $"Новый статус: {TripRequestStateEnum.Overdue.GetEnumDescription()}", token);
             }
 
-            var d2 = d1.AddHours(-24);
+            var d2 = d1.AddDays(-15);
             var sts = new[] { TripRequestStateEnum.Overdue.GetEnumGuid(), TripRequestStateEnum.Canceled.GetEnumGuid(), TripRequestStateEnum.Completed.GetEnumGuid(), TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid() };
             var trr2 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => sts.Contains(x.State) && x.LastUpdateTick <= d2.Ticks).ToListAsync(token);
 

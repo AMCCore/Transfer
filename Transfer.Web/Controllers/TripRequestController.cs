@@ -61,20 +61,28 @@ public sealed class TripRequestController : BaseStateController
         //статусы
         if (filter.State == (int)TripRequestSearchStateEnum.StateNew)
         {
-            //query = query.Where(x => x.State == TripRequestStateEnum.Active);
+            var sts = new[] { TripRequestStateEnum.Active.GetEnumGuid(), TripRequestStateEnum.New.GetEnumGuid() };
+            query = query.Where(x => sts.Contains(x.State));
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateComplete)
         {
-            //query = query.Where(x => x.State == TripRequestStateEnum.Completed);
+            var sts = new[] { TripRequestStateEnum.Completed.GetEnumGuid(), TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid(), TripRequestStateEnum.Done.GetEnumGuid()};
+            query = query.Where(x => sts.Contains(x.State));
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateOnair)
         {
-            //query = query.Where(x => x.State == TripRequestStateEnum.CarrierSelected);
+            query = query.Where(x => x.State == TripRequestStateEnum.CarrierSelected.GetEnumGuid());
         }
         else if (filter.State == (int)TripRequestSearchStateEnum.StateCanceled)
         {
-            //query = query.Where(x => x.State == TripRequestStateEnum.Canceled || x.State == TripRequestStateEnum.Overdue || x.State == TripRequestStateEnum.Archived);
+            var sts = new[] { TripRequestStateEnum.Canceled.GetEnumGuid(), TripRequestStateEnum.Overdue.GetEnumGuid()};
+            query = query.Where(x => sts.Contains(x.State));
         }
+        else if (filter.State == (int)TripRequestSearchStateEnum.StateArchived)
+        {
+            query = query.Where(x => x.State == TripRequestStateEnum.Archived.GetEnumGuid());
+        }
+
 
         if (filter.OrderBy == (int)TripRequestSearchOrderEnum.OrderByDateStartAsc)
         {
@@ -204,21 +212,23 @@ public sealed class TripRequestController : BaseStateController
             await SetTripRegions(entity, model, token);
 
             var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
-                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(token);
-            foreach (var orgId in appropriateOrgIds)
-            {
-                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
-                {
-                    TripRequestId = entity.Id,
-                    CarrierId = orgId,
-                }, token);
-            }
+                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value))
+                .Select(x => x.Id).ToListAsync(token);
+            
+            //foreach (var orgId in appropriateOrgIds)
+            //{
+            //    await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+            //    {
+            //        TripRequestId = entity.Id,
+            //        CarrierId = orgId,
+            //    }, token);
+            //}
 
             await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку");
             await UnitOfWork.CommitAsync(token);
 
-            await SendReplaysToUsers(entity.Id, token);
-            await SendReplaysToWatchers(entity.Id, token);
+            //await SendReplaysToUsers(entity.Id, token);
+            //await SendReplaysToWatchers(entity.Id, token);
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
