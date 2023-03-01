@@ -214,8 +214,24 @@ public sealed class TripRequestController : BaseStateController
             await SetTripOptions(entity, model, token);
             await SetTripRegions(entity, model, token);
 
-            var appropriateOrgIds = await UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted)
-                .Where(x => x.WorkingArea.Any(wa => wa.RegionId == entity.RegionFromId.Value) || x.WorkingArea.Any(wa => wa.RegionId == entity.RegionToId.Value)).Select(x => x.Id).ToListAsync(token);
+            var appropriateOrgIdsq = UnitOfWork.GetSet<DbOrganisation>().AsQueryable();
+            var regs = new List<Guid>();
+            if(entity.RegionFromId.HasValue)
+            {
+                regs.Add(entity.RegionFromId.Value);
+            }
+            if (entity.RegionToId.HasValue)
+            {
+                regs.Add(entity.RegionToId.Value);
+            }
+
+            if (regs.Any())
+            {
+                appropriateOrgIdsq = appropriateOrgIdsq.Where(x => regs.Any(r => x.WorkingArea.Any(wa => wa.RegionId == r)));
+            }
+
+            var appropriateOrgIds = await appropriateOrgIdsq.Select(x => x.Id).ToListAsync(token);
+
             foreach (var orgId in appropriateOrgIds)
             {
                 await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
