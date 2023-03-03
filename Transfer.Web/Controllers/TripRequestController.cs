@@ -271,17 +271,23 @@ public sealed class TripRequestController : BaseStateController
     {
         var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId).FirstOrDefaultAsync(token)
             ?? throw new ArgumentNullException(nameof(requestId));
-        
-        var nextState = await UnitOfWork.GetSet<DbStateMachineAction>()
-            .Where(x => !x.IsSystemAction && x.StateMachine == StateMachineEnum.TripRequest && x.ToStateId == stateId &&
-            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.State)).FirstOrDefaultAsync(token)
-            ?? throw new ArgumentNullException(nameof(requestId));
-        
-        entity.State = nextState.ToState.Id;
-        await UnitOfWork.SaveChangesAsync(token);
-        await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {nextState.ToState.Name}", token);
 
-        return RedirectToAction(nameof(TripRequestShow), new { requestId = requestId });
+        var fromStateToState = await UnitOfWork.GetSet<DbStateMachineFromStatus>()
+            .Where(x => x.StateMachine == StateMachineEnum.TripRequest && x.FromStateId == entity.State && !x.StateMachineAction.IsSystemAction && x.StateMachineAction.ToStateId == stateId && x.StateMachineAction.StateMachine == StateMachineEnum.TripRequest)
+            .Include(x => x.StateMachineAction).ThenInclude(x => x.ToState)
+            .FirstOrDefaultAsync(token)
+            ?? throw new ArgumentNullException(nameof(requestId));
+
+        if (Security.Current.HasRightForSomeOrganisation(TripRequestRights.TripRequestAdmin) || Security.Current.HasRightForSomeOrganisation(fromStateToState.RightCode ?? Guid.Empty))
+        {
+            entity.State = fromStateToState.StateMachineAction.ToState.Id;
+            await UnitOfWork.SaveChangesAsync(token);
+            await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {fromStateToState.StateMachineAction.ToState.Name}", token);
+
+            return RedirectToAction(nameof(TripRequestShow), new { requestId });
+        }
+
+        return Unauthorized();
     }
 
 
