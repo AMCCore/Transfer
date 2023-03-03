@@ -360,7 +360,7 @@ public sealed class TripRequestController : BaseStateController
         if (string.IsNullOrWhiteSpace(regionName))
             return null;
 
-        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()), token);
+        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()) || ss.RegionAlias.Any(x => x.Name.ToLower().Contains(regionName.ToLower())), token);
         if (reg == null)
         {
             await UnitOfWork.AddToHistoryLog(SystemEventEnum.UnknownRegionName.GetEnumGuid(), "Из ФИАСа пришел нераспознанный регион", $"{regionName}", token);
