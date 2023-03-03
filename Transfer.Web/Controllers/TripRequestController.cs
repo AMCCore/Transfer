@@ -269,17 +269,14 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/StateChange")]
     public async Task<IActionResult> TripRequestStateChange(Guid requestId, Guid stateId, CancellationToken token = default)
     {
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId).FirstOrDefaultAsync(token);
-        if (entity == null)
-            throw new ArgumentNullException(nameof(requestId));
-
+        var entity = await UnitOfWork.GetSet<DbTripRequest>().Where(ss => ss.Id == requestId).FirstOrDefaultAsync(token)
+            ?? throw new ArgumentNullException(nameof(requestId));
+        
         var nextState = await UnitOfWork.GetSet<DbStateMachineAction>()
             .Where(x => !x.IsSystemAction && x.StateMachine == StateMachineEnum.TripRequest && x.ToStateId == stateId &&
-            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.State)).FirstOrDefaultAsync(token);
-
-        if(nextState == null)
-            throw new ArgumentNullException(nameof(requestId));
-
+            x.FromStates.Any(y => y.StateMachine == StateMachineEnum.TripRequest && y.FromStateId == entity.State)).FirstOrDefaultAsync(token)
+            ?? throw new ArgumentNullException(nameof(requestId));
+        
         entity.State = nextState.ToState.Id;
         await UnitOfWork.SaveChangesAsync(token);
         await UnitOfWork.AddToHistoryLog(entity, "Статус запроса на перевозку изменён", $"Новый статус: {nextState.ToState.Name}", token);
@@ -678,18 +675,4 @@ public sealed class TripRequestController : BaseStateController
     }
 
     #endregion
-
-    //[HttpGet]
-    //[Route("TripRequest/Delete/{requestId}")]
-    //public async Task<IActionResult> TripRequestDelete(Guid requestId)
-    //{
-    //    var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, CancellationToken.None);
-    //    if (entity == null)
-    //        return NotFound();
-
-    //    entity.IsDeleted = true;
-
-    //    await UnitOfWork.SaveChangesAsync();
-    //    return RedirectToAction(nameof(Search));
-    //}
 }
