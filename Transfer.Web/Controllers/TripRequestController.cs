@@ -205,7 +205,7 @@ public sealed class TripRequestController : BaseStateController
             entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
             entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
 
-            await UnitOfWork.AddEntityAsync(entity, token);
+            entity = await UnitOfWork.AddEntityAsync(entity, token);
             await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier
             {
                 TripRequestId = model.Id
