@@ -202,14 +202,16 @@ public sealed class TripRequestController : BaseStateController
                 entity.ContactFio = entity.СhartererName;
             }
 
+            entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
+            entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
+
             await UnitOfWork.AddEntityAsync(entity, token);
             await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier
             {
                 TripRequestId = model.Id
             }, token);
-
             await SetTripOptions(entity, model, token);
-            await SetTripRegions(entity, model, token);
+            
 
             var appropriateOrgIdsq = UnitOfWork.GetSet<DbOrganisation>().AsQueryable();
             var regs = new List<Guid>();
@@ -257,7 +259,6 @@ public sealed class TripRequestController : BaseStateController
 
             Mapper.Map(model, entity);
             await SetTripOptions(entity, model, CancellationToken.None);
-            await SetTripRegions(entity, model, CancellationToken.None);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
             await UnitOfWork.AddToHistoryLog(entity, "Запроса на перевозку изменён");
         }
@@ -333,25 +334,6 @@ public sealed class TripRequestController : BaseStateController
                 TripRequestId = entity.Id,
                 TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
             }, token);
-        }
-    }
-
-    /// <summary>
-    /// Установка регионов 
-    /// </summary>
-    private async Task SetTripRegions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
-    {
-        if (model.RegionFromId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionFromName))
-        {
-            var reg = await GetOrCreateRegion(model.RegionFromName, token);
-            entity.RegionFromId = reg?.Id;
-            await UnitOfWork.SaveChangesAsync(token);
-        }
-        if (model.RegionToId.IsNullOrEmpty() && !string.IsNullOrWhiteSpace(model.RegionToName))
-        {
-            var reg = await GetOrCreateRegion(model.RegionToName, token);
-            entity.RegionToId = reg?.Id;
-            await UnitOfWork.SaveChangesAsync(token);
         }
     }
 
