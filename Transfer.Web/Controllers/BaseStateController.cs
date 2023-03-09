@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto;
 using Transfer.Common;
+using Transfer.Common.Enums.States;
 using Transfer.Common.Settings;
+using Transfer.Dal.Entities;
 
 namespace Transfer.Web.Controllers;
 
@@ -18,13 +19,16 @@ public abstract class BaseStateController : BaseController
     {
     }
 
-    public async Task SetNextStates(StateMachineDto model)
+    public async Task SetNextStates(StateMachineDto model, StateMachineEnum stateMachine, CancellationToken token = default)
     {
-        model.NextStates = await GetPossibleStatets(model.State);
-    }
+        var q = UnitOfWork.GetSet<DbStateMachineAction>()
+            .Where(x => !x.IsSystemAction && x.StateMachine == stateMachine &&
+            x.FromStates.Any(y => y.StateMachine == stateMachine && y.FromStateId == model.State)).AsQueryable();
 
-    public virtual async Task<ICollection<NextStateDto>> GetPossibleStatets(Guid currentState)
-    {
-        return new List<NextStateDto>();
+        var ns = await q.ToListAsync(token);
+
+        model.NextStates = ns.Select(x => new NextStateDto{
+                NextStateId = x.ToStateId, ButtonName = x.ActionName, ConfirmText = (!string.IsNullOrWhiteSpace(x.ConfirmText) ? x.ConfirmText : null)
+            }).ToList();
     }
 }

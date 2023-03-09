@@ -194,7 +194,7 @@ public class ReportController : BaseController
             PeopleCopacity = a.Passengers,
             OfferCount = a.TripRequestOffers.Count(x => !x.IsDeleted),
             TripRequestId = a.Id,
-            State = a.State,
+            State = a.StateEnum,
             Offer = a.TripRequestOffers.Where(x => !x.IsDeleted && x.Chosen).Select(x => x.Amount).FirstOrDefault(),
             Manager = q3.Where(y => y.Id == q2.Where(x => x.EntityId == a.Id).Select(x => x.AccountId).FirstOrDefault()).Select(y => $"{y.PersonData.LastName} {y.PersonData.FirstName} {y.PersonData.MiddleName}").FirstOrDefault(),
             Requester = a.СhartererName,

@@ -13,5 +13,7 @@ namespace Transfer.Bl.Dto
         public ICollection<NextStateDto> NextStates { get; set; } = new List<NextStateDto>();
 
         public abstract Guid State { get; set; }
+
+        public bool NeedSaveButton { get; set; } = true;
     }
 }

@@ -279,6 +279,10 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
             return;
         }
 
+        var all = Context.ChangeTracker.Entries<IEntityBase>()
+            .Select(c => c.Entity)
+            .ToList();
+
         // получение измененных
         var entitys = Context.ChangeTracker.Entries<IEntityBase>()
             .Where(c => states.Contains(c.State))

@@ -18,9 +18,14 @@
         Guid? CurrentAccountOrganisationId { get; }
 
         /// <summary>
-        /// Проверка наличия права
+        /// Проверка наличия права (для люблой из организаций)
         /// </summary>
-        bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null);
+        bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations);
+
+        /// <summary>
+        /// Проверка наличия права (для люблой из организаций)
+        /// </summary>
+        bool HasRightForSomeOrganisation(Guid right, params Guid[] organisations);
 
         /// <summary>
         /// Проверка наличия любого из прав

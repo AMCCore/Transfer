@@ -9,8 +9,8 @@
 }
 
     <div class="container">
-        <div class="row blank-row"></div>
-        <div class="row blank-row"></div>
+        <!--<div class="row blank-row"></div>
+        <div class="row blank-row"></div>-->
         <div class="row">
             <div class="t-col col-12 crumbs">
                 ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>
@@ -26,13 +26,13 @@
             }
         </div>
     </div>
-    <div class="row blank-row"></div>
+    <!--<div class="row blank-row"></div>-->
     <div class="row">
         <div class="t-col col-12 col-md-6 crb-avatar">
             Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
         </div>
     </div>
-    <div class="row blank-row"></div>
+    <!--<div class="row blank-row"></div>-->
     <div class="row">
         <div class="t-col col-12">
             <h1 style="color: #0f4c71">@(Model.Id.IsNullOrEmpty() ? "Добавление нового пользователя" : "Редактирование пользователя")</h1>

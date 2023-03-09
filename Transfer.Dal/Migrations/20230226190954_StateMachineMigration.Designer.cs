@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transfer.Dal.Context;
 
@@ -11,9 +12,10 @@ using Transfer.Dal.Context;
 namespace Transfer.Dal.Migrations
 {
     [DbContext(typeof(TransferContext))]
-    partial class TransferContextModelSnapshot : ModelSnapshot
+    [Migration("20230226190954_StateMachineMigration")]
+    partial class StateMachineMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -798,30 +800,6 @@ namespace Transfer.Dal.Migrations
                     b.ToTable("Regions");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbRegionAlias", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("LastUpdateTick")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<Guid?>("ParrentRegionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParrentRegionId");
-
-                    b.ToTable("RegionAlias");
-                });
-
             modelBuilder.Entity("Transfer.Dal.Entities.DbRight", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1443,15 +1421,6 @@ namespace Transfer.Dal.Migrations
                     b.Navigation("ParrentRegion");
                 });
 
-            modelBuilder.Entity("Transfer.Dal.Entities.DbRegionAlias", b =>
-                {
-                    b.HasOne("Transfer.Dal.Entities.DbRegion", "ParrentRegion")
-                        .WithMany("RegionAlias")
-                        .HasForeignKey("ParrentRegionId");
-
-                    b.Navigation("ParrentRegion");
-                });
-
             modelBuilder.Entity("Transfer.Dal.Entities.DbStateMachineAction", b =>
                 {
                     b.HasOne("Transfer.Dal.Entities.DbStateMachineState", "ToState")
@@ -1639,8 +1608,6 @@ namespace Transfer.Dal.Migrations
             modelBuilder.Entity("Transfer.Dal.Entities.DbRegion", b =>
                 {
                     b.Navigation("ChildRegions");
-
-                    b.Navigation("RegionAlias");
 
                     b.Navigation("TripRequestRegionsFrom");
 

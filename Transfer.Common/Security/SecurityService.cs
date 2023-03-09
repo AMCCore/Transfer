@@ -61,7 +61,12 @@ namespace Transfer.Common.Security
 
         public bool IsAuthenticated => !CurrentAccountId.IsNullOrEmpty();
 
-        public bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null)
+        public bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations)
+        {
+            return HasRightForSomeOrganisation(right.GetEnumGuid(), organisations);
+        }
+
+        public bool HasRightForSomeOrganisation(Guid right, params Guid[] organisations)
         {
             var rights = GetRights();
 
@@ -69,8 +74,21 @@ namespace Transfer.Common.Security
             {
                 return true;
             }
-            return rights.Any(s =>
-                (s.Key == organisation || organisation.IsNullOrEmpty()) && s.Value.Any(x => x == right.GetEnumGuid()));
+
+            if(!organisations.Any())
+            {
+                return rights.Any(s => (s.Key == Guid.Empty) && s.Value.Any(x => x == right));
+            }
+
+            foreach(var org in organisations)
+            {
+                if(rights.Any(s => (s.Key == org) && s.Value.Any(x => x == right)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public Guid[] HasOrganisationsForRight(Enum right)

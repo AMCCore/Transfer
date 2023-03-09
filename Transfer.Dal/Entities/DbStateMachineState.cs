@@ -7,38 +7,36 @@ using Transfer.Common.Enums.States;
 
 namespace Transfer.Dal.Entities;
 
+/// <summary>
+///     Статус
+/// </summary>
+[Serializable]
 [Table("StateMachineStates")]
-public class DbStateMachineState : IEntityBase, IEntityWithDateCreated
+public class DbStateMachineState : IEntityBase, ISoftDeleteEntity
 {
     [Key]
     public Guid Id { get; set; }
 
     public long LastUpdateTick { get; set; }
+    public bool IsDeleted { get; set; }
 
-    public DateTime DateCreated { get; set; }
+    [InverseProperty(nameof(DbStateMachineAction.ToState))]
+    public virtual ICollection<DbStateMachineAction> Actions { get; set; } = new List<DbStateMachineAction>();
+
+    /// <summary>
+    ///     Наименование
+    /// </summary>
+    [Display(Description = "Наименование")]
+    [MaxLength(1000, ErrorMessage = "\"Наименование\" не может быть больше 1000 символов")]
+    [Required]
+    public virtual string Name { get; set; }
+
+    /// <summary>
+    ///     Наименование
+    /// </summary>
+    [Display(Description = "Наименование")]
+    [MaxLength(1000, ErrorMessage = "\"Наименование\" не может быть больше 1000 символов")]
+    public virtual string? Description { get; set; }
 
     public StateMachineEnum StateMachine { get; set; }
-
-    public Guid StateFrom { get; set; }
-
-    public Guid StateTo { get; set; }
-
-    public bool UseByOwner { get; set; } = false;
-
-    public bool UseByAuthorized { get; set; } = true;
-
-    public bool UseByOrganisation { get; set; } = false;
-
-    public bool UseBySystem { get; set; } = false;
-
-    public virtual ICollection<DbStateMachineStateRight> StateMachineStateRights { get; set; } = new List<DbStateMachineStateRight>();
-
-    [MaxLength(100)]
-    public string Description { get; set; }
-
-    [MaxLength(1000)]
-    public string? ButtonName { get; set; }
-
-    [MaxLength(1000)]
-    public string? ConfirmText { get; set; }
 }

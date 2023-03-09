@@ -12,7 +12,5 @@ public struct NextStateDto
 
     public string ButtonName { get; set; }
 
-    public bool NeedSaveButton { get; set; }
-
     public string? ConfirmText { get; set; }
 }

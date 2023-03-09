@@ -17,17 +17,17 @@ public static class TripRequestExtension
         unitOfWork.BeginTransaction();
         var qTrips = unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted);
         qTrips = qTrips.Where(x =>
-        (x.State == TripRequestStateEnum.Active && x.TripDate < DateTime.Now) //не выбран перевозчик а дата поездки наступила - надо сделать просроченным
-        || x.State == TripRequestStateEnum.Canceled //отменён - надо списать в архив
-        || x.State == TripRequestStateEnum.Overdue //просрочен - надо списать в архив
-        || x.State == TripRequestStateEnum.Completed //завершен - надо списать в архив
+        (x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate < DateTime.Now) //не выбран перевозчик а дата поездки наступила - надо сделать просроченным
+        || x.State == TripRequestStateEnum.Canceled.GetEnumGuid() //отменён - надо списать в архив
+        || x.State == TripRequestStateEnum.Overdue.GetEnumGuid() //просрочен - надо списать в архив
+        || x.State == TripRequestStateEnum.Completed.GetEnumGuid() //завершен - надо списать в архив
         );
 
         foreach (var t in await qTrips.ToListAsync())
         {
-            if(t.State == TripRequestStateEnum.Active)
+            if(t.State == TripRequestStateEnum.Active.GetEnumGuid())
             {
-                t.State = TripRequestStateEnum.Archived;
+                t.State = TripRequestStateEnum.Archived.GetEnumGuid();
                 await unitOfWork.SaveChangesAsync();
 
                 await unitOfWork.AddEntityAsync(new DbHistoryLog
@@ -46,16 +46,16 @@ public static class TripRequestExtension
                     ActionName = "Ситемный перевод статусов",
                 }, CancellationToken.None);
             }
-            else if(t.State == TripRequestStateEnum.Canceled || t.State == TripRequestStateEnum.Overdue || t.State == TripRequestStateEnum.Completed)
+            else if(t.State == TripRequestStateEnum.Canceled.GetEnumGuid() || t.State == TripRequestStateEnum.Overdue.GetEnumGuid() || t.State == TripRequestStateEnum.Completed.GetEnumGuid())
             {
-                t.State = TripRequestStateEnum.Archived;
+                t.State = TripRequestStateEnum.Archived.GetEnumGuid();
                 await unitOfWork.SaveChangesAsync();
 
                 await unitOfWork.AddEntityAsync(new DbHistoryLog
                 {
                     AccountId = Guid.Empty,
                     EntityId = t.Id,
-                    Description = $"{t.State.GetEnumDescription()} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
+                    Description = $"{t.State} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
                     ActionName = "Ситемный перевод статусов",
                 }, CancellationToken.None);
             }

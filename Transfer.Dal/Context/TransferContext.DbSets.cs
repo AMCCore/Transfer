@@ -26,15 +26,18 @@ public partial class TransferContext
     public virtual DbSet<DbOrganisationFile> DbOrganisationFiles { get; set; }
     public virtual DbSet<DbOrganisationWorkingArea> DbOrganisationWorkingAreas { get; set; }
     public virtual DbSet<DbPersonData> DbPersonDatas { get; set; }
+    public virtual DbSet<DbRegion> DdRegions { get; set; }
+    public virtual DbSet<DbRegionAlias> DbRegionAlias { get; set; }
     public virtual DbSet<DbRight> DbRights { get; set; }
+    public virtual DbSet<DbStateMachineAction> DbStateMachineActions { get; set; }
+    public virtual DbSet<DbStateMachineFromStatus> StateMachineFromStatuses { get; set; }
     public virtual DbSet<DbStateMachineState> DbStateMachineStates { get; set; }
-    public virtual DbSet<DbStateMachineStateRight> DbStateMachineStateRights { get; set; }
     public virtual DbSet<DbTgActionState> DbTgActionStates { get; set; }
     public virtual DbSet<DbTripOption> DbTripOptions { get; set; }
     public virtual DbSet<DbTripRequest> DbTripRequests { get; set; }
     public virtual DbSet<DbTripRequestOption> DbTripRequestOptions { get; set; }
     public virtual DbSet<DbTripRequestReplay> DbTripRequestReplays { get; set; }
     public virtual DbSet<DbTripRequestOffer> DbTripRequestOffers { get; set; }
-    public virtual DbSet<DbRegion> DdRegions { get; set; }
+   
 }
 

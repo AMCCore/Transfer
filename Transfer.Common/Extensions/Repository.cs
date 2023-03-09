@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,19 @@ public static class Repository
             }
         }
 
+        uw.SaveChanges();
+    }
+
+    public static void AddIfNotExists<T>(this IUnitOfWork uw, params T[] data) where T : class, IEntityBase
+    {
+        var entitys = uw.GetSet<T>().Select(x => x.Id).ToArray();
+        foreach (var r in data)
+        {
+            if (entitys.All(x => x != r.Id))
+            {
+                uw.AddEntity(r, false);
+            }
+        }
         uw.SaveChanges();
     }
 
