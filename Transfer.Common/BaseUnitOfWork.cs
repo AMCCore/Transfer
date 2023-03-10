@@ -175,7 +175,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
         {
             await SaveChangesAsync(token);
             Context.Entry(entity).State = EntityState.Detached;
-            entity = await Context.Set<T>().FindAsync(entity.Id, token);
+            entity = await Context.Set<T>().FindAsync(new object?[] { entity.Id }, cancellationToken: token);
         }
 
         return entity;

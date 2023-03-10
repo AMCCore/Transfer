@@ -58,10 +58,16 @@ public sealed class TripRequestController : BaseStateController
 
     private async Task<RequestSearchFilter> GetDataFromDb(RequestSearchFilter filter = null)
     {
-        await UnitOfWork.TripRequestStateRegulate();
+        //await UnitOfWork.TripRequestStateRegulate();
 
         filter ??= new RequestSearchFilter(new List<TripRequestSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted).AsQueryable();
+
+        if(!_securityService.IsAdmin)
+        {
+            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView) ?? new Guid[] { Guid.Empty };
+            query = query.Where(x => orgs.Any(o => o == x.ChartererId));
+        }
 
         //статусы
         if (filter.State == (int)TripRequestSearchStateEnum.StateNew)
@@ -149,6 +155,9 @@ public sealed class TripRequestController : BaseStateController
         if (entity == null)
             return NotFound();
 
+        if(!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView, entity.ChartererId))
+            return Unauthorized();
+
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
         await SetNextStates(model, StateMachineEnum.TripRequest, token);
 
@@ -160,6 +169,8 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/Edit/{requestId}")]
     public async Task<IActionResult> TripRequestEdit(Guid requestId, CancellationToken token = default)
     {
+        return BadRequest();
+
         var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
         if (entity == null)
             return NotFound();
@@ -173,6 +184,9 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/New")]
     public IActionResult NewTripRequest()
     {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestCreate))
+            return Unauthorized();
+
         return View("Save", new TripRequestDto
         {
             TripDate = DateTime.Now.AddDays(1).ChangeTime(9, 0),
@@ -185,6 +199,10 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/Save")]
     public async Task<IActionResult> Save([FromForm] TripRequestDto model, CancellationToken token = default)
     {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestCreate))
+            return Unauthorized();
+
+
         if (!ModelState.IsValid)
         {
             ViewBag.ErrorMsg = "Одно или несколько полей не заполнены";
