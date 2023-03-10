@@ -68,7 +68,7 @@ public class ValuesController : ControllerBase
                 DateCreated = fileDate,
                 Size = uploadedFile.Length,
                 Extention = fileExtention,
-            }, CancellationToken.None);
+            }, token: CancellationToken.None);
 
             await uploadedFile.CopyToAsync(fileStream);
 

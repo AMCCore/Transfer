@@ -76,7 +76,7 @@ public class BusController : BaseController
             bus.OrganisationId = busModel.OrganisationId;
             bus.CreatorId = Security.CurrentAccountId;
 
-            await UnitOfWork.AddEntityAsync(bus, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(bus, token: CancellationToken.None);
         }
         else
         {
@@ -86,7 +86,7 @@ public class BusController : BaseController
                 throw new InvalidOperationException();
             
             Mapper.Map(busModel, bus);
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.SaveChangesAsync(token: CancellationToken.None);
         }
 
         //Файл осаго
@@ -137,7 +137,7 @@ public class BusController : BaseController
                     IsDeleted = false,
                     FileType = Common.Enums.BusFileTypeEnum.PhotoMain,
                     UploaderId = Security.CurrentAccountId
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
             }
             else
             {
@@ -148,7 +148,7 @@ public class BusController : BaseController
                     IsDeleted = false,
                     FileType = Common.Enums.BusFileTypeEnum.Photo,
                     UploaderId = Security.CurrentAccountId
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
             }
             i++;
         }
@@ -172,7 +172,7 @@ public class BusController : BaseController
                     IsDeleted = false,
                     FileType = fileType,
                     UploaderId = Security.CurrentAccountId
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
             }
         }
 

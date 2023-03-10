@@ -185,12 +185,11 @@ public class CarrierController : BaseController
                 org.DirectorPosition = " ";
             }
 
-
-            await UnitOfWork.AddEntityAsync(org, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(org, token: CancellationToken.None);
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
             br.OrganisationId = org.Id;
-            await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(br, token: CancellationToken.None);
         }
         else
         {
@@ -227,7 +226,7 @@ public class CarrierController : BaseController
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
             br.OrganisationId = org.Id;
-            await UnitOfWork.AddEntityAsync(br, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(br, token: CancellationToken.None);
         }
 
         //лтцензия
@@ -316,7 +315,7 @@ public class CarrierController : BaseController
                     IsDeleted = false,
                     FileType = fileType,
                     UploaderId = Security.CurrentAccountId
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
 
             }
         }

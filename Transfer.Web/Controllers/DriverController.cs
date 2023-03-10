@@ -65,7 +65,7 @@ public class DriverController : BaseController
             var driver = Mapper.Map<DbDriver>(driverModel);
             driver.OrganisationId = driverModel.OrganisationId;
             driver.CreatorId = Security.CurrentAccountId;
-            await UnitOfWork.AddEntityAsync(driver, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(driver, token: CancellationToken.None);
         }
         else
         {
@@ -109,7 +109,7 @@ public class DriverController : BaseController
                 IsDeleted = false,
                 FileType = fileType,
                 UploaderId = Security.CurrentAccountId
-            }, CancellationToken.None);
+            }, token: CancellationToken.None);
         }
 
     }

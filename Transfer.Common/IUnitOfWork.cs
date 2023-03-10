@@ -47,9 +47,7 @@ namespace Transfer.Common
 
         T AddEntity<T>(T entity, bool saveChanges = true) where T : class, IEntityBase;
 
-        Task<T> AddEntityAsync<T>(T entity, CancellationToken token = default) where T : class, IEntityBase;
-
-        Task<T> AddEntityWithoutSaveAsync<T>(T entity, CancellationToken token = default) where T : class, IEntityBase;
+        Task<T> AddEntityAsync<T>(T entity, bool saveChanges = true, CancellationToken token = default) where T : class, IEntityBase;
 
         T Update<T>(T entity) where T : class, IEntityBase;
 

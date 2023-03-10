@@ -36,7 +36,7 @@ public static class TripRequestExtension
                     EntityId = t.Id,
                     Description = $"{TripRequestStateEnum.Active.GetEnumDescription()} -> {TripRequestStateEnum.Overdue.GetEnumDescription()}",
                     ActionName = "Ситемный перевод статусов",
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
 
                 await unitOfWork.AddEntityAsync(new DbHistoryLog
                 {
@@ -44,7 +44,7 @@ public static class TripRequestExtension
                     EntityId = t.Id,
                     Description = $"{TripRequestStateEnum.Overdue.GetEnumDescription()} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
                     ActionName = "Ситемный перевод статусов",
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
             }
             else if(t.State == TripRequestStateEnum.Canceled.GetEnumGuid() || t.State == TripRequestStateEnum.Overdue.GetEnumGuid() || t.State == TripRequestStateEnum.Completed.GetEnumGuid())
             {
@@ -57,7 +57,7 @@ public static class TripRequestExtension
                     EntityId = t.Id,
                     Description = $"{t.State} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
                     ActionName = "Ситемный перевод статусов",
-                }, CancellationToken.None);
+                }, token: CancellationToken.None);
             }
         }
 

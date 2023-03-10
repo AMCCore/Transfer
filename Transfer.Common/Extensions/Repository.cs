@@ -29,6 +29,26 @@ public static class Repository
         uw.SaveChanges();
     }
 
+    public static async Task AddOrUpdateAsync<T>(this IUnitOfWork uw, ICollection<T> data, Action<T, T> copy, CancellationToken token = default) where T : class, IEntityBase
+    {
+        var entitys = await uw.GetSet<T>().ToArrayAsync(token);
+
+        foreach (var r in data)
+        {
+            var entity = entitys.FirstOrDefault(e => e.Id == r.Id);
+            if (entity == null)
+            {
+                await uw.AddEntityAsync(r, token: token);
+            }
+            else
+            {
+                copy?.Invoke(r, entity);
+            }
+        }
+
+        await uw.SaveChangesAsync(token);
+    }
+
     public static void AddIfNotExists<T>(this IUnitOfWork uw, params T[] data) where T : class, IEntityBase
     {
         var entitys = uw.GetSet<T>().Select(x => x.Id).ToArray();

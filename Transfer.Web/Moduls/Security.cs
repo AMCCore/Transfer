@@ -70,9 +70,9 @@ public static class Security
 
     public static int ReviewEvents => 15;
 
-    public static bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations)
+    public static bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null)
     {
-        return _securityService.HasRightForSomeOrganisation(right, organisations);
+        return _securityService.HasRightForSomeOrganisation(right, organisation);
     }
 
     public static bool HasAnyRightForSomeOrganisation(IEnumerable<Enum> rights, Guid? organisation = null)

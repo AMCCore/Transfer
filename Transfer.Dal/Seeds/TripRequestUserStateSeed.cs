@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Enums.AccessRights;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
@@ -185,7 +186,8 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
-                StateMachineActionId = ga
+                StateMachineActionId = ga,
+                RightCode = TripRequestRights.CarrierChoose.GetEnumGuid()
             }
         );
 

@@ -92,14 +92,14 @@ public class AccountController : BaseController
 
         };
 
-            await UnitOfWork.AddEntityAsync(account, CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(account, token: CancellationToken.None);
 
             accountModel.Id = account.Id;
             await UnitOfWork.AddEntityAsync(new DbOrganisationAccount { 
                 AccountId = account.Id,
                 OrganisationId = accountModel.OrganisationId,
                 AccountType = Common.Enums.OrganisationAccountTypeEnum.Operator
-            }, CancellationToken.None);
+            }, token: CancellationToken.None);
         }
         else
         {
