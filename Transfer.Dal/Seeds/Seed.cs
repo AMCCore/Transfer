@@ -212,7 +212,9 @@ namespace Transfer.Dal.Seeds
                 Password = BCrypt.Net.BCrypt.HashString(Pass),
                 LastUpdateTick = DateTime.Now.Ticks,
                 DateCreated = DateTime.Now,
-            }, (source, destination) =>
+            },
+            //acc => acc.Email.ToLower() == Name.ToLower(),
+            (source, destination) =>
             {
                 destination.Email = source.Email;
                 destination.Password = source.Password;

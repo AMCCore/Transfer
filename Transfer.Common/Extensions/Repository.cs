@@ -42,6 +42,19 @@ public static class Repository
         uw.SaveChanges();
     }
 
+    public static void AddOrUpdate<T>(this IUnitOfWork uw, T entity, Expression<Func<T, bool>> predicate, Action<T, T> copy) where T : class, IEntityBase
+    {
+        var ext = uw.GetSet<T>().FirstOrDefault(predicate);
+        if (ext == null)
+        {
+            uw.AddEntity(entity, false);
+        }
+        else
+        {
+            copy?.Invoke(ext, entity);
+        }
+    }
+
     public static async Task AddOrUpdateAsync<T>(this IUnitOfWork uw, ICollection<T> data, Action<T, T> copy, CancellationToken token = default) where T : class, IEntityBase
     {
         foreach (var r in data)
