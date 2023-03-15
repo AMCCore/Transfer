@@ -44,7 +44,7 @@ public class AdminController : ControllerBase
         try
         {
             var d1 = DateTime.Now;
-            var trr1 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > d1).ToListAsync(token);
+            var trr1 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate < d1).ToListAsync(token);
             foreach (var tr in trr1)
             {
                 tr.State = TripRequestStateEnum.Overdue.GetEnumGuid();

@@ -15,7 +15,7 @@ public static class TripRequestExtension
     public async static Task TripRequestStateRegulate(this IUnitOfWork unitOfWork)
     {
         unitOfWork.BeginTransaction();
-        var qTrips = unitOfWork.GetSet<DbTripRequest>().Where(x => !x.IsDeleted);
+        var qTrips = unitOfWork.GetSet<DbTripRequest>().AsQueryable();
         qTrips = qTrips.Where(x =>
         (x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate < DateTime.Now) //не выбран перевозчик а дата поездки наступила - надо сделать просроченным
         || x.State == TripRequestStateEnum.Canceled.GetEnumGuid() //отменён - надо списать в архив
@@ -48,6 +48,7 @@ public static class TripRequestExtension
             }
             else if(t.State == TripRequestStateEnum.Canceled.GetEnumGuid() || t.State == TripRequestStateEnum.Overdue.GetEnumGuid() || t.State == TripRequestStateEnum.Completed.GetEnumGuid())
             {
+                var oldState = t.StateEnum;
                 t.State = TripRequestStateEnum.Archived.GetEnumGuid();
                 await unitOfWork.SaveChangesAsync();
 
@@ -55,7 +56,7 @@ public static class TripRequestExtension
                 {
                     AccountId = Guid.Empty,
                     EntityId = t.Id,
-                    Description = $"{t.State} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
+                    Description = $"{oldState.GetEnumDescription()} -> {TripRequestStateEnum.Archived.GetEnumDescription()}",
                     ActionName = "Ситемный перевод статусов",
                 }, CancellationToken.None);
             }
