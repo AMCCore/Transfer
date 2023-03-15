@@ -17,6 +17,11 @@ public class InfoController : BaseController
     {
     }
 
+    public IActionResult Home()
+    {
+        return View();
+    }
+
     public IActionResult About()
     {
         WriteWrongWayToLog(nameof(InfoController), nameof(About));
