@@ -134,6 +134,9 @@ public sealed class TripRequestController : BaseStateController
     [HttpGet]
     public async Task<IActionResult> Search()
     {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            return Unauthorized();
+
         var result = await GetDataFromDb();
         return View(result);
     }
@@ -142,6 +145,9 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequests")]
     public async Task<IActionResult> Search(RequestSearchFilter filter)
     {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            return Unauthorized();
+
         var result = await GetDataFromDb(filter);
 
         return PartialView("SearchResults", result);
@@ -151,6 +157,9 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/{requestId}")]
     public async Task<IActionResult> TripRequestShow(Guid requestId, CancellationToken token = default)
     {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            return Unauthorized();
+
         var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
         if (entity == null)
             return NotFound();
@@ -297,7 +306,6 @@ public sealed class TripRequestController : BaseStateController
         return Unauthorized();
     }
 
-
     private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
     {
         foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(token))
@@ -442,6 +450,37 @@ public sealed class TripRequestController : BaseStateController
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
         await SetNextStates(model, StateMachineEnum.TripRequest, token);
         model.CarrierId = replay.CarrierId;
+        return View("MakeOffer", model);
+    }
+
+    [HttpGet]
+    [Route("MakeRequestOffer/{requestId}")]
+    public async Task<IActionResult> MakeRequestOffer(Guid requestId, CancellationToken token = default)
+    {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestMakeOffer))
+            return Unauthorized();
+
+        var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
+        
+        if (orgs.Length != 1)
+            return BadRequest();
+
+        var org = orgs[0];
+
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(x => x.Id == requestId, token);
+
+        if (trip == null)
+            return NotFound();
+
+        if (trip.TripDate <= DateTime.Now || trip.State == TripRequestStateEnum.Active.GetEnumGuid())
+            return RedirectToHome();
+
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == trip.Id && x.CarrierId == org, token))
+            return RedirectToHome();
+
+        var model = Mapper.Map<TripRequestOfferDto>(trip);
+        await SetNextStates(model, StateMachineEnum.TripRequest, token);
+        model.CarrierId = org;
         return View("MakeOffer", model);
     }
 

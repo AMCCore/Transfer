@@ -13,6 +13,13 @@ public enum TripRequestRights
     TripRequestAdmin,
 
     /// <summary>
+    /// Получать уведомления о норвых заказах в Телеграм
+    /// </summary>
+    [Description("Получать уведомления о норвых заказах в Телеграм")]
+    [EnumGuid("ee1319a4-47a4-4635-94f7-d5174d940178")]
+    TripRequestNewRequestTelegramPush,
+
+    /// <summary>
     /// Просмотр заказов (списка)
     /// </summary>
     [Description("Просмотр заказов (списка)")]
@@ -25,6 +32,13 @@ public enum TripRequestRights
     [Description("Создание заказа")]
     [EnumGuid("a1cb4fb8-34df-43d6-932a-cdbc326a981b")]
     TripRequestCreate,
+
+    /// <summary>
+    /// Отклик на заказ
+    /// </summary>
+    [Description("Отклик на заказ")]
+    [EnumGuid("9e57abf5-06fa-4fa7-ad1e-3bedf7c425b9")]
+    TripRequestMakeOffer,
 
     /// <summary>
     /// Выбор перевозчика (победителя)
