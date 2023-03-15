@@ -17,6 +17,7 @@ public class InfoController : BaseController
     {
     }
 
+    [Route("Info")]
     public IActionResult Home()
     {
         return View();
