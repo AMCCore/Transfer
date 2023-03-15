@@ -198,9 +198,9 @@ namespace Transfer.Dal.Seeds
             uw.CreateTestUser("ПСЗ12", "N3wuT9#RoYZJ@zx", Guid.Parse("2eaa3796-d0de-4908-91c4-87588cc41391"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestCreate.GetEnumGuid());
             uw.CreateTestUser("ПСЗ2", "tES9T^VBmjd6kB8", Guid.Parse("87b536c0-63b4-4ea1-9839-3b948a4275d4"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestCreate.GetEnumGuid());
 
-            //uw.CreateTestUser("ПСЗ2", "2*ZTR*A!wng*mPj", Guid.Parse("5b0c96f3-5169-4ad1-99b5-4398fec38b38"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
-            //uw.CreateTestUser("ПСО2", "ePGrQYT@$mTP3mc", Guid.Parse("c8c280e1-ea84-4a6b-8d7e-8dd69591becc"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
-            //uw.CreateTestUser("ПСО3", "S9Tjqb7ag!zvXhN", Guid.Parse("0c1dfadc-ee27-4722-846d-4861cf9d311c"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПСЗ2", "2*ZTR*A!wng*mPj", Guid.Parse("5b0c96f3-5169-4ad1-99b5-4398fec38b38"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ПСО2", "ePGrQYT@$mTP3mc", Guid.Parse("c8c280e1-ea84-4a6b-8d7e-8dd69591becc"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ПСО3", "S9Tjqb7ag!zvXhN", Guid.Parse("0c1dfadc-ee27-4722-846d-4861cf9d311c"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
         }
 
         private static void CreateTestUser(this IUnitOfWork uw, string Name, string Pass, Guid userId, Guid OrgId, params Guid[] Rights)

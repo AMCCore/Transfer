@@ -462,7 +462,7 @@ public sealed class TripRequestController : BaseStateController
 
         var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
         
-        if (orgs.Length != 1)
+        if (orgs.Length != 1 && orgs[0] != Guid.Empty)
             return BadRequest();
 
         var org = orgs[0];

@@ -1,5 +1,7 @@
 ﻿@model Transfer.Bl.Dto.TripRequest.TripRequestWithOffersDto
 @using Transfer.Bl.Dto
+@using Transfer.Common.Enums.AccessRights;
+@using Transfer.Common.Enums.States;
 @using Transfer.Common.Extensions
 
 @using X.PagedList.Mvc.Core;
@@ -9,9 +11,10 @@
     <link rel="stylesheet" href="~/css/TripRequest/Search.css" />
 }
 
-    @{
+@{
     var TripOptions = new List<TripOption>();
-
+    var orgs = Security.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
+    var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && orgs.Length == 1 && orgs[0] != Guid.Empty && !Model.Offers.Any(x => x.CarrierId == orgs[0]);
 }
 
 <div class="container">
@@ -72,6 +75,15 @@
                 {
                     <div class="row blank-row"></div>
                     <div class="row">
+                        @if(canDoOffer)
+                        {
+                            <div class="col-12 col-md-3">
+                                <div class="t-col col-10 text-center text-md-start go" style="padding: 0;">
+                                    <a asp-action="MakeRequestOffer" asp-controller="TripRequest" asp-route-requestId="@Model.Id"><span>Оставить заявку</span></a>
+                                </div>
+                            </div>
+                        }
+
                         @foreach (var ns in Model.NextStates)
                         {
                             if (string.IsNullOrWhiteSpace(ns.ConfirmText))

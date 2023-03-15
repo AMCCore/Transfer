@@ -80,4 +80,8 @@ public static class Security
         return _securityService.HasAnyRightForSomeOrganisation(rights, organisation);
     }
 
+    public static Guid[] HasOrganisationsForRight(Enum right)
+    {
+        return _securityService.HasOrganisationsForRight(right);
+    }
 }
