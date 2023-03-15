@@ -67,7 +67,10 @@
                 @if (Security.IsAuthenticated)
                 {
                     <div class="main-menu row">
-                        <a class="col-md-2 text-center" asp-controller="TripRequest" asp-action="Search">Поездки</a>
+                        @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { TripRequestRights.TripRequestAdmin, TripRequestRights.TripRequestView }))
+                        {
+                            <a class="col-md-2 text-center" asp-controller="TripRequest" asp-action="Search">Поездки</a>
+                        }
                         <a class="col-md-3 text-center" asp-controller="Carrier" asp-action="Search">Перевозчики</a>
                         <a class="col-md-3 text-center" asp-controller="Bus" asp-action="Search">Поиск ТС</a>
                         @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { ReportAccessRights.DataInputReport }))
