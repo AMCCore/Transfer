@@ -11,11 +11,9 @@ public static class Repository
 {
     public static void AddOrUpdate<T>(this IUnitOfWork uw, ICollection<T> data, Action<T, T> copy) where T : class, IEntityBase
     {
-        var entitys = uw.GetSet<T>().ToArray();
-
         foreach (var r in data)
         {
-            var entity = entitys.FirstOrDefault(e => e.Id == r.Id);
+            var entity = uw.GetSet<T>().FirstOrDefault(e => e.Id == r.Id);
             if (entity == null)
             {
                 uw.AddEntity(r, false);
@@ -29,13 +27,26 @@ public static class Repository
         uw.SaveChanges();
     }
 
+    public static void AddOrUpdate<T>(this IUnitOfWork uw, T entity, Action<T, T> copy) where T : class, IEntityBase
+    {
+        var ext = uw.GetSet<T>().FirstOrDefault(e => e.Id == entity.Id);
+        if (ext == null)
+        {
+            uw.AddEntity(entity, false);
+        }
+        else
+        {
+            copy?.Invoke(ext, entity);
+        }
+
+        uw.SaveChanges();
+    }
+
     public static async Task AddOrUpdateAsync<T>(this IUnitOfWork uw, ICollection<T> data, Action<T, T> copy, CancellationToken token = default) where T : class, IEntityBase
     {
-        var entitys = await uw.GetSet<T>().ToArrayAsync(token);
-
         foreach (var r in data)
         {
-            var entity = entitys.FirstOrDefault(e => e.Id == r.Id);
+            var entity = await uw.GetSet<T>().FirstOrDefaultAsync(e => e.Id == r.Id, token);
             if (entity == null)
             {
                 await uw.AddEntityAsync(r, token: token);
@@ -44,6 +55,21 @@ public static class Repository
             {
                 copy?.Invoke(r, entity);
             }
+        }
+
+        await uw.SaveChangesAsync(token);
+    }
+
+    public static async Task AddOrUpdateAsync<T>(this IUnitOfWork uw, T entity, Action<T, T> copy, CancellationToken token = default) where T : class, IEntityBase
+    {
+        var ext = await uw.GetSet<T>().FirstOrDefaultAsync(e => e.Id == entity.Id, token);
+        if (ext == null)
+        {
+            await uw.AddEntityAsync(entity, token: token);
+        }
+        else
+        {
+            copy?.Invoke(ext, entity);
         }
 
         await uw.SaveChangesAsync(token);
