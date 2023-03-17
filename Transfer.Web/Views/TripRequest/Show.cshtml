@@ -13,6 +13,7 @@
 
 @{
     var TripOptions = new List<TripOption>();
+    var canChoose = Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid() && Model.Offers.Any() && Model.Offers.All(x => !x.Chosen);
     var orgs = Security.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
     var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && orgs.Length == 1 && orgs[0] != Guid.Empty && !Model.Offers.Any(x => x.CarrierId == orgs[0]);
 }
@@ -142,7 +143,7 @@
                         <div class="row">
                             <div class="t-col col-12"><i class="far fa-user-circle"></i> @o.ContactFio, <a href="tel:@o.ContactPhone">@o.ContactPhone</a>, <a href="mailto:@o.ContactEmail">@o.ContactEmail</a></div>
                         </div>
-                        @if (Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid())
+                        @if (canChoose)
                         {
                             <div class="col-12 col-md-3 t-col text-center go">
                                 <a href="#" data-bs-href="@Url.Action("TripRequestSetCarrierChoosen", "TripRequest", new { requestId = Model.Id, offerId = o.Id })" data-bs-confirm-text="Вы уверены что хотите выбрать это предложение?" data-bs-toggle="modal" data-bs-target="#confirm-action">
