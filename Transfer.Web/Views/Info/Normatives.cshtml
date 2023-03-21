@@ -1,0 +1,32 @@
+﻿@using Transfer.Common.Extensions
+
+@section Styles {
+    <link rel="stylesheet" href="~/source/fileinput.min.css" />
+    <link rel="stylesheet" href="~/source/select2.min.css" />
+    <link rel="stylesheet" href="~/source/select2-bootstrap-5-theme.min.css" />
+
+}
+
+
+<div class="container">
+    <!--<div class="row blank-row"></div>
+    <div class="row blank-row"></div>-->
+    <div class="row">
+        <div class="t-col col-12 crumbs">
+                ---&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-controller="Home" asp-action="Index">Главная</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="Index" asp-controller="Info">Документы</a>&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;<a class="top-button-a" asp-action="Normatives" asp-controller="Info">Нормативные акты</a>
+         </div>
+    </div>
+    <!--<div class="row blank-row"></div>-->
+    <div class="row">
+        <div class="t-col col-12 col-md-6 crb-avatar">
+            Здравствуйте, @Security.CurrentAccount.FirstName @Security.CurrentAccount.LastName!
+        </div>
+    </div>
+    <!--<div class="row blank-row"></div>-->
+    <div class="row">
+        <div class="t-col col-12">
+            <h1 style="color: #0f4c71">"Добавление нового перевозчика"</h1>
+        </div>
+    </div>
+    <div class="row blank-row"></div>
+</div>
