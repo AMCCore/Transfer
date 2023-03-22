@@ -65,8 +65,8 @@ public sealed class TripRequestController : BaseStateController
 
         if(!_securityService.IsAdmin)
         {
-            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView) ?? new Guid[] { Guid.Empty };
-            query = query.Where(x => orgs.Any(o => o == x.ChartererId));
+            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView).Select(x => (Guid?)x).ToArray();
+            query = query.Where(x => orgs.Contains(x.ChartererId));
         }
 
         //статусы

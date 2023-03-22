@@ -81,7 +81,7 @@ namespace Transfer.Common.Security
                 return Rights.Any(s => (s.Key == organisation.Value || s.Key == Guid.Empty) && s.Value.Any(x => x == right));
             }
 
-            return Rights.Any(s => (s.Key == Guid.Empty) && s.Value.Any(x => x == right));
+            return Rights.Any(s => s.Value.Any(x => x == right));
         }
 
         public Guid[] HasOrganisationsForRight(Enum right)
