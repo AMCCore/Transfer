@@ -4,14 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Transfer.Bl.Dto;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
 using Transfer.Common.Enums;
@@ -21,12 +19,10 @@ using Transfer.Common.Extensions;
 using Transfer.Common.Security;
 using Transfer.Common.Settings;
 using Transfer.Dal.Entities;
-using Transfer.Dal.Helpers;
 using Transfer.Web.Extensions;
 using Transfer.Web.Models;
 using Transfer.Web.Models.Enums;
 using Transfer.Web.Models.TripRequest;
-using Transfer.Web.Moduls;
 using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers;
@@ -65,8 +61,16 @@ public sealed class TripRequestController : BaseStateController
 
         if(!_securityService.IsAdmin)
         {
-            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView).Select(x => (Guid?)x).ToArray();
-            query = query.Where(x => orgs.Contains(x.ChartererId));
+            if(filter.MyRequests)
+            {
+                var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView).Select(x => (Guid?)x).ToArray();
+                query = query.Where(x => orgs.Contains(x.ChartererId));
+            }
+            else if(!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            {
+                query = query.Where(x => x.Id == Guid.Empty);
+            }
+
         }
 
         //статусы
@@ -143,7 +147,7 @@ public sealed class TripRequestController : BaseStateController
 
     [HttpPost]
     [Route("TripRequests")]
-    public async Task<IActionResult> Search(RequestSearchFilter filter)
+    public async Task<IActionResult> Search([FromBody] RequestSearchFilter filter)
     {
         if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
             return Unauthorized();
@@ -151,6 +155,17 @@ public sealed class TripRequestController : BaseStateController
         var result = await GetDataFromDb(filter);
 
         return PartialView("SearchResults", result);
+    }
+
+    [Route("TripRequests/My")]
+    [HttpGet]
+    public async Task<IActionResult> SearchMyTripRequests()
+    {
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            return Unauthorized();
+
+        var result = await GetDataFromDb(new RequestSearchFilter { MyRequests = true });
+        return View("Search", result);
     }
 
     [HttpGet]

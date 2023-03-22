@@ -18,4 +18,7 @@ public class RequestSearchFilter : BaseFilterModel<TripRequestSearchResultItem>
     public int OrderBy { get; set; } = (int)TripRequestSearchOrderEnum.OrderByDateStartAsc;
 
     public int State { get; set; } = (int)TripRequestSearchStateEnum.StateNew;
+
+    public bool MyRequests { get; set; } = false;
+
 }
