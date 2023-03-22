@@ -44,25 +44,28 @@ public class AuthController : BaseController
                 .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
                 .FirstOrDefaultAsync(CancellationToken.None);
 
-            if (BCrypt.Net.BCrypt.Verify(objLoginModel.Password, account.Password))
+            if (account != null)
             {
-                var claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(GetAccountRoles(account.AccountRights))));
-                claims.Add(new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()));
-                //claims.Add(new Claim(ClaimTypes.Locality, account.OrganisationId.ToString()));
+                if (BCrypt.Net.BCrypt.Verify(objLoginModel.Password, account.Password))
+                {
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Role, JsonConvert.SerializeObject(GetAccountRoles(account.AccountRights))));
+                    claims.Add(new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()));
+                    //claims.Add(new Claim(ClaimTypes.Locality, account.OrganisationId.ToString()));
 
-                var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(userIdentity),
-                    new AuthenticationProperties
-                    {
-                        ExpiresUtc = DateTime.UtcNow.AddHours(10),
-                        IsPersistent = objLoginModel.RememberLogin,
-                        AllowRefresh = true,
-                    });
+                    var userIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, null);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(userIdentity),
+                        new AuthenticationProperties
+                        {
+                            ExpiresUtc = DateTime.UtcNow.AddHours(10),
+                            IsPersistent = objLoginModel.RememberLogin,
+                            AllowRefresh = true,
+                        });
 
-                //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };
-                return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+                    //return new JsonResult(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl }) { StatusCode = 200 };
+                    return Json(new { redirect = string.IsNullOrWhiteSpace(objLoginModel.ReturnUrl) ? "/" : objLoginModel.ReturnUrl });
+                }
             }
         }
 

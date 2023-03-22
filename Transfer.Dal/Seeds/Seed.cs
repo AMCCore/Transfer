@@ -133,6 +133,9 @@ namespace Transfer.Dal.Seeds
                 City = "Геленджик",
                 INN = "0000000001",
                 OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks,
             });
             uw.AddIfNotExists(new DbOrganisationWorkingArea
@@ -157,6 +160,9 @@ namespace Transfer.Dal.Seeds
                 City = "Геленджик",
                 INN = "0000000002",
                 OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks
             });
             uw.AddIfNotExists(new DbOrganisationWorkingArea
@@ -181,6 +187,9 @@ namespace Transfer.Dal.Seeds
                 City = "Геленджик",
                 INN = "0000000003",
                 OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks
             });
             uw.AddIfNotExists(new DbOrganisationWorkingArea
