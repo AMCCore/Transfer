@@ -247,7 +247,9 @@ public sealed class TripRequestController : BaseStateController
                 entity.ContactFio = entity.СhartererName;
             }
 
-            entity.ChartererId = _securityService.CurrentAccountOrganisationId;
+            //Временное решение!!! не делать так 
+            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestCreate);
+            entity.ChartererId = orgs.FirstOrDefault();
 
             entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
             entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
