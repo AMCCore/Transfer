@@ -249,8 +249,7 @@ public sealed class TripRequestController : BaseStateController
             }
 
             //Временное решение!!! не делать так 
-            var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestCreate);
-            entity.ChartererId = orgs.FirstOrDefault();
+            entity.ChartererId = await UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
 
             entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
             entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
@@ -490,7 +489,7 @@ public sealed class TripRequestController : BaseStateController
         if (trip == null)
             return NotFound();
 
-        if (trip.TripDate <= DateTime.Now || trip.State == TripRequestStateEnum.Active.GetEnumGuid())
+        if (trip.TripDate <= DateTime.Now || trip.State != TripRequestStateEnum.Active.GetEnumGuid())
             return RedirectToHome();
 
         if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == trip.Id && x.CarrierId == org, token))

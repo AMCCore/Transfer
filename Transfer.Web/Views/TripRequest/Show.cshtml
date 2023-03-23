@@ -13,9 +13,9 @@
 
 @{
     var TripOptions = new List<TripOption>();
-    var canChoose = Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid() && Model.Offers.Any() && Model.Offers.All(x => !x.Chosen);
-    var orgs = Security.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
-    var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && orgs.Length == 1 && orgs[0] != Guid.Empty && !Model.Offers.Any(x => x.CarrierId == orgs[0]);
+    var canChoose = Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid() && Model.Offers.Any() && Model.Offers.All(x => !x.Chosen) && Security.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, Model.ChartererId);
+    var orgOffer = Security.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer).FirstOrDefault();
+    var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && !orgOffer.IsNullOrEmpty() && !Model.Offers.Any(x => x.CarrierId == orgOffer);
 }
 
 <div class="container">
@@ -72,7 +72,7 @@
                         <div class="row blank-row"></div>
                     </div>
                 </div>
-                @if (Model.NextStates.Any())
+                @if (Model.NextStates.Any() || canDoOffer)
                 {
                     <div class="row blank-row"></div>
                     <div class="row">

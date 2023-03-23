@@ -61,7 +61,11 @@ public static class Security
         }
     }
 
-    public static void CurrentUserClearCache() => _cacheService?.Remove(GenerateCacheKey());
+    public static void CurrentUserClearCache()
+    {
+        _cacheService?.Remove(GenerateCacheKey());
+        Current?.Rights.Clear();
+    }
 
     private static string GenerateCacheKey()
     {
