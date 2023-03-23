@@ -113,7 +113,7 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.New.GetEnumGuid(),
-                StateMachineActionId = ga
+                StateMachineActionId = ga,
             });
 
         uw.AddIfNotExists(
@@ -123,7 +123,7 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
-                StateMachineActionId = ga
+                StateMachineActionId = ga,
             });
 
         #endregion
