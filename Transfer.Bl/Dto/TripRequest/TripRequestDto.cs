@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Transfer.Common.Attributes;
 
 namespace Transfer.Bl.Dto.TripRequest
 {
@@ -29,6 +26,7 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public string? ContactEmail { get; set; }
 
+        [DateStart]
         public DateTime TripDate { get; set; }
 
         public int Passengers { get; set; }
