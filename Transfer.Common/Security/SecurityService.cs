@@ -22,6 +22,9 @@ namespace Transfer.Common.Security
         public SecurityService(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
+            _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = null;
+            _contextAccessor.HttpContext.Items[CurrentAccountIdKey] = null;
+            _contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] = null;
         }
 
         public Guid CurrentAccountId
