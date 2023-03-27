@@ -24,39 +24,45 @@ namespace Transfer.Common.Security
             _contextAccessor = contextAccessor;
         }
 
+        private Guid? _currentAccountId;
+
         public Guid CurrentAccountId
         {
             get
             {
-                if (_contextAccessor.HttpContext.Items[CurrentAccountIdKey] == null)
+                if (!_currentAccountId.HasValue)
                 {
                     var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
                         x.Type == ClaimTypes.NameIdentifier);
                     if (claim == null)
                     {
-                        return Guid.Empty;
+                        _currentAccountId = Guid.Empty;
                     }
-
-                    _contextAccessor.HttpContext.Items[CurrentAccountIdKey] = Guid.Parse(claim.Value);
+                    else
+                    {
+                        _currentAccountId = Guid.Parse(claim.Value);
+                    }
                 }
 
-                return (_contextAccessor.HttpContext.Items[CurrentAccountIdKey] as Guid?) ?? Guid.Empty;
+                return _currentAccountId.Value;
             }
         }
+
+        private Guid? _currentAccountOrganisationId;
 
         public Guid? CurrentAccountOrganisationId
         {
             get
             {
-                if (_contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] == null)
+                if (_currentAccountOrganisationId == null)
                 {
                     var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
                         x.Type == ClaimTypes.Locality);
-                    _contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] =
+                    _currentAccountOrganisationId =
                         Guid.Parse(claim?.Value ?? Guid.Empty.ToString());
                 }
 
-                return _contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] as Guid?;
+                return _currentAccountOrganisationId;
             }
         }
 
@@ -108,24 +114,17 @@ namespace Transfer.Common.Security
             {
                 if(_rights == null)
                 {
-                    if (_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] == null)
+                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
+                    if (claim == null)
                     {
-                        var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
-                        if (claim == null)
-                        {
 
-                            _rights = new Dictionary<Guid, IList<Guid>>();
-                        }
-                        else
-                        {
-                            var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
-                            _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
-                            _rights = roles ?? new Dictionary<Guid, IList<Guid>>();
-                        }
+                        _rights = new Dictionary<Guid, IList<Guid>>();
                     }
                     else
                     {
-                        _rights = _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] as IDictionary<Guid, IList<Guid>> ?? new Dictionary<Guid, IList<Guid>>();
+                        var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
+                        //_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
+                        _rights = roles ?? new Dictionary<Guid, IList<Guid>>();
                     }
                 }
 
