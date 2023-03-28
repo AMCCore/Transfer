@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Transfer.Common.Extensions;
+
 public static class Repository
 {
     public static void AddOrUpdate<T>(this IUnitOfWork uw, ICollection<T> data, Action<T, T> copy) where T : class, IEntityBase

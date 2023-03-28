@@ -2,9 +2,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Transfer.Common.Enums.States;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
+using Transfer.Common.Extensions;
 
 namespace Transfer.Console;
 
@@ -31,7 +33,27 @@ internal class Program
             }
         }
 
-        if(false)
+        if(true)
+        {
+            //admin
+            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76"), Password = BCrypt.Net.BCrypt.HashString("vU79kFxqz^#@sE3"),  }, (source, destination) => {
+                source.Password = destination.Password;
+            });
+
+            //top@tktransfer.ru
+            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("31FB93BA-E2CD-4D32-95E5-0A6529A61A14"), Password = BCrypt.Net.BCrypt.HashString("wZHES#8C3&2!cXE"), }, (source, destination) => {
+               source.Password = destination.Password;
+            });
+
+            //anapa-tktransfer@yandex.ru
+            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("9CD57332-BB7E-4EA8-8904-2F435120CF0C"), Password = BCrypt.Net.BCrypt.HashString("qpWZx&uk5RXScXH"), }, (source, destination) => {
+                source.Password = destination.Password;
+            });
+
+
+        }
+
+        if (false)
         {
             uc.DoAddUser(new AddUser.AUser
             {

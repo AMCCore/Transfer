@@ -51,7 +51,7 @@ namespace Transfer.Dal.Seeds
                 new DbAccount {
                     Id = adminId,
                     Email = "admin",
-                    Password = BCrypt.Net.BCrypt.HashString("7F4U*3gsR7cHPss"),
+                    Password = BCrypt.Net.BCrypt.HashString("vU79kFxqz^#@sE3"),
                     LastUpdateTick = DateTime.Now.Ticks,
                     DateCreated = DateTime.Now,
                     PersonDataId = Guid.Parse("3EE8A706-3DBD-49A2-8C70-5CD9C2AD5202")
