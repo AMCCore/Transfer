@@ -24,7 +24,7 @@ namespace Transfer.Common.Security
             _contextAccessor = contextAccessor;
         }
 
-        private Guid? _currentAccountId;
+        private Guid? _currentAccountId = null;
 
         public Guid CurrentAccountId
         {
@@ -48,7 +48,7 @@ namespace Transfer.Common.Security
             }
         }
 
-        private Guid? _currentAccountOrganisationId;
+        private Guid? _currentAccountOrganisationId = null;
 
         public Guid? CurrentAccountOrganisationId
         {
