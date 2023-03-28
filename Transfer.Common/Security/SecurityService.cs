@@ -24,45 +24,23 @@ namespace Transfer.Common.Security
             _contextAccessor = contextAccessor;
         }
 
-        private Guid? _currentAccountId = null;
-
         public Guid CurrentAccountId
         {
             get
             {
-                if (!_currentAccountId.HasValue)
-                {
-                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
-                        x.Type == ClaimTypes.NameIdentifier);
-                    if (claim == null)
-                    {
-                        _currentAccountId = Guid.Empty;
-                    }
-                    else
-                    {
-                        _currentAccountId = Guid.Parse(claim.Value);
-                    }
-                }
-
-                return _currentAccountId.Value;
+                var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                return claim == null ? Guid.Empty : Guid.Parse(claim.Value);
             }
         }
-
-        private Guid? _currentAccountOrganisationId = null;
 
         public Guid? CurrentAccountOrganisationId
         {
             get
             {
-                if (_currentAccountOrganisationId == null)
-                {
-                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
-                        x.Type == ClaimTypes.Locality);
-                    _currentAccountOrganisationId =
-                        Guid.Parse(claim?.Value ?? Guid.Empty.ToString());
-                }
+                var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
+                    x.Type == ClaimTypes.Locality);
 
-                return _currentAccountOrganisationId;
+                return Guid.Parse(claim?.Value ?? Guid.Empty.ToString());
             }
         }
 
@@ -97,38 +75,23 @@ namespace Transfer.Common.Security
                 .ToArray();
         }
 
-        //public Guid[] GetAvailableOrgs()
-        //{
-        //    var orgs = Rights.Where(ss => ss.Key != Guid.Empty)
-        //        .Select(ss => ss.Key)
-        //        .ToList();
-        //    orgs.Add(CurrentAccountOrganisationId.GetValueOrDefault());
-        //    return orgs.ToArray();
-        //}
-
         private IDictionary<Guid, IList<Guid>> _rights;
 
         public IDictionary<Guid, IList<Guid>> Rights
         {
             get
             {
-                if(_rights == null)
+                var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
+                if (claim == null)
                 {
-                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
-                    if (claim == null)
-                    {
-
-                        _rights = new Dictionary<Guid, IList<Guid>>();
-                    }
-                    else
-                    {
-                        var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
-                        //_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
-                        _rights = roles ?? new Dictionary<Guid, IList<Guid>>();
-                    }
+                    return new Dictionary<Guid, IList<Guid>>();
                 }
-
-                return _rights;
+                else
+                {
+                    var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
+                    //_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
+                    return roles ?? new Dictionary<Guid, IList<Guid>>();
+                }
             }
         }
 
