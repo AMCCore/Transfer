@@ -14,7 +14,7 @@
 @{
     var TripOptions = new List<TripOption>();
     var canChoose = Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid() && Model.Offers.Any() && Model.Offers.All(x => !x.Chosen) && Security.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, Model.ChartererId);
-    var orgOffer = Security.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer).FirstOrDefault();
+    var orgOffer = Security.HasOrganisationsForRight(TripRequestRights.MakeOffer).FirstOrDefault();
     var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && !orgOffer.IsNullOrEmpty() && !Model.Offers.Any(x => x.CarrierId == orgOffer);
 }
 

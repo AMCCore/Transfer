@@ -69,7 +69,7 @@
                 @if (Security.IsAuthenticated)
                 {
                     <div class="main-menu row">
-                        @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { TripRequestRights.TripRequestAdmin, TripRequestRights.TripRequestView }))
+                        @if (Security.HasAnyRightForSomeOrganisation(new List<Enum> { TripRequestRights.Admin, TripRequestRights.ViewList }))
                         {
                             <a class="col-md-2 text-center" asp-controller="TripRequest" asp-action="Search">Поездки</a>
                         }

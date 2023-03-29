@@ -64,10 +64,10 @@ public sealed class TripRequestController : BaseStateController
         {
             if (filter.MyRequests)
             {
-                var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestView).Select(x => (Guid?)x).ToArray();
+                var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.ViewList).Select(x => (Guid?)x).ToArray();
                 query = query.Where(x => orgs.Contains(x.ChartererId));
             }
-            else if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+            else if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             {
                 query = query.Where(x => x.Id == Guid.Empty);
             }
@@ -139,7 +139,7 @@ public sealed class TripRequestController : BaseStateController
     [HttpGet]
     public async Task<IActionResult> Search()
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
 
         var result = await GetDataFromDb();
@@ -150,7 +150,7 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequests")]
     public async Task<IActionResult> Search([FromBody] RequestSearchFilter filter)
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
 
         var result = await GetDataFromDb(filter);
@@ -162,7 +162,7 @@ public sealed class TripRequestController : BaseStateController
     [HttpGet]
     public async Task<IActionResult> SearchMyTripRequests()
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
 
         var result = await GetDataFromDb(new RequestSearchFilter { MyRequests = true });
@@ -173,14 +173,14 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/{requestId}")]
     public async Task<IActionResult> TripRequestShow(Guid requestId, CancellationToken token = default)
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
 
         var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
         if (entity == null)
             return NotFound();
 
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestView))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
@@ -209,7 +209,7 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/New")]
     public IActionResult NewTripRequest()
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestCreate))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.Create))
             return Unauthorized();
 
         return View("Save", new TripRequestDto
@@ -224,7 +224,7 @@ public sealed class TripRequestController : BaseStateController
     [Route("TripRequest/Save")]
     public async Task<IActionResult> Save([FromForm] TripRequestDto model, CancellationToken token = default)
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestCreate))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.Create))
             return Unauthorized();
 
 
@@ -474,10 +474,10 @@ public sealed class TripRequestController : BaseStateController
     [Route("MakeRequestOffer/{requestId}")]
     public async Task<IActionResult> MakeRequestOffer(Guid requestId, CancellationToken token = default)
     {
-        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.TripRequestMakeOffer))
+        if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.MakeOffer))
             return Unauthorized();
 
-        var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.TripRequestMakeOffer);
+        var orgs = _securityService.HasOrganisationsForRight(TripRequestRights.MakeOffer);
 
         if (orgs.Length != 1 && orgs[0] != Guid.Empty)
             return BadRequest();

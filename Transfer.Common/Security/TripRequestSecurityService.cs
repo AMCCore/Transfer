@@ -17,6 +17,6 @@ public class TripRequestSecurityService : SecurityService, ITripRequestSecurityS
             return true;
         }
 
-        return Rights.Any(x => x.Value.Any(y => y == TripRequestRights.TripRequestAdmin.GetEnumGuid()));
+        return Rights.Any(x => x.Value.Any(y => y == TripRequestRights.Admin.GetEnumGuid()));
     }
 }
