@@ -53,4 +53,11 @@ public enum TripRequestRights
     [Description("Завершить заказ")]
     [EnumGuid("5da2fbff-273a-4bcc-b80f-a8b53d326e1e")]
     Completed,
+
+    /// <summary>
+    /// Выполнить заказ
+    /// </summary>
+    [Description("Выполнить заказ")]
+    [EnumGuid("3a54076a-d7c0-4b08-a253-0de44a8f1fd4")]
+    Done,
 }

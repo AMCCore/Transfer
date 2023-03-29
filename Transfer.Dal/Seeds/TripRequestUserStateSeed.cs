@@ -215,7 +215,8 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.CarrierSelected.GetEnumGuid(),
-                StateMachineActionId = ga
+                StateMachineActionId = ga,
+                RightCode = TripRequestRights.Done.GetEnumGuid(),
             }
         );
 
