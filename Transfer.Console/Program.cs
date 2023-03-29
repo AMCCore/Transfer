@@ -7,6 +7,8 @@ using Transfer.Common.Enums.States;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
 using Transfer.Common.Extensions;
+using System.Collections.Generic;
+using Transfer.Common.Enums.AccessRights;
 
 namespace Transfer.Console;
 
@@ -35,96 +37,67 @@ internal class Program
 
         if(true)
         {
+
             //admin
-            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76"), Password = BCrypt.Net.BCrypt.HashString("vU79kFxqz^#@sE3"),  }, (source, destination) => {
+            var aid = Guid.Parse("CC8EFEFA-0D2E-49FF-B982-6E1EDAED2C76");
+            uc.AddOrUpdate(new DbAccount { Id = aid, Password = BCrypt.Net.BCrypt.HashString("vU79kFxqz^#@sE3"),  }, (source, destination) => {
                 source.Password = destination.Password;
             });
 
             //top@tktransfer.ru
-            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("31FB93BA-E2CD-4D32-95E5-0A6529A61A14"), Password = BCrypt.Net.BCrypt.HashString("wZHES#8C3&2!cXE"), }, (source, destination) => {
+            aid = Guid.Parse("31FB93BA-E2CD-4D32-95E5-0A6529A61A14");
+            uc.AddOrUpdate(new DbAccount { Id = aid, Password = BCrypt.Net.BCrypt.HashString("wZHES#8C3&2!cXE"), }, (source, destination) => {
                source.Password = destination.Password;
             });
 
-            //anapa-tktransfer@yandex.ru
-            uc.AddOrUpdate(new DbAccount { Id = Guid.Parse("9CD57332-BB7E-4EA8-8904-2F435120CF0C"), Password = BCrypt.Net.BCrypt.HashString("qpWZx&uk5RXScXH"), }, (source, destination) => {
-                source.Password = destination.Password;
+            //m1@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser { 
+                Id = Guid.Parse("132c0920-8225-4fd7-b619-d1d3a1d11976"),
+                FirstName = "1",
+                LastName = "Оператор",
+                Password = "2qpzeo75D!9wAeV",
+                Email = "m1@tktransfer.ru"
+            });
+
+            //m7@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser
+            {
+                Id = Guid.Parse("59b2e4cb-a463-4bfa-8d16-1001f16864b9"),
+                FirstName = "7",
+                LastName = "Оператор",
+                Password = "8r@6jwpG@2Rh!CW",
+                Email = "m7@tktransfer.ru"
+            });
+
+            //m8@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser
+            {
+                Id = Guid.Parse("97B45346-84FD-47D2-84E9-E0088333E950"),
+                FirstName = "8",
+                LastName = "Оператор",
+                Password = "zhncV6Ta8hUCs%R",
+                Email = "m8@tktransfer.ru"
             });
 
 
-        }
-
-        if (false)
-        {
-            uc.DoAddUser(new AddUser.AUser
+            //m9@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser
             {
-                LastName = "Старкова",
-                FirstName = "Екатерина",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "m2@tktransfer.ru"
+                Id = Guid.Parse("995D0C58-A1CD-4612-A1BB-95FC5D7A81A9"),
+                FirstName = "9",
+                LastName = "Оператор",
+                Password = "g9tU!8^xZdJVL5U",
+                Email = "m9@tktransfer.ru"
             });
 
-            uc.DoAddUser(new AddUser.AUser
+            //m10@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser
             {
-                LastName = "Баранов",
-                FirstName = "Вячеслав",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "m4@tktransfer.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Никифорова",
-                FirstName = "Елена",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "m3@tktransfer.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Чурилов",
-                FirstName = "Сергей",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "m6@tktransfer.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Марчихина",
-                FirstName = "Ольга",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "top@tktransfer.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Федоров",
-                FirstName = "Алексей",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "anapa-tktransfer@yandex.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Закирова",
-                FirstName = "Мария",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "operator@tktransfer.ru"
-            });
-
-            uc.DoAddUser(new AddUser.AUser
-            {
-                LastName = "Гавриков",
-                FirstName = "Александр",
-                MiddleName = " ",
-                Password = Password.Generate(),
-                Email = "m5@tktransfer.ru"
+                Id = Guid.Parse("5c6dccc7-4ac9-4a5c-a9c5-0d06d683e17b"),
+                FirstName = "10",
+                LastName = "Оператор",
+                Password = "H5&ov4zuM$MX3QE",
+                Email = "m10@tktransfer.ru"
             });
 
         }

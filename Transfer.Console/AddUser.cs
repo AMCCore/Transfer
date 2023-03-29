@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
+using Transfer.Common.Extensions;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Console;
 
 internal static class AddUser
 {
-    public struct AUser
+    public class AUser
     { 
+        public Guid Id { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -25,31 +29,10 @@ internal static class AddUser
         public string CompanyName { get; set; }
 
         public string Password { get; set; }
+
+        public IDictionary<Guid?, IList<Guid>> Rights { get; set; } = new Dictionary<Guid?, IList<Guid>>();
     }
 
-
-    private static void DoAddUser(this IUnitOfWork uc)
-    {
-        var u = new DbAccount
-        {
-            Email = "uriymarshala@gmail.com",
-            Password = BCrypt.Net.BCrypt.HashString("HSHQbS4zsvV8a6"),
-            PersonData = new DbPersonData
-            {
-                FirstName = "Юрий",
-                LastName = " (Владелец)",
-                MiddleName = " ",
-                DocumentSeries = " ",
-                DocumentNumber = " ",
-                DocumentIssurer = " ",
-                DocumentSubDivisionCode = " ",
-                DocumentDateOfIssue = DateTime.MinValue,
-                RegistrationAddress = " ",
-            }
-        };
-
-        uc.AddEntity(u);
-    }
 
     public static Guid DoAddUser(this IUnitOfWork uc, AUser user)
     {
@@ -83,6 +66,54 @@ internal static class AddUser
         uc.AddEntity(u);
 
         return u.Id;
+    }
+
+    public static void DoAddUpdateUser(this IUnitOfWork uc, AUser user)
+    {
+        if (string.IsNullOrWhiteSpace(user.Password))
+        {
+            var pwrd = Password.Generate();
+            user.Password = pwrd;
+        }
+
+        if(user.Id.IsNullOrEmpty())
+        {
+            user.Id = Guid.NewGuid();
+        }
+
+        var pd = uc.AddEntity(new DbPersonData
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            MiddleName = user.MiddleName ?? " ",
+            DocumentSeries = " ",
+            DocumentNumber = " ",
+            DocumentIssurer = " ",
+            DocumentSubDivisionCode = " ",
+            DocumentDateOfIssue = DateTime.MinValue,
+            RegistrationAddress = " ",
+        });
+
+        uc.DeleteList(uc.GetSet<DbAccountRight>().Where(x => x.AccountId == user.Id).ToList());
+
+        var rr = new List<DbAccountRight>();
+        foreach(var r in user.Rights)
+        {
+            foreach(var rrr in r.Value)
+            {
+                rr.Add(new DbAccountRight { OrganisationId = r.Key, AccountId = user.Id, RightId = rrr });
+            }
+        }
+
+        uc.AddOrUpdate(new DbAccount { Id = user.Id, Password = BCrypt.Net.BCrypt.HashString(user.Password), Email = user.Email, }, (source, destination) => {
+            source.Password = destination.Password;
+            source.Email = destination.Email;
+            source.PersonDataId = pd.Id;
+            source.AccountRights = rr;
+        });
+
+        
+        
     }
 }
 
