@@ -200,8 +200,8 @@ namespace Transfer.Dal.Seeds
             });
 
             uw.CreateTestUser("ОСЗ1", "nx@9&K3zUZXAVS&", Guid.Parse("1c8a0d6d-c81f-4b7a-a774-54c9bf6a6aa7"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestCreate.GetEnumGuid());
-            uw.CreateTestUser("ОСО2", "W9Ed5MP4p3Hm4^$", Guid.Parse("b42a15de-3c3c-43d6-97c8-44c29d565b62"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
-            uw.CreateTestUser("ОСО3", "^9o2G3^85ptox%9", Guid.Parse("6022aace-b5bc-4895-a564-dbe1b68f5274"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ОСО2", "W9Ed5MP4p3Hm4^$", Guid.Parse("b42a15de-3c3c-43d6-97c8-44c29d565b62"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ОСО3", "^9o2G3^85ptox%9", Guid.Parse("6022aace-b5bc-4895-a564-dbe1b68f5274"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
 
             uw.CreateTestUser("ПСЗ1", "3wna4MS#Ek$uUbg", Guid.Parse("6822872a-38df-49d1-872a-22719382707d"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestCreate.GetEnumGuid());
             uw.CreateTestUser("ПСЗ12", "N3wuT9#RoYZJ@zx", Guid.Parse("2eaa3796-d0de-4908-91c4-87588cc41391"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestCreate.GetEnumGuid());
@@ -210,6 +210,20 @@ namespace Transfer.Dal.Seeds
             uw.CreateTestUser("ПСЗ2", "2*ZTR*A!wng*mPj", Guid.Parse("5b0c96f3-5169-4ad1-99b5-4398fec38b38"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
             uw.CreateTestUser("ПСО2", "ePGrQYT@$mTP3mc", Guid.Parse("c8c280e1-ea84-4a6b-8d7e-8dd69591becc"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
             uw.CreateTestUser("ПСО3", "S9Tjqb7ag!zvXhN", Guid.Parse("0c1dfadc-ee27-4722-846d-4861cf9d311c"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.TripRequestMakeOffer.GetEnumGuid());
+
+            uw.CreateTestUser("ПВО1", "F8NAobmmbDj$2rs", Guid.Parse("40fe8e92-ef63-4b9d-affa-e046e3a9b9d3"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО2", "WF$K92uKYSjQ78j", Guid.Parse("caf7d825-9237-418d-ad63-2b477631abd8"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО3", "GLtDFr^Ng!pYeV7", Guid.Parse("232936f5-6e94-429e-8673-934ff20ff8ce"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО31", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+
+            //uw.CreateTestUser("ПЗЗ1", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o1, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights. .CarrierChoose.GetEnumGuid());
+            //uw.CreateTestUser("ПЗЗ2", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o2, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            //uw.CreateTestUser("ПЗЗ3", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            //uw.CreateTestUser("ПЗЗ31", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o3, TripRequestRights.TripRequestView.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+
+
+
+
         }
 
         private static void CreateTestUser(this IUnitOfWork uw, string Name, string Pass, Guid userId, Guid OrgId, params Guid[] Rights)
@@ -230,7 +244,7 @@ namespace Transfer.Dal.Seeds
             });
 
             var acc = uw.GetSet<DbAccount>().First(x => x.Id == userId);
-            if(acc.PersonDataId == null)
+            if (acc.PersonDataId == null)
             {
                 var g1 = Guid.NewGuid();
                 uw.AddEntity(new DbPersonData
@@ -258,7 +272,7 @@ namespace Transfer.Dal.Seeds
 
             var accRights = uw.GetSet<DbAccountRight>().Where(x => x.AccountId == userId).ToList();
             uw.DeleteList(accRights);
-            foreach(var r in Rights)
+            foreach (var r in Rights)
             {
                 uw.AddEntity(new DbAccountRight { AccountId = userId, OrganisationId = OrgId, RightId = r });
             }
