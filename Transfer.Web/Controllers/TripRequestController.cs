@@ -186,7 +186,11 @@ public sealed class TripRequestController : BaseStateController
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
         await SetNextStates(model, StateMachineEnum.TripRequest, entity.ChartererId, token);
 
-        model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
+        if (_securityService.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, entity.ChartererId))
+        {
+            model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
+        }
+            
         return View("Show", model);
     }
 
