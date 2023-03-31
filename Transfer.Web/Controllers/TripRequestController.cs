@@ -148,7 +148,7 @@ public sealed class TripRequestController : BaseStateController
 
     [HttpPost]
     [Route("TripRequests")]
-    public async Task<IActionResult> Search([FromBody] RequestSearchFilter filter)
+    public async Task<IActionResult> Search(RequestSearchFilter filter)
     {
         if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.ViewList))
             return Unauthorized();
