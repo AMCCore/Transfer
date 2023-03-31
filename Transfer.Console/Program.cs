@@ -1,14 +1,12 @@
 ﻿using OfficeOpenXml;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Transfer.Common.Enums.States;
+using Transfer.Common.Extensions;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
-using Transfer.Common.Extensions;
-using System.Collections.Generic;
-using Transfer.Common.Enums.AccessRights;
 
 namespace Transfer.Console;
 
@@ -36,6 +34,22 @@ internal class Program
         }
 
         if(true)
+        {
+            var jopa = new Dictionary<Guid?, IList<Guid>>();
+            jopa.Add(Guid.Empty, new List<Guid> { Guid.Parse("65CAE23E-2057-40EA-8967-BEFE0CF8E41F"), Guid.Parse("C8567735-785F-4416-9509-AAEC72AFC2EB") });
+            //rop@tktransfer.ru
+            uc.DoAddUpdateUser(new AddUser.AUser
+            {
+                Id = Guid.Parse("4ee30e78-f8cd-43ab-bcc5-d11a7fd04608"),
+                FirstName = "Руководитель",
+                LastName = "Опраторов",
+                Password = "3SLtChUsLgT2yh&",
+                Email = "rop@tktransfer.ru",
+                Rights = jopa,
+            });
+        }
+
+        if(false)
         {
 
             //admin

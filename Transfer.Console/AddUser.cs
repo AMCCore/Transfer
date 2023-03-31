@@ -81,6 +81,11 @@ internal static class AddUser
             user.Id = Guid.NewGuid();
         }
 
+        uc.AddOrUpdate(new DbAccount { Id = user.Id, Password = BCrypt.Net.BCrypt.HashString(user.Password), Email = user.Email, }, (source, destination) => {
+            source.Password = destination.Password;
+            source.Email = destination.Email;
+        });
+
         var pd = uc.AddEntity(new DbPersonData
         {
             FirstName = user.FirstName,
@@ -94,24 +99,23 @@ internal static class AddUser
             RegistrationAddress = " ",
         });
 
-        uc.DeleteList(uc.GetSet<DbAccountRight>().Where(x => x.AccountId == user.Id).ToList());
+        var ur = uc.GetSet<DbAccountRight>().Where(x => x.AccountId == user.Id).ToList();
+
+        uc.DeleteList(ur);
 
         var rr = new List<DbAccountRight>();
         foreach(var r in user.Rights)
         {
             foreach(var rrr in r.Value)
             {
-                rr.Add(new DbAccountRight { OrganisationId = r.Key, AccountId = user.Id, RightId = rrr });
+                uc.AddEntity(new DbAccountRight { OrganisationId = r.Key.IsNullOrEmpty() ? null : r.Key, AccountId = user.Id, RightId = rrr });
             }
         }
 
-        uc.AddOrUpdate(new DbAccount { Id = user.Id, Password = BCrypt.Net.BCrypt.HashString(user.Password), Email = user.Email, }, (source, destination) => {
-            source.Password = destination.Password;
-            source.Email = destination.Email;
-            source.PersonDataId = pd.Id;
-            source.AccountRights = rr;
-        });
+        var uuu = uc.GetSet<DbAccount>().First(x => x.Id == user.Id);
+        uuu.PersonDataId = pd.Id;
 
+        uc.SaveChanges();
         
         
     }
