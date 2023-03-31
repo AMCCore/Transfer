@@ -14,8 +14,10 @@ using Transfer.Bl.Dto.Organisation;
 using Transfer.Common;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
+using Transfer.Common.Utils;
 using Transfer.Dal.Entities;
 using Transfer.Web.Extensions;
+using Transfer.Web.Moduls;
 using X.PagedList;
 
 namespace Transfer.Web.Controllers;
@@ -23,8 +25,11 @@ namespace Transfer.Web.Controllers;
 [Authorize]
 public class AccountController : BaseController
 {
-    public AccountController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<AccountController> logger, IMapper mapper) : base(transferSettings, unitOfWork, logger, mapper)
+    private IMailModule MailModule;
+
+    public AccountController(IOptions<TransferSettings> transferSettings, IUnitOfWork unitOfWork, ILogger<AccountController> logger, IMapper mapper, IMailModule mailModule) : base(transferSettings, unitOfWork, logger, mapper)
     {
+        MailModule = mailModule;
     }
 
     [Route("Account")]
@@ -139,6 +144,32 @@ public class AccountController : BaseController
         res.OrganisationId = org.Id;
         res.OrganisationName = org.Name;
 
+        return View("CarrierAccountSave", res);
+    }
+
+    [HttpGet]
+    [Route("Carrier/{carrierId}/Account/{accountId}/DropPassword")]
+    public async Task<IActionResult> CarrierAccountDropPassword([Required] Guid carrierId, [Required] Guid accountId, CancellationToken token = default)
+    {
+        var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, token);
+        if (org == null)
+            return NotFound();
+
+        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == org.Id) && ss.Id == accountId, token);
+        if (entity == null)
+            return NotFound();
+
+        var newPass = Password.Generate();
+
+        entity.Password = BCrypt.Net.BCrypt.HashString(newPass);
+        await UnitOfWork.SaveChangesAsync(token);
+
+        await MailModule.SendEmailPlainTextAsync($"Новый пароль для входа: {newPass}", "Новый пароль для входа", entity.Email, true);
+
+        var res = Mapper.Map<OrganisationAccountDto>(entity);
+        res.OrganisationId = org.Id;
+        res.OrganisationName = org.Name;
+        ViewBag.ErrorMsg = "Новый пароль отправлен пользователю.";
         return View("CarrierAccountSave", res);
     }
 

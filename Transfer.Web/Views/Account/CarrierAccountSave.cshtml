@@ -175,6 +175,15 @@
                     </div>
                 }
             </div>
+            @if (!Model.Id.IsNullOrEmpty())
+            {
+                <div class="row blank-row"></div>
+                <div class="row form-row">
+                    <div class="t-col col-3 col-md-2 offset-9 offset-md-10 text-end">
+                        <button type="button" class="button-one-red" onclick="ConfirmPopup('@Url.Action("CarrierAccountDropPassword", "Account", new { carrierId = Model.OrganisationId, accountId = Model.Id })', 'Сбросить пароль?')">Сбросить пароль</button>
+                    </div>
+                </div>
+            }
             <div class="row blank-row"></div>
         </div>
         <div class="row blank-row"></div>

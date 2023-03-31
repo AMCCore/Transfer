@@ -7,6 +7,7 @@ using Transfer.Common.Enums.States;
 using Transfer.Dal;
 using Transfer.Dal.Entities;
 using Transfer.Common.Extensions;
+using Transfer.Common.Utils;
 
 namespace Transfer.Console;
 
