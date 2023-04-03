@@ -11,9 +11,9 @@ public class CarrierSearchFilter : BaseFilterModel<CarrierSearchResultItem>
     {
     }
 
-    public string Name { get; set; }
+    public string Phone { get; set; }
 
-    public string Inn { get; set; }
+    public string InnName { get; set; }
 
     public string City { get; set; }
 

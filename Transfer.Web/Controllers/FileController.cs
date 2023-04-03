@@ -132,7 +132,7 @@ public class FileController : BaseController
                 using var ms = new MemoryStream();
                 fileStream.CopyTo(ms);
                 var byts = ms.ToArray();
-                return File(byts, MimeTypeMap.GetMimeType(ext), static_lib[code], true);
+                return File(byts, MimeTypeMap.GetMimeType(ext));
             }
         }
         

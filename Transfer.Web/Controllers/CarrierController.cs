@@ -35,14 +35,14 @@ public class CarrierController : BaseController
         filter ??= new CarrierSearchFilter(new List<CarrierSearchResultItem>(), TransferSettings.TablePageSize);
         var query = UnitOfWork.GetSet<DbOrganisation>().Where(x => !x.IsDeleted).AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(filter.Inn))
+        if (!string.IsNullOrWhiteSpace(filter.InnName))
         {
-            query = query.Where(x => x.INN.ToLower().Contains(filter.Inn.ToLower()));
+            query = query.Where(x => x.INN.ToLower().Contains(filter.InnName.ToLower()) || x.Name.ToLower().Contains(filter.InnName.ToLower()));
         }
 
-        if (!string.IsNullOrWhiteSpace(filter.Name))
+        if (!string.IsNullOrWhiteSpace(filter.Phone))
         {
-            query = query.Where(x => x.Name.ToLower().Contains(filter.Name.ToLower()));
+            query = query.Where(x => x.Phone.ToLower().Contains(filter.Phone.ToLower()) || x.Accounts.Any(y=>y.Account.Phone.ToLower().Contains(filter.Phone.ToLower())));
         }
 
         if (!string.IsNullOrWhiteSpace(filter.City))
