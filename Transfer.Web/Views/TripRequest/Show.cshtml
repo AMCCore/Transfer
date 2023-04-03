@@ -15,7 +15,11 @@
     var TripOptions = new List<TripOption>();
     var canChoose = Model.State == Transfer.Common.Enums.States.TripRequestStateEnum.Active.GetEnumGuid() && Model.Offers.Any() && Model.Offers.All(x => !x.Chosen) && Security.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, Model.ChartererId);
     var orgOffer = Security.HasOrganisationsForRight(TripRequestRights.MakeOffer).FirstOrDefault();
+    var canSeeOffers = Security.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, Model.ChartererId);
+    var hasSelfOffer = Model.Offers.Where(x => x.CarrierId == orgOffer).Select(x => x.Id).FirstOrDefault();
     var canDoOffer = Model.State == TripRequestStateEnum.Active.GetEnumGuid() && !orgOffer.IsNullOrEmpty() && !Model.Offers.Any(x => x.CarrierId == orgOffer);
+
+    var offers = Model.Offers.Where(x => canSeeOffers || x.Id == hasSelfOffer).ToList();
 }
 
 <div class="container">
@@ -118,14 +122,14 @@
         <div class="row blank-row"></div>
     </div>
     <hr style="color: #fff; border: dashed 1px #007896;">
-    @if (Model.Offers.Any())
+    @if (offers.Any())
     {
         <div class="row">
             <div class="t-col col-10">
                 <h6>Отклики:</h6>
             </div>
         </div>
-        @foreach (var o in Model.Offers)
+        @foreach (var o in offers)
         {
             <div class="row">
                 <div class="col-12">
