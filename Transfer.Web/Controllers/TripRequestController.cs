@@ -184,13 +184,7 @@ public sealed class TripRequestController : BaseStateController
             return Unauthorized();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
-        var input = new SetNextStatesDto
-        {
-            Model = model,
-            StateMachine = StateMachineEnum.TripRequest,
-            OrganisationIds = { entity.ChartererId, entity.OrgCreatorId }
-        };
-        await SetNextStates(input, token);
+        await SetNextStates(model, entity.OrgCreatorId.Value, entity.ChartererId, entity.TripRequestOffers.Where(x => x.Chosen).Select(x => x.CarrierId).FirstOrDefault(), token);
 
         model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
             
@@ -384,6 +378,9 @@ public sealed class TripRequestController : BaseStateController
         return reg;
     }
 
+    /// <summary>
+    /// Выбрать перевозчика (победителя)
+    /// </summary>
     [HttpGet]
     [Route("TripRequest/{requestId}/CarrierChoose/{offerId}")]
     public async Task<IActionResult> TripRequestSetCarrierChoosen(Guid requestId, Guid offerId, CancellationToken token = default)
@@ -394,7 +391,7 @@ public sealed class TripRequestController : BaseStateController
             return BadRequest();
 
 
-        if (_securityService.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, trip.ChartererId))
+        if (_securityService.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, trip.ChartererId) || (trip.ChartererId.IsNullOrEmpty() && _securityService.HasRightForSomeOrganisation(TripRequestRights.CarrierChoose, trip.OrgCreatorId)))
         {
             entity.Chosen = true;
             trip.StateEnum = TripRequestStateEnum.CarrierSelected;
@@ -441,7 +438,7 @@ public sealed class TripRequestController : BaseStateController
     public async Task<IActionResult> MakeOffer(Guid requestId, CancellationToken token = default)
     {
         var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId, token);
-        if (replay == null || replay.IsDeleted || replay.TripRequest.State == TripRequestStateEnum.Archived.GetEnumGuid())
+        if (replay == null || replay.TripRequest.State == TripRequestStateEnum.Archived.GetEnumGuid())
         {
             TempData[errMsgName] = "Поездка не найдена";
             return RedirectToAction(nameof(MakeOfferError));
@@ -464,13 +461,7 @@ public sealed class TripRequestController : BaseStateController
 
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
 
-        var input = new SetNextStatesDto
-        {
-            Model = model,
-            StateMachine = StateMachineEnum.TripRequest,
-            OrganisationIds = { replay.TripRequest.ChartererId, replay.TripRequest.OrgCreatorId }
-        };
-        await SetNextStates(input, token);
+        //await SetNextStates(model, replay.TripRequest.OrgCreatorId.Value, replay.TripRequest.ChartererId, replay.TripRequest.TripRequestOffers.Where(x => x.Chosen).Select(x => x.CarrierId).FirstOrDefault(), token);
 
         model.CarrierId = replay.CarrierId;
         return View("MakeOffer", model);
@@ -502,14 +493,11 @@ public sealed class TripRequestController : BaseStateController
             return RedirectToHome();
 
         var model = Mapper.Map<TripRequestOfferDto>(trip);
-        var input = new SetNextStatesDto { 
-            Model = model,
-            StateMachine = StateMachineEnum.TripRequest,
-            OrganisationIds = { trip.ChartererId, trip.OrgCreatorId }
-        };
-        await SetNextStates(input, token);
+        
+        //await SetNextStates(input, token);
+        
         model.CarrierId = org;
-        return View("MakeOffer", input.Model);
+        return View("MakeOffer", model);
     }
 
     [ValidateAntiForgeryToken]
@@ -745,32 +733,56 @@ public sealed class TripRequestController : BaseStateController
         return q;
     }
 
-    public async Task SetNextStates(SetNextStatesDto input, CancellationToken token = default)
+    private async Task SetNextStates(StateMachineDto model, Guid OrgCreatorId, Guid? ChartererId = null, Guid? CarrierId = null, CancellationToken token = default)
     {
-        var ns = await GetNextStatesFromDB(input.Model, input.StateMachine).ToListAsync(token);
+        var ns = await GetNextStatesFromDB(model, StateMachineEnum.TripRequest).ToListAsync(token);
         var resp = new List<NextStateDto>();
 
         foreach (var s in ns)
         {
-            var fr = s.FromStates.FirstOrDefault(x => x.FromStateId == input.Model.State);
+            var fr = s.FromStates.FirstOrDefault(x => x.FromStateId == model.State);
+            
+            // нет перехода из текущего статуса (-)
             if (fr == null)
                 continue;
 
-            if (fr.RightCode.IsNullOrEmpty() && !_securityService.IsAdmin)
-                continue;
-
-            if (!fr.RightCode.IsNullOrEmpty() && input.OrganisationIds.All(x => !_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, x)))
-                continue;
-                
-
-            resp.Add(new NextStateDto
+            // не указано какое либо отдельное право (+)
+            if (fr.RightCode.IsNullOrEmpty())
             {
-                NextStateId = s.ToStateId,
-                ButtonName = s.ActionName,
-                ConfirmText = (!string.IsNullOrWhiteSpace(s.ConfirmText) ? s.ConfirmText : null)
-            });
+                resp.Add(Mapper.Map<NextStateDto>(s));
+                continue;
+            }
+
+            // в статус "выполнено" 
+            if (s.ToStateId == TripRequestStateEnum.Done.GetEnumGuid())
+            {
+                // только исполнитель может перевести в этот статус
+                if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, CarrierId))
+                {
+                    resp.Add(Mapper.Map<NextStateDto>(s));
+                }
+
+                continue;
+            }
+
+            // в статус "завершено оператором" 
+            if (s.ToStateId == TripRequestStateEnum.CompletedByCreator.GetEnumGuid())
+            {
+                // только создатель может перевести в этот статус
+                if (_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId))
+                {
+                    resp.Add(Mapper.Map<NextStateDto>(s));
+                }
+                continue;
+            }
+
+            // отдельное право указано оно есть или у орг.создателя или у орг.заказчика (+)
+            if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId) || _securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, ChartererId))
+            {
+                resp.Add(Mapper.Map<NextStateDto>(s));
+            }
         }
 
-        input.Model.NextStates = resp;
+        model.NextStates = resp;
     }
 }

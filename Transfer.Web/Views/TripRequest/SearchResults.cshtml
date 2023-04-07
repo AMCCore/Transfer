@@ -1,5 +1,6 @@
 ﻿@model Transfer.Web.Models.TripRequest.RequestSearchFilter
 
+@using Transfer.Common.Enums.AccessRights;
 @using Transfer.Web.Models.Enums
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
@@ -48,13 +49,16 @@
         @Html.DropDownListFor(x => x.PageSize, new List<SelectListItem> { new SelectListItem("1", "1"), new SelectListItem("5", "5"), new SelectListItem("10", "10"), new SelectListItem("25", "25"), new SelectListItem("50", "50") }, null, new { @class = "form-select form-select-sm", @onchange="DisableCheckboxes(this)" })
     </div>
 </div>
-<hr style="color: #007896; border: dashed 1px #007896;">
-<div class="row">
-    <div class="t-col col-12 text-center">
-        <a asp-action="NewTripRequest" asp-controller="TripRequest"><div class="new-assert-link"><i class="fas fa-plus-circle"></i></div></a>
-    </div>
-</div>
 
+@if (Security.HasRightForSomeOrganisation(TripRequestRights.Create))
+{
+    <hr style="color: #007896; border: dashed 1px #007896;">
+    <div class="row">
+        <div class="t-col col-12 text-center">
+            <a asp-action="NewTripRequest" asp-controller="TripRequest"><div class="new-assert-link"><i class="fas fa-plus-circle"></i></div></a>
+        </div>
+    </div>
+}
 @foreach (var c in Model.Results)
 {
     <hr style="color: #fff; border: dashed 1px #007896;">

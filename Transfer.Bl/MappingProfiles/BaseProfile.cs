@@ -199,6 +199,12 @@ public class BaseProfile : Profile
             .ForMember(x => x.LastName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.LastName : string.Empty))
             .ForMember(x => x.MiddleName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.MiddleName : string.Empty))
             .ForMember(x => x.FirstName, opt => opt.MapFrom(o => o.PersonData != null ? o.PersonData.FirstName : string.Empty));
+
+
+        CreateMap<DbStateMachineAction, NextStateDto>()
+            .ForMember(x => x.NextStateId, opt => opt.MapFrom(o => o.ToStateId))
+            .ForMember(x => x.ButtonName, opt => opt.MapFrom(o => o.ActionName))
+            .ForMember(x => x.ConfirmText, opt => opt.MapFrom(o => (!string.IsNullOrWhiteSpace(o.ConfirmText) ? o.ConfirmText : null)));
     }
 
     private static string[] BusOptionsConvert(DbBus bus)

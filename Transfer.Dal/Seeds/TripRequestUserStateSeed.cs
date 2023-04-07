@@ -125,6 +125,7 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.New.GetEnumGuid(),
+                RightCode = TripRequestRights.Create.GetEnumGuid(),
                 StateMachineActionId = ga,
             });
 
@@ -135,6 +136,7 @@ internal static class TripRequestUserStateSeed
                 IsDeleted = false,
                 StateMachine = StateMachineEnum.TripRequest,
                 FromStateId = TripRequestStateEnum.Active.GetEnumGuid(),
+                RightCode = TripRequestRights.Create.GetEnumGuid(),
                 StateMachineActionId = ga,
             });
 
