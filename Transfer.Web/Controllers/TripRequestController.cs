@@ -736,18 +736,18 @@ public sealed class TripRequestController : BaseStateController
 
     #endregion
 
-    protected override IQueryable<DbStateMachineAction> GetNextStatesFromDB(SetNextStatesDto input)
+    protected override IQueryable<DbStateMachineAction> GetNextStatesFromDB(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null)
     {
         var q = UnitOfWork.GetSet<DbStateMachineAction>()
-            .Where(x => !x.IsSystemAction && x.StateMachine == input.StateMachine &&
-            x.FromStates.Any(y => y.StateMachine == input.StateMachine && y.FromStateId == input.Model.State)).Include(x => x.FromStates).OrderBy(x => x.SortingOrder).AsQueryable();
+            .Where(x => !x.IsSystemAction && x.StateMachine == stateMachine &&
+            x.FromStates.Any(y => y.StateMachine == stateMachine && y.FromStateId == model.State)).Include(x => x.FromStates).OrderBy(x => x.SortingOrder).AsQueryable();
 
         return q;
     }
 
-    public override async Task SetNextStates(SetNextStatesDto input, CancellationToken token = default)
+    public async Task SetNextStates(SetNextStatesDto input, CancellationToken token = default)
     {
-        var ns = await GetNextStatesFromDB(input).ToListAsync(token);
+        var ns = await GetNextStatesFromDB(input.Model, input.StateMachine).ToListAsync(token);
         var resp = new List<NextStateDto>();
 
         foreach (var s in ns)
