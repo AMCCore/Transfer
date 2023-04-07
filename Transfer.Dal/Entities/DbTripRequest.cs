@@ -61,6 +61,14 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     [MaxLength(1000)]
     public string? ContactEmail { get; set; }
 
+    /// <summary>
+    /// Создатель заказа
+    /// </summary>
+    public virtual DbOrganisation? OrgCreator { get; set; }
+
+    [ForeignKey(nameof(OrgCreator))]
+    public Guid? OrgCreatorId { get; set; }
+
     #endregion
 
     public string? Description { get; set; }

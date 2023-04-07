@@ -249,8 +249,7 @@ public sealed class TripRequestController : BaseStateController
                 entity.ContactFio = entity.СhartererName;
             }
 
-            //Временное решение!!! не делать так 
-            entity.ChartererId = await UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
+            entity.OrgCreatorId = await UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
 
             entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
             entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
