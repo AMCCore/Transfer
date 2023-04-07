@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfer.Common;
 using Transfer.Common.Extensions;
+using Transfer.Common.Utils;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Console;

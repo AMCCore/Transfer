@@ -67,4 +67,18 @@ public enum TripRequestStateEnum
     [Description("Завершен без подтверждения")]
     [EnumGuid("EF160963-32C5-4734-9CD4-4FB7B73E01F5")]
     CompletedNoConfirm,
+
+    /// <summary>
+    /// Ожидание оценки
+    /// </summary>
+    [Description("Ожидание оценки")]
+    [EnumGuid("22ea881b-a499-4af8-ba02-96c100496e08")]
+    WaitingForEstimate,
+
+    /// <summary>
+    /// Завершен оператором
+    /// </summary>
+    [Description("Завершен оператором")]
+    [EnumGuid("4b7eb23c-e975-405f-84a1-e18937845649")]
+    CompletedByCreator,
 }
