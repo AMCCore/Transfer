@@ -24,7 +24,7 @@ namespace Transfer.Dal.Context
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<DbExternalLogin>().Property(d => d.LoginType).HasConversion(new GuidEnumConverter<ExternalLoginTypeEnum>());
-            modelBuilder.Entity<DbExternalLogin>().HasIndex(d => new { d.LoginType, d.Value }).IsUnique();
+            modelBuilder.Entity<DbExternalLogin>().HasAlternateKey(d => new { d.LoginType, d.Value });
             modelBuilder.Entity<DbOrganisationAccount>().Property(d => d.AccountType).HasConversion(new GuidEnumConverter<OrganisationAccountTypeEnum>());
             modelBuilder.Entity<DbOrganisationFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<OrganisationFileTypeEnum>());
             modelBuilder.Entity<DbDriverFile>().Property(d => d.FileType).HasConversion(new GuidEnumConverter<DriverFileTypeEnum>());
@@ -37,9 +37,9 @@ namespace Transfer.Dal.Context
             modelBuilder.Entity<DbStateMachineAction>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
             modelBuilder.Entity<DbStateMachineFromStatus>().Property(d => d.StateMachine).HasConversion(new GuidEnumConverter<StateMachineEnum>());
 
-            modelBuilder.Entity<DbAccountRight>().HasIndex(a => new { a.AccountId, a.RightId, a.OrganisationId }).IsUnique();
-            modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.TripRequestId }).IsUnique();
-            modelBuilder.Entity<DbTripRequestIdentifier>().HasIndex(a => new { a.Identifier }).IsUnique();
+            modelBuilder.Entity<DbAccountRight>().HasAlternateKey(a => new { a.AccountId, a.RightId, a.OrganisationId });
+            modelBuilder.Entity<DbTripRequestIdentifier>().HasAlternateKey(a => new { a.TripRequestId });
+            modelBuilder.Entity<DbTripRequestIdentifier>().HasAlternateKey(a => new { a.Identifier });
 
             modelBuilder.DisableCascadeDeleteConvention();
 
