@@ -22,6 +22,7 @@
     </div>
     <form asp-controller="TripRequest" asp-action="OfferSave" method="post" id="mainSaveForm">
         @Html.HiddenFor(x => x.ChartererId)
+        @Html.HiddenFor(x => x.OrgCreatorId)
         @Html.HiddenFor(x => x.LastUpdateTick)
         @Html.HiddenFor(x => x.State)
         @Html.HiddenFor(x => x.Id)

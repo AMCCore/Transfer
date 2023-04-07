@@ -20,11 +20,11 @@ public abstract class BaseStateController : BaseController
     {
     }
 
-    public virtual async Task SetNextStates(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null, CancellationToken token = default)
+    public virtual async Task SetNextStates(SetNextStatesDto input, CancellationToken token = default)
     {
-        var ns = await GetNextStatesFromDB(model, stateMachine, organisationId).ToListAsync(token);
+        var ns = await GetNextStatesFromDB(input).ToListAsync(token);
 
-        model.NextStates = ns.Select(x => new NextStateDto
+        input.Model.NextStates = ns.Select(x => new NextStateDto
         {
             NextStateId = x.ToStateId,
             ButtonName = x.ActionName,
@@ -32,11 +32,11 @@ public abstract class BaseStateController : BaseController
         }).ToList();
     }
 
-    protected virtual IQueryable<DbStateMachineAction> GetNextStatesFromDB(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null)
+    protected virtual IQueryable<DbStateMachineAction> GetNextStatesFromDB(SetNextStatesDto input)
     {
         var q = UnitOfWork.GetSet<DbStateMachineAction>()
-            .Where(x => !x.IsSystemAction && x.StateMachine == stateMachine &&
-            x.FromStates.Any(y => y.StateMachine == stateMachine && y.FromStateId == model.State)).AsQueryable();
+            .Where(x => !x.IsSystemAction && x.StateMachine == input.StateMachine &&
+            x.FromStates.Any(y => y.StateMachine == input.StateMachine && y.FromStateId == input.Model.State)).AsQueryable();
 
         return q;
     }

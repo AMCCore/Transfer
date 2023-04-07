@@ -55,7 +55,7 @@ internal static class TripRequestUserStateSeed
             new DbStateMachineState {
                 Id = TripRequestStateEnum.Canceled.GetEnumGuid(),
                 StateMachine = StateMachineEnum.TripRequest,
-                IsDeleted = false,
+                IsDeleted = true,
                 Name = TripRequestStateEnum.Canceled.GetEnumDescription(),
                 Description = null
             },
@@ -66,17 +66,10 @@ internal static class TripRequestUserStateSeed
                 Name = TripRequestStateEnum.Overdue.GetEnumDescription(),
                 Description = null
             },
-            //new DbStateMachineState {
-            //    Id = Guid.Parse("A005D7AC-9B2D-4234-A78A-0FDCF3659C5F"),
-            //    StateMachine = StateMachineEnum.TripRequest,
-            //    IsDeleted = false,
-            //    Name = "Изменение перевозчика",
-            //    Description = null
-            //},
             new DbStateMachineState {
                 Id = TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid(),
                 StateMachine = StateMachineEnum.TripRequest,
-                IsDeleted = false,
+                IsDeleted = true,
                 Name = TripRequestStateEnum.CompletedNoConfirm.GetEnumDescription(),
                 Description = null
             },
@@ -102,7 +95,12 @@ internal static class TripRequestUserStateSeed
                 Description = null
             },
         };
-        uw.AddIfNotExists(tripRequestUserStates);
+        uw.AddOrUpdate(tripRequestUserStates, (source, destination) => {
+            destination.IsDeleted = source.IsDeleted;
+            destination.Name = source.Name;
+            destination.Description = source.Description;
+            destination.StateMachine = source.StateMachine;
+        });
 
         #region --> отменён
 

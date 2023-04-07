@@ -184,7 +184,13 @@ public sealed class TripRequestController : BaseStateController
             return Unauthorized();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
-        await SetNextStates(model, StateMachineEnum.TripRequest, entity.ChartererId, token);
+        var input = new SetNextStatesDto
+        {
+            Model = model,
+            StateMachine = StateMachineEnum.TripRequest,
+            OrganisationIds = { entity.ChartererId, entity.OrgCreatorId }
+        };
+        await SetNextStates(input, token);
 
         model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
             
@@ -196,14 +202,6 @@ public sealed class TripRequestController : BaseStateController
     public async Task<IActionResult> TripRequestEdit(Guid requestId, CancellationToken token = default)
     {
         return BadRequest();
-
-        var entity = await UnitOfWork.GetSet<DbTripRequest>().FirstOrDefaultAsync(ss => ss.Id == requestId, token);
-        if (entity == null)
-            return NotFound();
-
-        var model = Mapper.Map<TripRequestDto>(entity);
-        await SetNextStates(model, StateMachineEnum.TripRequest, token: token);
-        return View("Save", model);
     }
 
     [HttpGet]
@@ -465,7 +463,15 @@ public sealed class TripRequestController : BaseStateController
         }
 
         var model = Mapper.Map<TripRequestOfferDto>(replay.TripRequest);
-        await SetNextStates(model, StateMachineEnum.TripRequest, replay.TripRequest.ChartererId, token);
+
+        var input = new SetNextStatesDto
+        {
+            Model = model,
+            StateMachine = StateMachineEnum.TripRequest,
+            OrganisationIds = { replay.TripRequest.ChartererId, replay.TripRequest.OrgCreatorId }
+        };
+        await SetNextStates(input, token);
+
         model.CarrierId = replay.CarrierId;
         return View("MakeOffer", model);
     }
@@ -496,9 +502,14 @@ public sealed class TripRequestController : BaseStateController
             return RedirectToHome();
 
         var model = Mapper.Map<TripRequestOfferDto>(trip);
-        await SetNextStates(model, StateMachineEnum.TripRequest, trip.ChartererId, token);
+        var input = new SetNextStatesDto { 
+            Model = model,
+            StateMachine = StateMachineEnum.TripRequest,
+            OrganisationIds = { trip.ChartererId, trip.OrgCreatorId }
+        };
+        await SetNextStates(input, token);
         model.CarrierId = org;
-        return View("MakeOffer", model);
+        return View("MakeOffer", input.Model);
     }
 
     [ValidateAntiForgeryToken]
@@ -725,31 +736,32 @@ public sealed class TripRequestController : BaseStateController
 
     #endregion
 
-    protected override IQueryable<DbStateMachineAction> GetNextStatesFromDB(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null)
+    protected override IQueryable<DbStateMachineAction> GetNextStatesFromDB(SetNextStatesDto input)
     {
         var q = UnitOfWork.GetSet<DbStateMachineAction>()
-            .Where(x => !x.IsSystemAction && x.StateMachine == stateMachine &&
-            x.FromStates.Any(y => y.StateMachine == stateMachine && y.FromStateId == model.State)).Include(x => x.FromStates).OrderBy(x => x.SortingOrder).AsQueryable();
+            .Where(x => !x.IsSystemAction && x.StateMachine == input.StateMachine &&
+            x.FromStates.Any(y => y.StateMachine == input.StateMachine && y.FromStateId == input.Model.State)).Include(x => x.FromStates).OrderBy(x => x.SortingOrder).AsQueryable();
 
         return q;
     }
 
-    public override async Task SetNextStates(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null, CancellationToken token = default)
+    public override async Task SetNextStates(SetNextStatesDto input, CancellationToken token = default)
     {
-        var ns = await GetNextStatesFromDB(model, stateMachine, organisationId).ToListAsync(token);
+        var ns = await GetNextStatesFromDB(input).ToListAsync(token);
         var resp = new List<NextStateDto>();
 
         foreach (var s in ns)
         {
-            var fr = s.FromStates.FirstOrDefault(x => x.FromStateId == model.State);
+            var fr = s.FromStates.FirstOrDefault(x => x.FromStateId == input.Model.State);
             if (fr == null)
                 continue;
 
             if (fr.RightCode.IsNullOrEmpty() && !_securityService.IsAdmin)
                 continue;
 
-            if (!fr.RightCode.IsNullOrEmpty() && !_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, organisationId))
+            if (!fr.RightCode.IsNullOrEmpty() && input.OrganisationIds.All(x => !_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, x)))
                 continue;
+                
 
             resp.Add(new NextStateDto
             {
@@ -759,6 +771,6 @@ public sealed class TripRequestController : BaseStateController
             });
         }
 
-        model.NextStates = resp;
+        input.Model.NextStates = resp;
     }
 }
