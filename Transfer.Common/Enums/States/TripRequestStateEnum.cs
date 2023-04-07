@@ -72,7 +72,7 @@ public enum TripRequestStateEnum
     /// Ожидание оценки
     /// </summary>
     [Description("Ожидание оценки")]
-    [EnumGuid("22ea881b-a499-4af8-ba02-96c100496e08")]
+    [EnumGuid("d08714d8-2f58-4e63-8fb7-72e2eba9b99a")]
     WaitingForEstimate,
 
     /// <summary>

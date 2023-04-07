@@ -9,7 +9,7 @@ public static class Repository
     {
         foreach (var r in data)
         {
-            var entity = uw.GetSet<T>().FirstOrDefault(e => e.Id == r.Id);
+            var entity = uw.Query<T>(true).FirstOrDefault(e => e.Id == r.Id);
             if (entity == null)
             {
                 uw.AddEntity(r, false);
@@ -25,7 +25,7 @@ public static class Repository
 
     public static void AddOrUpdate<T>(this IUnitOfWork uw, T entity, Action<T, T> copy) where T : class, IEntityBase
     {
-        var ext = uw.GetSet<T>().FirstOrDefault(e => e.Id == entity.Id);
+        var ext = uw.Query<T>(true).FirstOrDefault(e => e.Id == entity.Id);
         if (ext == null)
         {
             uw.AddEntity(entity, false);
@@ -40,7 +40,7 @@ public static class Repository
 
     public static void AddOrUpdate<T>(this IUnitOfWork uw, T entity, Expression<Func<T, bool>> predicate, Action<T, T> copy) where T : class, IEntityBase
     {
-        var ext = uw.GetSet<T>().FirstOrDefault(predicate);
+        var ext = uw.Query<T>(true).FirstOrDefault(predicate);
         if (ext == null)
         {
             uw.AddEntity(entity, false);
@@ -55,7 +55,7 @@ public static class Repository
     {
         foreach (var r in data)
         {
-            var entity = await uw.GetSet<T>().FirstOrDefaultAsync(e => e.Id == r.Id, token);
+            var entity = await uw.Query<T>(true).FirstOrDefaultAsync(e => e.Id == r.Id, token);
             if (entity == null)
             {
                 await uw.AddEntityAsync(r, token: token);
@@ -71,7 +71,7 @@ public static class Repository
 
     public static async Task AddOrUpdateAsync<T>(this IUnitOfWork uw, T entity, Action<T, T> copy, CancellationToken token = default) where T : class, IEntityBase
     {
-        var ext = await uw.GetSet<T>().FirstOrDefaultAsync(e => e.Id == entity.Id, token);
+        var ext = await uw.Query<T>(true).FirstOrDefaultAsync(e => e.Id == entity.Id, token);
         if (ext == null)
         {
             await uw.AddEntityAsync(entity, token: token);
@@ -86,7 +86,7 @@ public static class Repository
 
     public static void AddIfNotExists<T>(this IUnitOfWork uw, params T[] data) where T : class, IEntityBase
     {
-        var entitys = uw.GetSet<T>().Select(x => x.Id).ToArray();
+        var entitys = uw.Query<T>(true).Select(x => x.Id).ToArray();
         foreach (var r in data)
         {
             if (entitys.All(x => x != r.Id))
@@ -99,7 +99,7 @@ public static class Repository
 
     public static void AddIfNotExists<T>(this IUnitOfWork uw, ICollection<T> data) where T : class, IEntityBase
     {
-        var entitys = uw.GetSet<T>().Select(x => x.Id).ToArray();
+        var entitys = uw.Query<T>(true).Select(x => x.Id).ToArray();
         foreach (var r in data)
         {
             if (entitys.All(x => x != r.Id))

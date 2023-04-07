@@ -33,26 +33,6 @@ namespace Transfer.Dal.Migrations
                 name: "IX_AccountRights_AccountId_RightId_OrganisationId",
                 table: "AccountRights");
 
-            migrationBuilder.AlterColumn<Guid>(
-                name: "RightId",
-                table: "AccountRights",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "OrganisationId",
-                table: "AccountRights",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier",
-                oldNullable: true);
-
             migrationBuilder.AddUniqueConstraint(
                 name: "AK_TripRequestIdentifiers_Identifier",
                 table: "TripRequestIdentifiers",
@@ -115,22 +95,6 @@ namespace Transfer.Dal.Migrations
             migrationBuilder.DropUniqueConstraint(
                 name: "AK_AccountRights_AccountId_RightId_OrganisationId",
                 table: "AccountRights");
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "RightId",
-                table: "AccountRights",
-                type: "uniqueidentifier",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier");
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "OrganisationId",
-                table: "AccountRights",
-                type: "uniqueidentifier",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TripRequestIdentifiers_Identifier",
