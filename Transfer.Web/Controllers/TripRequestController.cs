@@ -776,8 +776,13 @@ public sealed class TripRequestController : BaseStateController
                 continue;
             }
 
+            //if (s.ToStateId == TripRequestStateEnum.Done.GetEnumGuid() && )
+            //{
+
+            //}
+
             // отдельное право указано оно есть или у орг.создателя или у орг.заказчика (+)
-            if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId) || _securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, ChartererId))
+            if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId) || _securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, ChartererId ?? Guid.Empty))
             {
                 resp.Add(Mapper.Map<NextStateDto>(s));
             }
