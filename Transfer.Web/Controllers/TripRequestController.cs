@@ -184,7 +184,7 @@ public sealed class TripRequestController : BaseStateController
             return Unauthorized();
 
         var model = Mapper.Map<TripRequestWithOffersDto>(entity);
-        await SetNextStates(model, entity.OrgCreatorId.Value, entity.ChartererId, entity.TripRequestOffers.Where(x => x.Chosen).Select(x => x.CarrierId).FirstOrDefault(), token);
+        await SetNextStates(model, entity.OrgCreatorId.Value, entity.TripDate, entity.ChartererId, entity.TripRequestOffers.Where(x => x.Chosen).Select(x => x.CarrierId).FirstOrDefault(), token);
 
         model.Offers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => !x.IsDeleted && x.TripRequestId == requestId).Include(x => x.Carrier).Select(x => Mapper.Map<TripRequestOfferSearchResultItem>(x)).ToListAsync(token);
             
@@ -200,15 +200,24 @@ public sealed class TripRequestController : BaseStateController
 
     [HttpGet]
     [Route("TripRequest/New")]
-    public IActionResult NewTripRequest()
+    public async Task<IActionResult> NewTripRequest(CancellationToken token = default)
     {
         if (!_securityService.HasRightForSomeOrganisation(TripRequestRights.Create))
             return Unauthorized();
+
+        var user = await UnitOfWork.GetSet<DbAccount>().Include(x => x.PersonData).FirstOrDefaultAsync(x => x.Id == _securityService.CurrentAccountId, token);
+        var orgs = user.Organisations.Select(x => x.Organisation).OrderBy(x => x.Id).ToList();
+
 
         return View("Save", new TripRequestDto
         {
             TripDate = DateTime.Now.AddDays(1).ChangeTime(9, 0),
             PaymentType = (int)PaymentTypeEnum.Checking,
+            ContactFio = $"{user.PersonData.LastName} {user.PersonData.FirstName}",
+            ContactEmail = user.Email,
+            ContactPhone = user.Phone,
+            ChartererName = orgs.Count > 1 ? string.Empty : orgs.Select(x => x.Name).FirstOrDefault(),
+            //ChartererId = orgs.Count > 1 ? null : orgs.Select(x => x.Id).FirstOrDefault()
         });
     }
 
@@ -733,7 +742,7 @@ public sealed class TripRequestController : BaseStateController
         return q;
     }
 
-    private async Task SetNextStates(StateMachineDto model, Guid OrgCreatorId, Guid? ChartererId = null, Guid? CarrierId = null, CancellationToken token = default)
+    private async Task SetNextStates(StateMachineDto model, Guid OrgCreatorId, DateTime TripDate, Guid? ChartererId = null, Guid? CarrierId = null, CancellationToken token = default)
     {
         var ns = await GetNextStatesFromDB(model, StateMachineEnum.TripRequest).ToListAsync(token);
         var resp = new List<NextStateDto>();
@@ -775,11 +784,6 @@ public sealed class TripRequestController : BaseStateController
                 }
                 continue;
             }
-
-            //if (s.ToStateId == TripRequestStateEnum.Done.GetEnumGuid() && )
-            //{
-
-            //}
 
             // отдельное право указано оно есть или у орг.создателя или у орг.заказчика (+)
             if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId) || _securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, ChartererId ?? Guid.Empty))
