@@ -774,6 +774,12 @@ public sealed class TripRequestController : BaseStateController
                 continue;
             }
 
+            // в статус "завершено оператором" или "выполнен" только после наступления даты поездки
+            if ((s.ToStateId == TripRequestStateEnum.CompletedByCreator.GetEnumGuid() || s.ToStateId == TripRequestStateEnum.Done.GetEnumGuid()) && TripDate < DateTime.Now)
+            {
+                continue;
+            }
+
             // в статус "завершено оператором" 
             if (s.ToStateId == TripRequestStateEnum.CompletedByCreator.GetEnumGuid())
             {
@@ -784,6 +790,8 @@ public sealed class TripRequestController : BaseStateController
                 }
                 continue;
             }
+
+            
 
             // отдельное право указано оно есть или у орг.создателя или у орг.заказчика (+)
             if(_securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, OrgCreatorId) || _securityService.HasRightForSomeOrganisation((Guid)fr.RightCode, ChartererId ?? Guid.Empty))

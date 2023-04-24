@@ -17,12 +17,13 @@ namespace Transfer.Dal.Seeds
         {
             uw.NotChangeLastUpdateTick = true;
             uw.SetRights();
-            uw.SetAccounts();
+            
             uw.SetTripOptions();
             uw.SetRequestTripIds();
             uw.SetTripRequestUserStates();
 
 #if DEBUG
+            uw.SetAccounts();
             uw.SetTestEnvironment();
 #endif
 
@@ -278,6 +279,5 @@ namespace Transfer.Dal.Seeds
                 uw.AddEntity(new DbAccountRight { AccountId = userId, OrganisationId = OrgId, RightId = r });
             }
         }
-
     }
 }
