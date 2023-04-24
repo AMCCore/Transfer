@@ -64,54 +64,85 @@ internal class Program
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             var existingFile = new FileInfo(@"C:\Temp\DR_Final.xlsx");
-            using var package = new ExcelPackage(existingFile);
-            using var connection = new SqlConnection(connectionString);
-            connection.Open();
-            using var tran = connection.BeginTransaction();
 
+            //2383 текущий максимальный id
+            //2382 - всего записей
 
-            var sheet1 = package.Workbook.Worksheets[0];
-            int rowCount = sheet1.Dimension.End.Row;
-            //int i = 1;
-            for (int row = 2; row <= rowCount; row++)
+            string[] fileEntries = Directory.GetFiles("E:\\temp\\DR");
+
+            for (int j = 0; j < fileEntries.Length; j++)
             {
-                var product = sheet1.Cells[row, 1].Value?.ToString();
-                var infsys = sheet1.Cells[row, 2].Value?.ToString();
-                var infsysId = GetOrAddInfSys(tran, infsys, product);
+                System.Console.WriteLine(fileEntries[j]);
+                using var package = new ExcelPackage(fileEntries[j]);
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+                using var tran = connection.BeginTransaction();
 
-                using var command2 = new SqlCommand("INSERT INTO [dbo].[DR_VM] ([InfSysId],[Name],[VMType],[CPU],[RAM],[HDD],[LAN],[PTAF],[ZDK],[CriticalDescr],[Descr]) VALUES (@infsysId, @name, @vm_type, @CPU, @RAM, @HDD, @LAN, @PTAF, @ZDK, @CriticalDescr, @Descr)", tran.Connection);
-                command2.Parameters.AddWithValue("infsysId", infsysId);
-                command2.Parameters.AddWithValue("name", sheet1.Cells[row, 4].Value?.ToString());
-                var vm_type = sheet1.Cells[row, 3].Value?.ToString();
-                if(!string.IsNullOrWhiteSpace(vm_type))
-                    command2.Parameters.AddWithValue("vm_type", vm_type);
-                else
-                    command2.Parameters.AddWithValue("vm_type", DBNull.Value);
 
-                command2.Parameters.AddWithValue("CPU", (sheet1.Cells[row, 5].Value as int?) ?? 0);
-                command2.Parameters.AddWithValue("RAM", (sheet1.Cells[row, 6].Value as int?) ?? 0);
-                command2.Parameters.AddWithValue("HDD", (sheet1.Cells[row, 7].Value as int?) ?? 0);
-                command2.Parameters.AddWithValue("LAN", (sheet1.Cells[row, 8].Value as int?) ?? 0);
-                command2.Parameters.AddWithValue("PTAF", string.Equals(sheet1.Cells[row, 9].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
-                command2.Parameters.AddWithValue("ZDK", string.Equals(sheet1.Cells[row, 10].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
-                var CriticalDescr = sheet1.Cells[row, 11].Value?.ToString();
-                if (!string.IsNullOrWhiteSpace(CriticalDescr))
-                    command2.Parameters.AddWithValue("CriticalDescr", CriticalDescr);
-                else
-                    command2.Parameters.AddWithValue("CriticalDescr", DBNull.Value);
+                var sheet1 = package.Workbook.Worksheets[0];
+                int rowCount = sheet1.Dimension.End.Row;
+                //int i = 1;
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    System.Console.WriteLine(row);
+                    var product = "Образование";
+                    var infsys = sheet1.Cells[row, 1].Value?.ToString();
+                    var vm_name = sheet1.Cells[row, 4].Value?.ToString();
+                    if (string.IsNullOrWhiteSpace(vm_name))
+                        continue;
 
-                var Descr = sheet1.Cells[row, 12].Value?.ToString();
-                if (!string.IsNullOrWhiteSpace(Descr))
-                    command2.Parameters.AddWithValue("Descr", Descr);
-                else
-                    command2.Parameters.AddWithValue("Descr", DBNull.Value);
+                    if (!string.Equals("В эксплуатации", sheet1.Cells[row, 2].Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                        || !string.Equals("В эксплуатации", sheet1.Cells[row, 5].Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                        || !string.Equals("Продуктивная", sheet1.Cells[row, 9].Value?.ToString(), StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                command2.Transaction = tran;
-                var res2 = command2.ExecuteNonQuery();
 
+                    using var command0 = new SqlCommand("SELECT Count(1) FROM [dbo].[DR_VM] WHERE [Name] = @name", tran.Connection);
+                    command0.Parameters.AddWithValue("name", vm_name);
+                    command0.Transaction = tran;
+                    var res_count = Convert.ToInt32(command0.ExecuteScalar());
+                    if (res_count > 0)
+                    {
+                        System.Console.WriteLine(vm_name);
+                        continue;
+                    }
+
+                    var infsysId = GetOrAddInfSys(tran, infsys, product);
+
+                    using var command2 = new SqlCommand("INSERT INTO [dbo].[DR_VM] ([InfSysId],[Name],[VMType],[CPU],[RAM],[HDD],[LAN],[PTAF],[ZDK],[CriticalDescr],[Descr]) VALUES (@infsysId, @name, @vm_type, @CPU, @RAM, @HDD, @LAN, @PTAF, @ZDK, @CriticalDescr, @Descr)", tran.Connection);
+                    command2.Parameters.AddWithValue("infsysId", infsysId);
+                    command2.Parameters.AddWithValue("name", vm_name);
+                    var vm_type = sheet1.Cells[row, 3].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(vm_type))
+                        command2.Parameters.AddWithValue("vm_type", vm_type);
+                    else
+                        command2.Parameters.AddWithValue("vm_type", DBNull.Value);
+
+                    command2.Parameters.AddWithValue("CPU", 0);// (sheet1.Cells[row, 5].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("RAM", 0);// (sheet1.Cells[row, 6].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("HDD", 0);// (sheet1.Cells[row, 7].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("LAN", 0);// (sheet1.Cells[row, 8].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("PTAF", string.Equals(sheet1.Cells[row, 15].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
+                    command2.Parameters.AddWithValue("ZDK", string.Equals(sheet1.Cells[row, 15].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
+                    var CriticalDescr = sheet1.Cells[row, 15].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(CriticalDescr))
+                        command2.Parameters.AddWithValue("CriticalDescr", CriticalDescr);
+                    else
+                        command2.Parameters.AddWithValue("CriticalDescr", DBNull.Value);
+
+                    var Descr = sheet1.Cells[row, 15].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(Descr))
+                        command2.Parameters.AddWithValue("Descr", Descr);
+                    else
+                        command2.Parameters.AddWithValue("Descr", DBNull.Value);
+
+                    command2.Transaction = tran;
+                    var res2 = command2.ExecuteNonQuery();
+
+                }
+
+                tran.Commit();
             }
-
-            tran.Commit();
         }
 
         //using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u0283737_trs;Integrated Security=False;User Id=u0283737_trs;Password=7bcB8$1y;");
