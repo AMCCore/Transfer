@@ -22,6 +22,8 @@ namespace Transfer.Dal.Seeds
             uw.SetRequestTripIds();
             uw.SetTripRequestUserStates();
 
+            uw.SetTRKAccounts();
+
 #if DEBUG
             uw.SetAccounts();
             uw.SetTestEnvironment();
@@ -277,6 +279,53 @@ namespace Transfer.Dal.Seeds
             foreach (var r in Rights)
             {
                 uw.AddEntity(new DbAccountRight { AccountId = userId, OrganisationId = OrgId, RightId = r });
+            }
+        }
+
+        private static void SetTRKAccounts(this IUnitOfWork uw)
+        {
+            uw.BeginTransaction();
+
+            var tkTransferId = Guid.Parse("9E56777C-7DF1-4248-ABC4-1B108586E527");
+
+            uw.SetUpdateUserRights("anapa-tktransfer@yandex.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), OrganisationAccessRights.EditUser.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("m1@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m10@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m2@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m3@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m4@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m5@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m6@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m7@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m8@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m9@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("operator@tktransfer.ru", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), OrganisationAccessRights.EditUser.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("rop@tktransfer.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("top@tktransfer.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("Bvs@b2b-trader.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("katerinasuvorova110@gmail.com", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+            uw.SetUpdateUserRights("econom-kursk@mail.ru", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+
+            var fu = uw.GetSet<DbAccount>().FirstOrDefault(x => x.Email == "18011987fa@gmail.com");
+            if(fu != null)
+            {
+                uw.Delete(fu);
+            }
+            uw.Commit();
+        }
+
+        private static void SetUpdateUserRights(this IUnitOfWork uw, string login, Guid? OrgId, params Guid[] Rights)
+        {
+            var account = uw.GetSet<DbAccount>().FirstOrDefault(x => x.Email.ToLower() == login.ToLower());
+            if (account == null)
+                return;
+
+            var rrr = uw.GetSet<DbAccountRight>().Where(x => x.AccountId == account.Id).ToList();
+            uw.DeleteList(rrr);
+
+            foreach(var r in Rights)
+            {
+                uw.AddEntity(new DbAccountRight { OrganisationId = OrgId, AccountId = account.Id, RightId = r });
             }
         }
     }
