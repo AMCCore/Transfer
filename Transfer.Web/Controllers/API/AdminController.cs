@@ -53,7 +53,7 @@ public class AdminController : ControllerBase
             }
 
             var d2 = d1.AddDays(-15);
-            var sts = new[] { TripRequestStateEnum.Overdue.GetEnumGuid(), TripRequestStateEnum.Canceled.GetEnumGuid(), TripRequestStateEnum.Completed.GetEnumGuid(), TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid() };
+            var sts = new[] { TripRequestStateEnum.Overdue.GetEnumGuid(), TripRequestStateEnum.Canceled.GetEnumGuid(), TripRequestStateEnum.Completed.GetEnumGuid(), TripRequestStateEnum.CompletedNoConfirm.GetEnumGuid(), TripRequestStateEnum.CompletedByCreator.GetEnumGuid() };
             var trr2 = await _unitOfWork.GetSet<DbTripRequest>().Where(x => sts.Contains(x.State) && x.LastUpdateTick <= d2.Ticks).ToListAsync(token);
 
             foreach (var tr in trr1)
@@ -73,7 +73,7 @@ public class AdminController : ControllerBase
 
     [HttpPost]
     [Route(nameof(AddAdminUser))]
-    public async Task<IActionResult> AddAdminUser([FromBody] AccountWithPassDto account)
+    private async Task<IActionResult> AddAdminUser([FromBody] AccountWithPassDto account)
     {
         if (!Moduls.Security.Current.HasRightForSomeOrganisation(AdminAccessRights.IsAdmin))
         {

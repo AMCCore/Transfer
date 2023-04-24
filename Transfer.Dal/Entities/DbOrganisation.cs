@@ -122,7 +122,11 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity, IEntityWithDateCre
 
     public virtual ICollection<DbDriver> Drivers { get; set; } = new List<DbDriver>();
 
-    public virtual ICollection<DbTripRequest> TripRequests { get; set; } = new List<DbTripRequest>();
+    [InverseProperty(nameof(DbTripRequest.Charterer))]
+    public virtual ICollection<DbTripRequest> TripRequestCharterers { get; set; } = new List<DbTripRequest>();
+
+    [InverseProperty(nameof(DbTripRequest.OrgCreator))]
+    public virtual ICollection<DbTripRequest> TripRequestCreators { get; set; } = new List<DbTripRequest>();
 
     public OrganisationStateEnum State { get; set; } = OrganisationStateEnum.Checked;
 

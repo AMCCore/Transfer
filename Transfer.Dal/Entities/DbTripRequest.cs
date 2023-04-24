@@ -21,22 +21,10 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     public DateTime DateCreated { get; set; }
 
     [MaxLength(1000)]
-    public string? СhartererName { get; set; }
-
-    [MaxLength(1000)]
     public string AddressFrom { get; set; }
 
     [MaxLength(1000)]
     public string AddressTo { get; set; }
-
-    [MaxLength(1000)]
-    public string? ContactFio { get; set; }
-
-    [MaxLength(1000)]
-    public string? ContactPhone { get; set; }
-
-    [MaxLength(1000)]
-    public string? ContactEmail { get; set; }
 
     public DateTime TripDate { get; set; }
 
@@ -48,10 +36,40 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; } = new List<DbTripRequestOffer>();
 
+    #region Freight (Org. Owner)
+
+    /// <summary>
+    /// Фрахтователь (заказчик)
+    /// </summary>
     public virtual DbOrganisation? Charterer { get; set; }
 
     [ForeignKey(nameof(Charterer))]
     public Guid? ChartererId { get; set; }
+
+    /// <summary>
+    /// Наименование заказчика (если вводится в ручную)
+    /// </summary>
+    [MaxLength(1000)]
+    public string? СhartererName { get; set; }
+
+    [MaxLength(1000)]
+    public string? ContactFio { get; set; }
+
+    [MaxLength(1000)]
+    public string? ContactPhone { get; set; }
+
+    [MaxLength(1000)]
+    public string? ContactEmail { get; set; }
+
+    /// <summary>
+    /// Создатель заказа
+    /// </summary>
+    public virtual DbOrganisation? OrgCreator { get; set; }
+
+    [ForeignKey(nameof(OrgCreator))]
+    public Guid? OrgCreatorId { get; set; }
+
+    #endregion
 
     public string? Description { get; set; }
 

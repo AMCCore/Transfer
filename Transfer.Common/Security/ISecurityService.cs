@@ -8,6 +8,11 @@
         bool IsAuthenticated { get; }
 
         /// <summary>
+        /// Признак административного доступа
+        /// </summary>
+        bool IsAdmin { get; }
+
+        /// <summary>
         /// Идентификатор текущего аккаунта
         /// </summary>
         Guid CurrentAccountId { get; }
@@ -20,12 +25,12 @@
         /// <summary>
         /// Проверка наличия права (для люблой из организаций)
         /// </summary>
-        bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations);
+        bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null);
 
         /// <summary>
         /// Проверка наличия права (для люблой из организаций)
         /// </summary>
-        bool HasRightForSomeOrganisation(Guid right, params Guid[] organisations);
+        bool HasRightForSomeOrganisation(Guid right, Guid? organisation = null);
 
         /// <summary>
         /// Проверка наличия любого из прав
@@ -41,11 +46,11 @@
         /// Список организаций для которых есть хотя бы одно любое право
         /// </summary>
         /// <returns></returns>
-        public Guid[] GetAvailableOrgs();
+        //public Guid[] GetAvailableOrgs();
 
         /// <summary>
         /// Возвращает список прав текущего пользователя
         /// </summary>
-        IDictionary<Guid, IList<Guid>> GetRights();
+        IDictionary<Guid, IList<Guid>> Rights { get; }
     }
 }

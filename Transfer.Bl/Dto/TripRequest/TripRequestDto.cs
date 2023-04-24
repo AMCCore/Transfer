@@ -37,6 +37,8 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public Guid? ChartererId { get; set; }
 
+        public Guid? OrgCreatorId { get; set; }
+
         public bool ChildTrip { get; set; }
 
         public bool StandTrip { get; set; }

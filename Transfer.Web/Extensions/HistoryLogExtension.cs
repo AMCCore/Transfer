@@ -48,6 +48,6 @@ public static class HistoryLogExtension
             EntityId = EntityId,
             Description = Description,
             ActionName = ActionName,
-        }, token);
+        }, token: token);
     }
 }

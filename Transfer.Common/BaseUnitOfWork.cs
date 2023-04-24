@@ -162,7 +162,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
         return entity;
     }
 
-    async Task<T> IUnitOfWork.AddEntityAsync<T>(T entity, CancellationToken token)
+    async Task<T> IUnitOfWork.AddEntityAsync<T>(T entity, bool saveChanges = true, CancellationToken token = default)
     {
         if (entity.Id.IsNullOrEmpty())
         {
@@ -171,22 +171,13 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
 
         await Context.Set<T>().AddAsync(entity, token);
 
-        await SaveChangesAsync(token);
-        Context.Entry(entity).State = EntityState.Detached;
-        entity = await Context.Set<T>().FindAsync(entity.Id);
-
-        return entity;
-    }
-
-    public async Task<T> AddEntityWithoutSaveAsync<T>(T entity, CancellationToken token)
-        where T : class, IEntityBase
-    {
-        if (entity.Id.IsNullOrEmpty())
+        if(saveChanges)
         {
-            entity.Id = Guid.NewGuid();
+            await SaveChangesAsync(token);
+            Context.Entry(entity).State = EntityState.Detached;
+            entity = await Context.Set<T>().FindAsync(new object?[] { entity.Id }, cancellationToken: token);
         }
 
-        await Context.Set<T>().AddAsync(entity, token);
         return entity;
     }
 

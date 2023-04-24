@@ -1,8 +1,12 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Dal;
@@ -12,9 +16,134 @@ namespace Transfer.Console;
 
 internal class Program
 {
+    static int GetOrAddInfSys(SqlTransaction tran, string InfSysName, string ProductName)
+    {
+        using var command1 = new SqlCommand("SELECT TOP 1 a.[Id] FROM [dbo].[DR_InfSys] a INNER JOIN [dbo].[DR_Product] b ON b.[Id] = a.[ProductId] WHERE a.[Name] = @name1 AND b.[Name] = @name2", tran.Connection);
+        command1.Parameters.AddWithValue("name1", InfSysName);
+        command1.Parameters.AddWithValue("name2", ProductName);
+        command1.Transaction = tran;
+        var res = command1.ExecuteScalar();
+        if (res == null)
+        {
+            var productId = GetOrAddProduct(tran, ProductName);
+            using var command2 = new SqlCommand("INSERT INTO [dbo].[DR_InfSys] ([Name], [ProductId]) VALUES (@name, @prid); Select SCOPE_IDENTITY();", tran.Connection);
+            command2.Parameters.AddWithValue("name", InfSysName);
+            command2.Parameters.AddWithValue("prid", productId);
+            command2.Transaction = tran;
+            var res2 = command2.ExecuteScalar();
+            return Convert.ToInt32(res2);
+        }
+        return Convert.ToInt32(res);
+    }
+
+    static int GetOrAddProduct(SqlTransaction tran, string Name)
+    {
+        using var command1 = new SqlCommand("SELECT TOP 1 [Id] FROM [dbo].[DR_Product] WHERE [Name] = @name", tran.Connection);
+        command1.Parameters.AddWithValue("name", Name);
+        command1.Transaction = tran;
+        var res = command1.ExecuteScalar();
+        if(res == null)
+        {
+            using var command2 = new SqlCommand("INSERT INTO [dbo].[DR_Product] ([Name]) VALUES (@name); Select SCOPE_IDENTITY();", tran.Connection);
+            command2.Parameters.AddWithValue("name", Name);
+            command2.Transaction = tran;
+            var res2 = command2.ExecuteScalar();
+            return Convert.ToInt32(res2);
+        }
+
+        return Convert.ToInt32(res);
+    }
+
     static void Main(string[] args)
     {
         System.Console.WriteLine("Hello World!");
+
+        if (true)
+        {
+            string connectionString = @"Data Source=10.126.242.1;Initial Catalog=Metabase;Integrated Security=False;User Id=markinni;Password=DQNd27i6avwCW5Z;";
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var existingFile = new FileInfo(@"C:\Temp\DR_Final.xlsx");
+
+            //2383 текущий максимальный id
+            //2382 - всего записей
+
+            string[] fileEntries = Directory.GetFiles("E:\\temp\\DR");
+
+            for (int j = 0; j < fileEntries.Length; j++)
+            {
+                System.Console.WriteLine(fileEntries[j]);
+                using var package = new ExcelPackage(fileEntries[j]);
+                using var connection = new SqlConnection(connectionString);
+                connection.Open();
+                using var tran = connection.BeginTransaction();
+
+
+                var sheet1 = package.Workbook.Worksheets[0];
+                int rowCount = sheet1.Dimension.End.Row;
+                //int i = 1;
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    System.Console.WriteLine(row);
+                    var product = "Образование";
+                    var infsys = sheet1.Cells[row, 1].Value?.ToString();
+                    var vm_name = sheet1.Cells[row, 4].Value?.ToString();
+                    if (string.IsNullOrWhiteSpace(vm_name))
+                        continue;
+
+                    if (!string.Equals("В эксплуатации", sheet1.Cells[row, 2].Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                        || !string.Equals("В эксплуатации", sheet1.Cells[row, 5].Value?.ToString(), StringComparison.OrdinalIgnoreCase)
+                        || !string.Equals("Продуктивная", sheet1.Cells[row, 9].Value?.ToString(), StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+
+                    using var command0 = new SqlCommand("SELECT Count(1) FROM [dbo].[DR_VM] WHERE [Name] = @name", tran.Connection);
+                    command0.Parameters.AddWithValue("name", vm_name);
+                    command0.Transaction = tran;
+                    var res_count = Convert.ToInt32(command0.ExecuteScalar());
+                    if (res_count > 0)
+                    {
+                        System.Console.WriteLine(vm_name);
+                        continue;
+                    }
+
+                    var infsysId = GetOrAddInfSys(tran, infsys, product);
+
+                    using var command2 = new SqlCommand("INSERT INTO [dbo].[DR_VM] ([InfSysId],[Name],[VMType],[CPU],[RAM],[HDD],[LAN],[PTAF],[ZDK],[CriticalDescr],[Descr]) VALUES (@infsysId, @name, @vm_type, @CPU, @RAM, @HDD, @LAN, @PTAF, @ZDK, @CriticalDescr, @Descr)", tran.Connection);
+                    command2.Parameters.AddWithValue("infsysId", infsysId);
+                    command2.Parameters.AddWithValue("name", vm_name);
+                    var vm_type = sheet1.Cells[row, 3].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(vm_type))
+                        command2.Parameters.AddWithValue("vm_type", vm_type);
+                    else
+                        command2.Parameters.AddWithValue("vm_type", DBNull.Value);
+
+                    command2.Parameters.AddWithValue("CPU", 0);// (sheet1.Cells[row, 5].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("RAM", 0);// (sheet1.Cells[row, 6].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("HDD", 0);// (sheet1.Cells[row, 7].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("LAN", 0);// (sheet1.Cells[row, 8].Value as int?) ?? 0);
+                    command2.Parameters.AddWithValue("PTAF", string.Equals(sheet1.Cells[row, 15].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
+                    command2.Parameters.AddWithValue("ZDK", string.Equals(sheet1.Cells[row, 15].Value?.ToString(), "Да", StringComparison.CurrentCultureIgnoreCase));
+                    var CriticalDescr = sheet1.Cells[row, 15].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(CriticalDescr))
+                        command2.Parameters.AddWithValue("CriticalDescr", CriticalDescr);
+                    else
+                        command2.Parameters.AddWithValue("CriticalDescr", DBNull.Value);
+
+                    var Descr = sheet1.Cells[row, 15].Value?.ToString();
+                    if (!string.IsNullOrWhiteSpace(Descr))
+                        command2.Parameters.AddWithValue("Descr", Descr);
+                    else
+                        command2.Parameters.AddWithValue("Descr", DBNull.Value);
+
+                    command2.Transaction = tran;
+                    var res2 = command2.ExecuteNonQuery();
+
+                }
+
+                tran.Commit();
+            }
+        }
 
         //using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u0283737_trs;Integrated Security=False;User Id=u0283737_trs;Password=7bcB8$1y;");
         using var uc = new UnitOfWork("Data Source=31.31.196.202;Initial Catalog=u1617627_trs;Integrated Security=False;User Id=u1617627_trs;Password=1Ov8b@o9;");
@@ -23,7 +152,7 @@ internal class Program
 
         uc.NotChangeLastUpdateTick = false;
 
-        if(false)
+        if (false)
         {
             var ee = uc.GetSet<DbDriver>().ToList();
             foreach(var e in ee)
@@ -33,7 +162,7 @@ internal class Program
             }
         }
 
-        if(true)
+        if(false)
         {
             var jopa = new Dictionary<Guid?, IList<Guid>>();
             jopa.Add(Guid.Empty, new List<Guid> { Guid.Parse("65CAE23E-2057-40EA-8967-BEFE0CF8E41F"), Guid.Parse("C8567735-785F-4416-9509-AAEC72AFC2EB") });

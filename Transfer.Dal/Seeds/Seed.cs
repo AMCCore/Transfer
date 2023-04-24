@@ -17,14 +17,18 @@ namespace Transfer.Dal.Seeds
         {
             uw.NotChangeLastUpdateTick = true;
             uw.SetRights();
-            uw.SetAccounts();
+            
             uw.SetTripOptions();
             uw.SetRequestTripIds();
             uw.SetTripRequestUserStates();
 
+            uw.SetTRKAccounts();
 
-            //uw.SetTestOrganisations();
-            //uw.SetTestRequestTrips();
+#if DEBUG
+            uw.SetAccounts();
+            uw.SetTestEnvironment();
+#endif
+
         }
 
         private static void SetAccounts(this IUnitOfWork uw)
@@ -46,7 +50,6 @@ namespace Transfer.Dal.Seeds
             }};
             uw.AddIfNotExists(pd);
 
-
             var accounts = new List<DbAccount> {
                 new DbAccount {
                     Id = adminId,
@@ -58,12 +61,16 @@ namespace Transfer.Dal.Seeds
                 }
             };
 
+#if !DEBUG
+
             uw.AddOrUpdate(accounts, (source, destination) =>
             {
                 destination.Email = source.Email;
                 destination.Password = source.Password;
                 destination.PersonDataId = source.PersonDataId;
             });
+
+#endif
 
             var accr = new List<DbAccountRight>
             {
@@ -76,7 +83,7 @@ namespace Transfer.Dal.Seeds
                     OrganisationId = null
                 }
             };
-            uw.AddIfNotExists(accr);
+            //uw.AddIfNotExists(accr);
 
         }
 
@@ -96,136 +103,6 @@ namespace Transfer.Dal.Seeds
             uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
         }
 
-        private static void SetTestOrganisations(this IUnitOfWork uw)
-        {
-            var prgs = new List<DbOrganisation>
-            {
-                new DbOrganisation
-                {
-                    Id = Guid.Parse("3F604C4E-5F64-4A6E-9A0E-489FC9EDCE3F"),
-                    Name = "Рога и Копыта",
-                    FullName = "ООО Рога и Копыта",
-                    Checked = true,
-                    DirectorFio = "DirectorFio",
-                    DirectorPosition = "DirectorPosition",
-                    Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
-                    IsDeleted = false,
-                    Rating = 99.5,
-                    City = "Геленджик",
-                    INN = "5390730577",
-                    OGRN = "2052931098361",
-                    LastUpdateTick = DateTime.Now.Ticks
-                },
-                new DbOrganisation
-                {
-                    Id = Guid.Parse("77B414CD-F165-448B-B8A1-FCDBD14EFA7C"),
-                    Name = "Копыта и Копыта",
-                    FullName = "ООО Копыта и Копыта",
-                    Checked = true,
-                    DirectorFio = "DirectorFio",
-                    DirectorPosition = "DirectorPosition",
-                    Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 5",
-                    IsDeleted = false,
-                    Rating = 99.5,
-                    City = "Геленджик",
-                    INN = "8799526752",
-                    OGRN = "7073663895199",
-                    LastUpdateTick = DateTime.Now.Ticks
-                }
-
-            };
-            uw.AddIfNotExists(prgs);
-        }
-
-        private static void SetTestRequestTrips(this IUnitOfWork uw)
-        {
-            var tr = new List<DbTripRequest> {
-                new DbTripRequest {
-                    Id = Guid.Parse("911C29AC-A98D-4102-9410-DC03D1727D3A"),
-                    AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 36, стр 5",
-                    AddressTo = "Россия, Краснодарский край, Майкоп, Улица Адмирала Проценко, дом 1",
-                    ContactEmail = string.Empty,
-                    ContactFio = string.Empty,
-                    ContactPhone = string.Empty,
-                    TripDate = new DateTime(2022, 3, 1),
-                    Passengers = 10,
-                },
-                new DbTripRequest {
-                    Id = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    ContactEmail = string.Empty,
-                    ContactFio = string.Empty,
-                    ContactPhone = string.Empty,
-                    AddressFrom = "Россия, Крым, Ялта, Улица Сталина, дом 2, стр 5",
-                    AddressTo = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 1",
-                    TripDate = new DateTime(2022, 3, 4),
-                    Passengers = 15,
-                },
-                new DbTripRequest {
-                    Id = Guid.Parse("0DDF23B0-2C56-4ED0-AC05-659AE66D104C"),
-                    ContactEmail = string.Empty,
-                    ContactFio = string.Empty,
-                    ContactPhone = string.Empty,
-                    AddressTo = "Россия, Крым, Ялта, Улица Сталина дом 2, стр 5",
-                    AddressFrom = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко, дом 1",
-                    TripDate = new DateTime(2022, 3, 6),
-                    Passengers = 15,
-                },
-                new DbTripRequest {
-                    Id = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    ContactEmail = string.Empty,
-                    ContactFio = string.Empty,
-                    ContactPhone = string.Empty,
-                    AddressFrom = "Россия, Москва, Ломоносовский проспект, дом 3, к1",
-                    AddressTo = "Россия, Ханты-Мансийский автономный округ, Когалым, Улица Молодёжная, дом 19",
-                    TripDate = new DateTime(2022, 2, 1),
-                    Passengers = 1,
-                },
-                new DbTripRequest {
-                    Id = Guid.Parse("64854EBF-A65D-410C-9988-F5F81399A88F"),
-                    ContactEmail = string.Empty,
-                    ContactFio = string.Empty,
-                    ContactPhone = string.Empty,
-                    AddressFrom = "Россия, Ханты-Мансийский автономный округ, Когалым, Улица Молодёжная, дом 19",
-                    AddressTo = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 1",
-                    TripDate = new DateTime(2022, 5, 1),
-                    Passengers = 25,
-                },
-            };
-
-            uw.AddIfNotExists(tr);
-
-            var to = new List<DbTripRequestOption> {
-                new DbTripRequestOption {
-                    Id = Guid.Parse("CF8B46FB-117F-4A81-83CC-E6DC4D208142"),
-                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
-                },
-                new DbTripRequestOption {
-                    Id = Guid.Parse("2A4673EA-E9F7-4280-861A-DB1BBA0A8962"),
-                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
-                },
-                new DbTripRequestOption {
-                    Id = Guid.Parse("44597BCF-B59D-4E39-8DAB-9BA6CAD60DAD"),
-                    TripRequestId = Guid.Parse("2EFF1D50-B439-4D61-9253-694DF86D10A1"),
-                    TripOptionId = TripOptionsEnum.TripGuide.GetEnumGuid()
-                },
-                new DbTripRequestOption {
-                    Id = Guid.Parse("702CFBE8-CA87-411C-BF18-AB78D93E0889"),
-                    TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    TripOptionId = TripOptionsEnum.TripGuide.GetEnumGuid()
-                },
-                new DbTripRequestOption {
-                    Id = Guid.Parse("5B9A34E3-E741-497C-BE29-FE2AB8EF6FAB"),
-                    TripRequestId = Guid.Parse("CC34A40C-DAF3-4768-823C-9C56B653B4A1"),
-                    TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
-                },
-
-            };
-            uw.AddIfNotExists(to);
-
-        }
-
         private static void SetRequestTripIds(this IUnitOfWork uw)
         {
             var reqs = uw.GetSet<DbTripRequest>().Where(x => !x.Identifiers.Any()).OrderBy(x => x.DateCreated).Select(x => x.Id).ToList();
@@ -237,6 +114,218 @@ namespace Transfer.Dal.Seeds
                     TripRequestId = req,
                     LastUpdateTick = DateTime.Now.Ticks
                 });
+            }
+        }
+
+        private static void SetTestEnvironment(this IUnitOfWork uw)
+        {
+            var regId = Guid.Parse("6CBCC2D0-D3CE-4515-9E49-464A413D1CEC"); //Краснодарский край
+
+            var o1 = Guid.Parse("66773acf-951b-4552-ac64-f2d4a4b26c5e");
+            uw.AddIfNotExists(new DbOrganisation
+            {
+                Id = o1,
+                Name = "Рога и Копыта 1",
+                FullName = "ООО Рога и Копыта 1",
+                Checked = true,
+                DirectorFio = "DirectorFio",
+                DirectorPosition = "DirectorPosition",
+                Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 1",
+                IsDeleted = false,
+                Rating = 99.5,
+                City = "Геленджик",
+                INN = "0000000001",
+                OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+            });
+            uw.AddIfNotExists(new DbOrganisationWorkingArea
+            {
+                Id = Guid.Parse("85858669-7bbb-4de3-986f-25453b9a887f"),
+                OrganisationId = o1,
+                RegionId = regId
+            });
+
+            var o2 = Guid.Parse("ca291304-1a31-4ddd-8cf2-8e27ea0fa010");
+            uw.AddIfNotExists(new DbOrganisation
+            {
+                Id = o2,
+                Name = "Рога и Копыта 2",
+                FullName = "ООО Рога и Копыта 2",
+                Checked = true,
+                DirectorFio = "DirectorFio",
+                DirectorPosition = "DirectorPosition",
+                Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 2",
+                IsDeleted = false,
+                Rating = 99.5,
+                City = "Геленджик",
+                INN = "0000000002",
+                OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks
+            });
+            uw.AddIfNotExists(new DbOrganisationWorkingArea
+            {
+                Id = Guid.Parse("3ac5ebc4-f7e9-4d76-99a5-970b21929605"),
+                OrganisationId = o2,
+                RegionId = regId
+            });
+
+            var o3 = Guid.Parse("6feeef0c-5b70-4ce6-95cc-8c46b874a09b");
+            uw.AddIfNotExists(new DbOrganisation
+            {
+                Id = o3,
+                Name = "Рога и Копыта 3",
+                FullName = "ООО Рога и Копыта 3",
+                Checked = true,
+                DirectorFio = "DirectorFio",
+                DirectorPosition = "DirectorPosition",
+                Address = "Россия, Краснодарский край, Геленджик, Улица Адмирала Проценко дом 36, стр 3",
+                IsDeleted = false,
+                Rating = 99.5,
+                City = "Геленджик",
+                INN = "0000000003",
+                OGRN = "2052931098361",
+                Email = string.Empty,
+                FactAddress = string.Empty,
+                Phone = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks
+            });
+            uw.AddIfNotExists(new DbOrganisationWorkingArea
+            {
+                Id = Guid.Parse("a63b357a-83c2-44b0-91bc-1e94bdf8bc21"),
+                OrganisationId = o3,
+                RegionId = regId
+            });
+
+            uw.CreateTestUser("ОСЗ1", "nx@9&K3zUZXAVS&", Guid.Parse("1c8a0d6d-c81f-4b7a-a774-54c9bf6a6aa7"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid());
+            uw.CreateTestUser("ОСО2", "W9Ed5MP4p3Hm4^$", Guid.Parse("b42a15de-3c3c-43d6-97c8-44c29d565b62"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ОСО3", "^9o2G3^85ptox%9", Guid.Parse("6022aace-b5bc-4895-a564-dbe1b68f5274"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid());
+
+            uw.CreateTestUser("ПСЗ1", "3wna4MS#Ek$uUbg", Guid.Parse("6822872a-38df-49d1-872a-22719382707d"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid());
+            uw.CreateTestUser("ПСЗ12", "N3wuT9#RoYZJ@zx", Guid.Parse("2eaa3796-d0de-4908-91c4-87588cc41391"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid());
+            uw.CreateTestUser("ПСЗ2", "tES9T^VBmjd6kB8", Guid.Parse("87b536c0-63b4-4ea1-9839-3b948a4275d4"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid());
+
+            uw.CreateTestUser("ПСЗ2", "2*ZTR*A!wng*mPj", Guid.Parse("5b0c96f3-5169-4ad1-99b5-4398fec38b38"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ПСО2", "ePGrQYT@$mTP3mc", Guid.Parse("c8c280e1-ea84-4a6b-8d7e-8dd69591becc"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid());
+            uw.CreateTestUser("ПСО3", "S9Tjqb7ag!zvXhN", Guid.Parse("0c1dfadc-ee27-4722-846d-4861cf9d311c"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid());
+
+            uw.CreateTestUser("ПВО1", "F8NAobmmbDj$2rs", Guid.Parse("40fe8e92-ef63-4b9d-affa-e046e3a9b9d3"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО2", "WF$K92uKYSjQ78j", Guid.Parse("caf7d825-9237-418d-ad63-2b477631abd8"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО3", "GLtDFr^Ng!pYeV7", Guid.Parse("232936f5-6e94-429e-8673-934ff20ff8ce"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+            uw.CreateTestUser("ПВО31", "fkZ9w4^X^vq!p5@", Guid.Parse("46361b2d-bf59-4f4c-8aa1-b3af5203339d"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid());
+
+            uw.CreateTestUser("ПЗЗ1", "^aRG8hmPL^EZ5iZ", Guid.Parse("3f69a1dd-26ab-4bef-90e6-ff66207a0690"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid());
+            uw.CreateTestUser("ПЗЗ2", "he@WRs#Evw8HbMM", Guid.Parse("70158ebb-6723-4a57-840e-a065db823182"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid());
+            uw.CreateTestUser("ПЗЗ3", "4oUC@2%DfpW2EH@", Guid.Parse("5a88adb6-e006-45be-8f62-e8d3921ab797"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid());
+            uw.CreateTestUser("ПЗЗ31", "!Gtu6H4EnPhx#fB", Guid.Parse("4e3d7226-b08d-4b15-a46e-40f278690fd2"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid());
+
+            uw.CreateTestUser("ППВ1", "Txm53q!LKUM^!9!", Guid.Parse("9fbe0b04-2893-4b09-89a6-1d5e8d231b73"), o1, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+            uw.CreateTestUser("ППВ2", "CV3C4d7M$8d2rqt", Guid.Parse("4b440f0e-4735-4200-8e5d-4c1710e07d46"), o2, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+            uw.CreateTestUser("ППВ3", "KF&eKo3tdW*PZ5V", Guid.Parse("d5a8b8a2-1c0d-4fdf-8fcc-28d44b58fec7"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+            uw.CreateTestUser("ППВ31", "5q74mrU!$TFHMQE", Guid.Parse("399a4b66-dc56-4cc4-b6c6-527b65e807fc"), o3, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+        }
+
+        private static void CreateTestUser(this IUnitOfWork uw, string Name, string Pass, Guid userId, Guid OrgId, params Guid[] Rights)
+        {
+            uw.AddOrUpdate(new DbAccount
+            {
+                Id = userId,
+                Email = Name,
+                Password = BCrypt.Net.BCrypt.HashString(Pass),
+                LastUpdateTick = DateTime.Now.Ticks,
+                DateCreated = DateTime.Now,
+            },
+            //acc => acc.Email.ToLower() == Name.ToLower(),
+            (source, destination) =>
+            {
+                destination.Email = source.Email;
+                destination.Password = source.Password;
+            });
+
+            var acc = uw.GetSet<DbAccount>().First(x => x.Id == userId);
+            if (acc.PersonDataId == null)
+            {
+                var g1 = Guid.NewGuid();
+                uw.AddEntity(new DbPersonData
+                {
+                    Id = g1,
+                    FirstName = $"Иванов ({Name})",
+                    LastName = "Иванов",
+                    MiddleName = "Онотольевич",
+                    BirthDate = new DateTime(1900, 3, 6),
+                    IsMale = true,
+                    DocumentSeries = string.Empty,
+                    DocumentNumber = string.Empty,
+                    DocumentSubDivisionCode = string.Empty,
+                    DocumentIssurer = string.Empty,
+                    DocumentDateOfIssue = DateTime.MinValue,
+                    RegistrationAddress = string.Empty
+                }, false);
+                acc.PersonDataId = g1;
+                uw.SaveChanges();
+            }
+
+            var accOrgs = uw.GetSet<DbOrganisationAccount>().Where(x => x.AccountId == userId).ToList();
+            uw.DeleteList(accOrgs);
+            uw.AddEntity(new DbOrganisationAccount { AccountId = userId, AccountType = OrganisationAccountTypeEnum.Director, OrganisationId = OrgId });
+
+            var accRights = uw.GetSet<DbAccountRight>().Where(x => x.AccountId == userId).ToList();
+            uw.DeleteList(accRights);
+            foreach (var r in Rights)
+            {
+                uw.AddEntity(new DbAccountRight { AccountId = userId, OrganisationId = OrgId, RightId = r });
+            }
+        }
+
+        private static void SetTRKAccounts(this IUnitOfWork uw)
+        {
+            uw.BeginTransaction();
+
+            var tkTransferId = Guid.Parse("9E56777C-7DF1-4248-ABC4-1B108586E527");
+
+            uw.SetUpdateUserRights("anapa-tktransfer@yandex.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), OrganisationAccessRights.EditUser.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("m1@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m10@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m2@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m3@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m4@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m5@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m6@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m7@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m8@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("m9@tktransfer.ru", tkTransferId, TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid());
+            uw.SetUpdateUserRights("operator@tktransfer.ru", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), OrganisationAccessRights.EditUser.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("rop@tktransfer.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("top@tktransfer.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.Create.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.CarrierChoose.GetEnumGuid(), TripRequestRights.Completed.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid(), OrganisationAccessRights.ViewUserList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("Bvs@b2b-trader.ru", tkTransferId, TripRequestRights.Admin.GetEnumGuid(), OrganisationAccessRights.Admin.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+            uw.SetUpdateUserRights("katerinasuvorova110@gmail.com", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), TripRequestRights.MakeOffer.GetEnumGuid(), TripRequestRights.Done.GetEnumGuid());
+            uw.SetUpdateUserRights("econom-kursk@mail.ru", tkTransferId, TripRequestRights.NewRequestTelegramPush.GetEnumGuid(), TripRequestRights.ViewList.GetEnumGuid(), ReportAccessRights.DataInputReport.GetEnumGuid(), ReportAccessRights.TripRequestReport.GetEnumGuid(), ReportAccessRights.DataTransportInputReport.GetEnumGuid());
+
+            var fu = uw.GetSet<DbAccount>().FirstOrDefault(x => x.Email == "18011987fa@gmail.com");
+            if(fu != null)
+            {
+                uw.Delete(fu);
+            }
+            uw.Commit();
+        }
+
+        private static void SetUpdateUserRights(this IUnitOfWork uw, string login, Guid? OrgId, params Guid[] Rights)
+        {
+            var account = uw.GetSet<DbAccount>().FirstOrDefault(x => x.Email.ToLower() == login.ToLower());
+            if (account == null)
+                return;
+
+            var rrr = uw.GetSet<DbAccountRight>().Where(x => x.AccountId == account.Id).ToList();
+            uw.DeleteList(rrr);
+
+            foreach(var r in Rights)
+            {
+                uw.AddEntity(new DbAccountRight { OrganisationId = OrgId, AccountId = account.Id, RightId = r });
             }
         }
     }

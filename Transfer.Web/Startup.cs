@@ -60,6 +60,7 @@ public class Startup
 
         services.AddHttpContextAccessor();
         services.AddTransient<ISecurityService, SecurityService>();
+        services.AddTransient<ITripRequestSecurityService, TripRequestSecurityService>();
 
         services.AddTransient<IMailModule, MailModule>();
 

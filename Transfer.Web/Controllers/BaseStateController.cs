@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,16 +20,24 @@ public abstract class BaseStateController : BaseController
     {
     }
 
-    public async Task SetNextStates(StateMachineDto model, StateMachineEnum stateMachine, CancellationToken token = default)
+    public virtual async Task SetNextStates(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null, CancellationToken token = default)
+    {
+        var ns = await GetNextStatesFromDB(model, stateMachine, organisationId).ToListAsync(token);
+
+        model.NextStates = ns.Select(x => new NextStateDto
+        {
+            NextStateId = x.ToStateId,
+            ButtonName = x.ActionName,
+            ConfirmText = (!string.IsNullOrWhiteSpace(x.ConfirmText) ? x.ConfirmText : null)
+        }).ToList();
+    }
+
+    protected virtual IQueryable<DbStateMachineAction> GetNextStatesFromDB(StateMachineDto model, StateMachineEnum stateMachine, Guid? organisationId = null)
     {
         var q = UnitOfWork.GetSet<DbStateMachineAction>()
             .Where(x => !x.IsSystemAction && x.StateMachine == stateMachine &&
             x.FromStates.Any(y => y.StateMachine == stateMachine && y.FromStateId == model.State)).AsQueryable();
 
-        var ns = await q.ToListAsync(token);
-
-        model.NextStates = ns.Select(x => new NextStateDto{
-                NextStateId = x.ToStateId, ButtonName = x.ActionName, ConfirmText = (!string.IsNullOrWhiteSpace(x.ConfirmText) ? x.ConfirmText : null)
-            }).ToList();
+        return q;
     }
 }

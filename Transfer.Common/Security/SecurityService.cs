@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -27,19 +28,8 @@ namespace Transfer.Common.Security
         {
             get
             {
-                if (_contextAccessor.HttpContext.Items[CurrentAccountIdKey] == null)
-                {
-                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
-                        x.Type == ClaimTypes.NameIdentifier);
-                    if (claim == null)
-                    {
-                        return Guid.Empty;
-                    }
-
-                    _contextAccessor.HttpContext.Items[CurrentAccountIdKey] = Guid.Parse(claim.Value);
-                }
-
-                return (_contextAccessor.HttpContext.Items[CurrentAccountIdKey] as Guid?) ?? Guid.Empty;
+                var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                return claim == null ? Guid.Empty : Guid.Parse(claim.Value);
             }
         }
 
@@ -47,92 +37,77 @@ namespace Transfer.Common.Security
         {
             get
             {
-                if (_contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] == null)
-                {
-                    var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
-                        x.Type == ClaimTypes.Locality);
-                    _contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] =
-                        Guid.Parse(claim?.Value ?? Guid.Empty.ToString());
-                }
+                var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x =>
+                    x.Type == ClaimTypes.Locality);
 
-                return _contextAccessor.HttpContext.Items[CurrentAccountOrganisationIdKey] as Guid?;
+                return Guid.Parse(claim?.Value ?? Guid.Empty.ToString());
             }
         }
 
         public bool IsAuthenticated => !CurrentAccountId.IsNullOrEmpty();
 
-        public bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations)
+        public bool IsAdmin => GetAdmin();
+
+        public bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null)
         {
-            return HasRightForSomeOrganisation(right.GetEnumGuid(), organisations);
+            return HasRightForSomeOrganisation(right.GetEnumGuid(), organisation);
         }
 
-        public bool HasRightForSomeOrganisation(Guid right, params Guid[] organisations)
+        public bool HasRightForSomeOrganisation(Guid right, Guid? organisation = null)
         {
-            var rights = GetRights();
-
-            if (rights.Any(x => x.Value.Any(y => y == AdminAccessRights.IsAdmin.GetEnumGuid())))
+            if (IsAdmin)
             {
                 return true;
             }
 
-            if(!organisations.Any())
+            if(organisation.HasValue)
             {
-                return rights.Any(s => (s.Key == Guid.Empty) && s.Value.Any(x => x == right));
+                return Rights.Any(s => (s.Key == organisation.Value || s.Key == Guid.Empty) && s.Value.Any(x => x == right));
             }
 
-            foreach(var org in organisations)
-            {
-                if(rights.Any(s => (s.Key == org) && s.Value.Any(x => x == right)))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Rights.Any(s => s.Value.Any(x => x == right));
         }
 
         public Guid[] HasOrganisationsForRight(Enum right)
         {
-            return GetRights().Where(ss => ss.Key != Guid.Empty && ss.Value.Any(x => x == right.GetEnumGuid()))
+            return Rights.Where(ss => ss.Key != Guid.Empty && ss.Value.Any(x => x == right.GetEnumGuid()))
                 .Select(ss => ss.Key)
                 .ToArray();
         }
 
-        public Guid[] GetAvailableOrgs()
-        {
-            var orgs = GetRights().Where(ss => ss.Key != Guid.Empty)
-                .Select(ss => ss.Key)
-                .ToList();
-            orgs.Add(CurrentAccountOrganisationId.GetValueOrDefault());
-            return orgs.ToArray();
-        }
+        private IDictionary<Guid, IList<Guid>> _rights;
 
-        public IDictionary<Guid, IList<Guid>> GetRights()
+        public IDictionary<Guid, IList<Guid>> Rights
         {
-            if (_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] == null)
+            get
             {
                 var claim = _contextAccessor.HttpContext.User?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role);
                 if (claim == null)
                 {
                     return new Dictionary<Guid, IList<Guid>>();
                 }
-
-                var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
-                _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
+                else
+                {
+                    var roles = JsonConvert.DeserializeObject<IDictionary<Guid, IList<Guid>>>(claim.Value);
+                    //_contextAccessor.HttpContext.Items[CurrentAccountRightsKey] = roles;
+                    return roles ?? new Dictionary<Guid, IList<Guid>>();
+                }
             }
-
-            return _contextAccessor.HttpContext.Items[CurrentAccountRightsKey] as IDictionary<Guid, IList<Guid>>;
         }
 
         public bool HasAnyRightForSomeOrganisation(IEnumerable<Enum> rights, Guid? organisation = null)
         {
-            var ex_rights = GetRights();
-            if (ex_rights.Any(x => x.Value.Any(y => y == AdminAccessRights.IsAdmin.GetEnumGuid())))
+            if(IsAdmin)
             {
                 return true;
             }
 
-            return ex_rights.Any(s => (s.Key == organisation || organisation.IsNullOrEmpty()) && s.Value.Any(x => rights.Any(y => y.GetEnumGuid() == x)));
+            return Rights.Any(s => (s.Key == organisation || organisation.IsNullOrEmpty()) && s.Value.Any(x => rights.Any(y => y.GetEnumGuid() == x)));
+        }
+
+        protected virtual bool GetAdmin()
+        {
+            return Rights.Any(x => x.Value.Any(y => y == AdminAccessRights.IsAdmin.GetEnumGuid()));
         }
     }
 }

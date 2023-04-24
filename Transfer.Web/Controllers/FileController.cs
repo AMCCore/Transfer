@@ -54,7 +54,7 @@ public class FileController : BaseController
                 Size = uploadedFile.Length,
                 Extention = fileExtention,
                 ContentType = uploadedFile.ContentType,
-            }, CancellationToken.None);
+            }, token: CancellationToken.None);
 
             await uploadedFile.CopyToAsync(fileStream);
 

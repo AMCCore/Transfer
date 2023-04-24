@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transfer.Dal.Context;
 
@@ -11,9 +12,10 @@ using Transfer.Dal.Context;
 namespace Transfer.Dal.Migrations
 {
     [DbContext(typeof(TransferContext))]
-    partial class TransferContextModelSnapshot : ModelSnapshot
+    [Migration("20230407093142_IndexChangeMigration")]
+    partial class IndexChangeMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1056,9 +1058,6 @@ namespace Transfer.Dal.Migrations
                     b.Property<int?>("LuggageVolume")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("OrgCreatorId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Passengers")
                         .HasColumnType("int");
 
@@ -1081,8 +1080,6 @@ namespace Transfer.Dal.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChartererId");
-
-                    b.HasIndex("OrgCreatorId");
 
                     b.HasIndex("RegionFromId");
 
@@ -1502,12 +1499,8 @@ namespace Transfer.Dal.Migrations
             modelBuilder.Entity("Transfer.Dal.Entities.DbTripRequest", b =>
                 {
                     b.HasOne("Transfer.Dal.Entities.DbOrganisation", "Charterer")
-                        .WithMany("TripRequestCharterers")
+                        .WithMany("TripRequests")
                         .HasForeignKey("ChartererId");
-
-                    b.HasOne("Transfer.Dal.Entities.DbOrganisation", "OrgCreator")
-                        .WithMany("TripRequestCreators")
-                        .HasForeignKey("OrgCreatorId");
 
                     b.HasOne("Transfer.Dal.Entities.DbRegion", "RegionFrom")
                         .WithMany("TripRequestRegionsFrom")
@@ -1518,8 +1511,6 @@ namespace Transfer.Dal.Migrations
                         .HasForeignKey("RegionToId");
 
                     b.Navigation("Charterer");
-
-                    b.Navigation("OrgCreator");
 
                     b.Navigation("RegionFrom");
 
@@ -1632,13 +1623,11 @@ namespace Transfer.Dal.Migrations
 
                     b.Navigation("Files");
 
-                    b.Navigation("TripRequestCharterers");
-
-                    b.Navigation("TripRequestCreators");
-
                     b.Navigation("TripRequestOffers");
 
                     b.Navigation("TripRequestReplays");
+
+                    b.Navigation("TripRequests");
 
                     b.Navigation("WorkingArea");
                 });

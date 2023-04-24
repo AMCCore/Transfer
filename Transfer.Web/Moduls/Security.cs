@@ -61,7 +61,11 @@ public static class Security
         }
     }
 
-    public static void CurrentUserClearCache() => _cacheService?.Remove(GenerateCacheKey());
+    public static void CurrentUserClearCache()
+    {
+        _cacheService?.Remove(GenerateCacheKey());
+        Current?.Rights.Clear();
+    }
 
     private static string GenerateCacheKey()
     {
@@ -70,9 +74,9 @@ public static class Security
 
     public static int ReviewEvents => 15;
 
-    public static bool HasRightForSomeOrganisation(Enum right, params Guid[] organisations)
+    public static bool HasRightForSomeOrganisation(Enum right, Guid? organisation = null)
     {
-        return _securityService.HasRightForSomeOrganisation(right, organisations);
+        return _securityService.HasRightForSomeOrganisation(right, organisation);
     }
 
     public static bool HasAnyRightForSomeOrganisation(IEnumerable<Enum> rights, Guid? organisation = null)
@@ -80,4 +84,8 @@ public static class Security
         return _securityService.HasAnyRightForSomeOrganisation(rights, organisation);
     }
 
+    public static Guid[] HasOrganisationsForRight(Enum right)
+    {
+        return _securityService.HasOrganisationsForRight(right);
+    }
 }
