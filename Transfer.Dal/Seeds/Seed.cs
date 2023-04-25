@@ -316,11 +316,11 @@ namespace Transfer.Dal.Seeds
 
         private static void SetUpdateUserRights(this IUnitOfWork uw, string login, Guid? OrgId, params Guid[] Rights)
         {
-            var account = uw.GetSet<DbAccount>().FirstOrDefault(x => x.Email.ToLower() == login.ToLower());
+            var account = uw.Query<DbAccount>(true).FirstOrDefault(x => x.Email.ToLower() == login.ToLower());
             if (account == null)
                 return;
 
-            var rrr = uw.GetSet<DbAccountRight>().Where(x => x.AccountId == account.Id).ToList();
+            var rrr = uw.Query<DbAccountRight>(true).Where(x => x.AccountId == account.Id).ToList();
             uw.DeleteList(rrr);
 
             foreach(var r in Rights)
