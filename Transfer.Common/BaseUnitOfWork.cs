@@ -291,7 +291,7 @@ public class BaseUnitOfWork<C> : IUnitOfWork where C : DbContext
 
     public IQueryable<T> Query<T>(bool withDeleted = false) where T : class, IEntityBase
     {
-        if (withDeleted && typeof(T).IsAssignableFrom(typeof(ISoftDeleteEntity)))
+        if (withDeleted && typeof(T).GetInterfaces().Contains(typeof(ISoftDeleteEntity)))
         {
             return GetSet<T>().IgnoreQueryFilters();
         }

@@ -93,7 +93,7 @@ public class AuthController : BaseController
 
         var res = roles.GroupBy(sr => sr.OrganisationId ?? Guid.Empty)
             .ToDictionary(g => g.Key,
-                g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId.Value).ToList());
+                g => g.Where(x => !x.Right.IsDeleted).Select(ss => ss.RightId).ToList());
 
         return res;
     }

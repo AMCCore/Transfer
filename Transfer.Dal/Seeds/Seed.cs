@@ -93,6 +93,8 @@ namespace Transfer.Dal.Seeds
             rights.AddRange(Enum.GetValues(typeof(AdminAccessRights)).Cast<AdminAccessRights>().Select(r => DbRight.CreateForSeed(r)));
             rights.AddRange(Enum.GetValues(typeof(TripRequestRights)).Cast<TripRequestRights>().Select(r => DbRight.CreateForSeed(r)));
             rights.AddRange(Enum.GetValues(typeof(AccountAccessRights)).Cast<AccountAccessRights>().Select(r => DbRight.CreateForSeed(r)));
+            rights.AddRange(Enum.GetValues(typeof(ReportAccessRights)).Cast<ReportAccessRights>().Select(r => DbRight.CreateForSeed(r)));
+            rights.AddRange(Enum.GetValues(typeof(OrganisationAccessRights)).Cast<OrganisationAccessRights>().Select(r => DbRight.CreateForSeed(r)));
             uw.AddOrUpdate(rights, (source, destination) => { destination.Name = source.Name; });
         }
 

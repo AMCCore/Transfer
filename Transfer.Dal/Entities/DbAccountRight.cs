@@ -17,12 +17,13 @@ public class DbAccountRight : IEntityBase
     ///     Право пользователя
     /// </summary>
     [ForeignKey(nameof(Right))]
-    public Guid? RightId { get; set; }
+    [Required]
+    public Guid RightId { get; set; }
 
     /// <summary>
     ///     Право пользователя
     /// </summary>
-    public virtual DbRight? Right { get; set; }
+    public virtual DbRight Right { get; set; }
 
     /// <summary>
     ///     УЗ пользователя
