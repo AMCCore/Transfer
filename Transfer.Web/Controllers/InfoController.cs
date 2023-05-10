@@ -20,26 +20,24 @@ public class InfoController : BaseController
     [Route("Info")]
     public IActionResult Home()
     {
-        return View();
+        WriteWrongWayToLog(nameof(InfoController), nameof(Specials));
+        return RedirectToHome();
     }
 
     public IActionResult About()
     {
-        WriteWrongWayToLog(nameof(InfoController), nameof(About));
-        return RedirectToHome();
+        return View();
     }
 
     public IActionResult Normatives()
     {
-        WriteWrongWayToLog(nameof(InfoController), nameof(Normatives));
-        return RedirectToHome();
+        return View();
     }
 
-    [Route("Contacts")]
+    
     public IActionResult Contacts()
     {
-        WriteWrongWayToLog(nameof(InfoController), nameof(Contacts));
-        return RedirectToHome();
+        return View();
     }
 
     [Route("Specials")]
@@ -48,10 +46,10 @@ public class InfoController : BaseController
         WriteWrongWayToLog(nameof(InfoController), nameof(Specials));
         return RedirectToHome();
     }
-
+    
     public IActionResult Documents()
     {
-        WriteWrongWayToLog(nameof(InfoController), nameof(Documents));
+        WriteWrongWayToLog(nameof(InfoController), nameof(Specials));
         return RedirectToHome();
     }
 

@@ -266,6 +266,17 @@ a.link-light-yellow-du {
                 text-decoration: none;
             }
 
+        .bottom .contacts a {
+            color: #0f4c71;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+        }
+
+        .bottom .contacts a:hover {
+            color: #ecbf54;
+            text-decoration: none;
+        }
+
         .bottom .contacts .d {
             color: #0f4c71;
         }
