@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Transfer.Common;
@@ -133,4 +134,18 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity, IEntityWithDateCre
     public virtual ICollection<DbTripRequestReplay> TripRequestReplays { get; set; } = new List<DbTripRequestReplay>();
 
     public virtual ICollection<DbTripRequestOffer> TripRequestOffers { get; set; } = new List<DbTripRequestOffer>();
+
+    /// <summary>
+    ///     VIP
+    /// </summary>
+    [Required]
+    [DefaultValue(false)]
+    public bool IsVIP { get; set; } = false;
+
+    /// <summary>
+    ///     Агрегатор
+    /// </summary>
+    [Required]
+    [DefaultValue(false)]
+    public bool Agregator { get; set; } = false;
 }

@@ -292,6 +292,7 @@ public sealed class TripRequestController : BaseStateController
 
             await SendReplaysToUsers(entity.Id, token);
             await SendReplaysToWatchers(entity.Id, token);
+            await SendReplaysToWatchersAboutVIP(entity.Id, token);
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
@@ -408,7 +409,7 @@ public sealed class TripRequestController : BaseStateController
             await UnitOfWork.AddToHistoryLog(trip, "Перевозчик выбран", $"Перевозчик: {entity.Carrier.Name}({entity.Carrier.Id}), сумма предложения: {entity.Amount}", token);
             await UnitOfWork.AddToHistoryLog(trip, "Статус запроса на перевозку изменён", $"Новый статус: {TripRequestStateEnum.CarrierSelected.GetEnumDescription()}", token);
 
-            await SendChoosenOferToUsers(entity.Id);
+            await SendChoosenOferToUsers(entity.Id, token);
             await SendUnChoosenOferToUsers(trip.Id);
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = entity.TripRequestId });
@@ -625,18 +626,45 @@ public sealed class TripRequestController : BaseStateController
         }
     }
 
+    /// <summary>
+    /// Уведомление менеджеров о новом заказе VIP организаций в ситеме
+    /// </summary>
+    /// <param name="tripRequestId"></param>
+    /// <returns></returns>
+    private async Task SendReplaysToWatchersAboutVIP(Guid tripRequestId, CancellationToken token = default)
+    {
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId, token);
+        var q2 = UnitOfWork.GetSet<DbAccount>().Where(x => !x.IsDeleted && x.Email.ToLower().EndsWith("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
+
+        var botNotificationsManagers = await UnitOfWork.GetSet<DbExternalLogin>().Where(x => !x.IsDeleted && q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
+
+        foreach (var orgUser in botNotificationsManagers.DistinctBy(x => x.Value).ToList())
+        {
+            if (long.TryParse(orgUser.Value, out long chatId))
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"ВНИМАНИЕ! Создан заказ VIP организацией. <a href=\"https://nexttripto.ru/TripRequest/{tripRequestId}\">Перейти</a>");
+
+                _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = chatId,
+                    Message = sb.ToString()
+                });
+            }
+        }
+    }
 
     /// <summary>
     /// Отправка уведомаления о выиграном заказе
     /// </summary>
     /// <param name="offerId"></param>
     /// <returns></returns>
-    private async Task SendChoosenOferToUsers(Guid offerId)
+    private async Task SendChoosenOferToUsers(Guid offerId, CancellationToken token = default)
     {
-        var tripId = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.TripRequest.Identifiers.Select(a => a.Identifier).FirstOrDefault()).FirstOrDefaultAsync();
+        var tripId = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.TripRequest.Identifiers.Select(a => a.Identifier).FirstOrDefault()).FirstOrDefaultAsync(token);
 
         var orgUsers = await UnitOfWork.GetSet<DbTripRequestOffer>().Where(x => x.Id == offerId && !x.IsDeleted).Select(x => x.Carrier).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
-            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync();
+            .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync(token);
 
         foreach (var orgUser in orgUsers)
         {
