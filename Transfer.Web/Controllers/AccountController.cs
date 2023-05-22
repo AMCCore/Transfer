@@ -57,9 +57,9 @@ public class AccountController : BaseController
 
     [ValidateAntiForgeryToken]
     [HttpPost]
-    public async Task<IActionResult> CarrierAccountSave([FromForm] OrganisationAccountDto accountModel)
+    public async Task<IActionResult> CarrierAccountSave([FromForm] OrganisationAccountDto accountModel, CancellationToken token = default)
     {
-        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == accountModel.OrganisationId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == accountModel.OrganisationId, token);
         if (entity == null)
             return NotFound();
 
@@ -71,7 +71,7 @@ public class AccountController : BaseController
 
         if (accountModel.Id.IsNullOrEmpty())
         {
-            if(await UnitOfWork.GetSet<DbAccount>().AnyAsync(ss => ss.Email == accountModel.Email, CancellationToken.None))
+            if(await UnitOfWork.GetSet<DbAccount>().AnyAsync(ss => ss.Email == accountModel.Email, token))
             {
                 ViewBag.ErrorMsg = "Пользователь с таким Email уже имеется в системе";
                 return View("CarrierAccountSave", accountModel);
@@ -97,23 +97,23 @@ public class AccountController : BaseController
 
         };
 
-            await UnitOfWork.AddEntityAsync(account, token: CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(account, token: token);
 
             accountModel.Id = account.Id;
             await UnitOfWork.AddEntityAsync(new DbOrganisationAccount { 
                 AccountId = account.Id,
                 OrganisationId = accountModel.OrganisationId,
                 AccountType = Common.Enums.OrganisationAccountTypeEnum.Operator
-            }, token: CancellationToken.None);
+            }, token: token);
         }
         else
         {
-            var account = await UnitOfWork.GetSet<DbAccount>().Include(x => x.PersonData).FirstOrDefaultAsync(ss => ss.Id == accountModel.Id, CancellationToken.None);
+            var account = await UnitOfWork.GetSet<DbAccount>().Include(x => x.PersonData).FirstOrDefaultAsync(ss => ss.Id == accountModel.Id, token);
 
             if (account.LastUpdateTick != accountModel.LastUpdateTick)
                 throw new InvalidOperationException();
 
-            if (await UnitOfWork.GetSet<DbAccount>().AnyAsync(x => x.Email.ToLower() == accountModel.Email.ToLower() && x.Id != accountModel.Id))
+            if (await UnitOfWork.GetSet<DbAccount>().AnyAsync(x => x.Email.ToLower() == accountModel.Email.ToLower() && x.Id != accountModel.Id, token))
                 throw new InvalidOperationException();
 
             account.Phone = accountModel.Phone;
@@ -122,7 +122,7 @@ public class AccountController : BaseController
             account.PersonData.MiddleName = accountModel.MiddleName ?? string.Empty;
             account.Email = accountModel.Email;
 
-            await UnitOfWork.SaveChangesAsync();
+            await UnitOfWork.SaveChangesAsync(token);
         }
 
         return RedirectToAction(nameof(CarrierAccountItem), new { carrierId = accountModel.OrganisationId, accountId = accountModel.Id });
