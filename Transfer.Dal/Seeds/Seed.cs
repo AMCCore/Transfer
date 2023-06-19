@@ -22,6 +22,8 @@ namespace Transfer.Dal.Seeds
             uw.SetRequestTripIds();
             uw.SetTripRequestUserStates();
 
+            return;
+
             uw.SetTRKAccounts();
 
 #if DEBUG

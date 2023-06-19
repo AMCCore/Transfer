@@ -47,6 +47,9 @@ public class ReportController : BaseController
         return View("DataInput", new BaseReportDto<InputDataReportDto> { DateFrom = DateTime.Now.AddDays(-7), DateTo = DateTime.Now, Name = "Отчет о внесении перевозчиков", Action = "DataInputGen" });
     }
 
+    /// <summary>
+    /// Отчет о внесении перевозчиков
+    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("DataInputGen")]
