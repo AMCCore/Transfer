@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace Transfer.Bot.Dtos;
 
-namespace Transfer.Bot.Dtos;
-
-public struct SendMsgToUserDto
+public class SendMsgToUserDto
 {
     public long ChatId { get; set; }
 
@@ -11,4 +9,6 @@ public struct SendMsgToUserDto
     public string? Link { get; set; }
 
     public string? LinkName { get; set; }
+
+    public bool NeedMenu { get; set; } = true;
 }

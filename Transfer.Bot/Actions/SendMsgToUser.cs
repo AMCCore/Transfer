@@ -15,7 +15,7 @@ public static class SendMsgToUser
             return await bot.SendTextMessageAsync(
                 chatId: message.ChatId,
                 text: message.Message,
-                replyMarkup: Menu.BaseMenu.backtomenu);
+                replyMarkup: message.NeedMenu ? Menu.BaseMenu.backtomenu : null);
         }
 
         var keyboard = new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl(message.LinkName ?? message.Link, message.Link));

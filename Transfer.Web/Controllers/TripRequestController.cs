@@ -601,7 +601,7 @@ public sealed class TripRequestController : BaseStateController
         var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId, token);
         var ttd = AdminAccessRights.BotNotifications.GetEnumGuid();
 
-        var q2 = UnitOfWork.GetSet<DbAccount>().Where(x => !x.IsDeleted && x.AccountRights.Any(y => y.RightId == ttd)).Select(x => x.Id).AsQueryable();
+        var q2 = UnitOfWork.GetSet<DbAccount>().Where(x => x.AccountRights.Any(y => y.RightId == ttd)).Select(x => x.Id).AsQueryable();
 
         var botNotificationsAdmins = await UnitOfWork.GetSet<DbExternalLogin>().Where(x => !x.IsDeleted && q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
 
