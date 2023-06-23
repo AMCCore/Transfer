@@ -43,7 +43,7 @@ public class CronController : ControllerBase
     [Route(nameof(VipTripRequestNoOfferManagerRemind))]
     public async Task<IActionResult> VipTripRequestNoOfferManagerRemind([FromServices] HandleUpdateService handleUpdateService, CancellationToken token = default)
     {
-        var dt = DateTime.Now.AddHours(-1);
+        var dt = DateTime.Now.AddHours(-2);
         var dt2 = DateTime.Now.AddDays(1);
         var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => new { x.Id, x.СhartererName, Identifier = x.Identifiers.Select(y =>  y.Identifier).FirstOrDefault() }).ToListAsync(token);
         //var q2 = _unitOfWork.GetSet<DbAccount>().Where(x => x.Email.ToLower().Contains("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
