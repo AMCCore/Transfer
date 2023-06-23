@@ -46,6 +46,8 @@ public class CronController : ControllerBase
         //var q2 = _unitOfWork.GetSet<DbAccount>().Where(x => x.Email.ToLower().Contains("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
         //var botNotificationsAdmins = await _unitOfWork.GetSet<DbExternalLogin>().Where(x => q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
 
+        var i = 0;
+
         foreach(var tr in trs)
         {
             await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
@@ -56,6 +58,13 @@ public class CronController : ControllerBase
                 NeedMenu = false,
                 Message = $"На заказ ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!"
             });
+            i++;
+
+            if (i >= 5)
+            {
+                Thread.Sleep(2000);
+                i = 0;
+            }
         }
 
         return Ok();
