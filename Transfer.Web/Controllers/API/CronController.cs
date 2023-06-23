@@ -56,8 +56,8 @@ public class CronController : ControllerBase
         foreach(var tr in trs)
         {
             sb.AppendLine($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявку</a> ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!");
-            //sb.Append($"<a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a></br>");
-            //sb.Append($"</br>");
+            sb.AppendLine($"<a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a>");
+            sb.AppendLine();
 
 
             if(sb.Length >= 3072)
