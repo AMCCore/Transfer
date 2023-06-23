@@ -41,7 +41,8 @@ public class CronController : ControllerBase
     public async Task<IActionResult> VipTripRequestNoOfferManagerRemind([FromServices] HandleUpdateService handleUpdateService, CancellationToken token = default)
     {
         var dt = DateTime.Now.AddHours(-1);
-        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => x.Charterer.IsVIP && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt).Select(x => x.Id).ToListAsync(token);
+        var dt2 = DateTime.Now.AddDays(1);
+        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => x.Id).ToListAsync(token);
         //var q2 = _unitOfWork.GetSet<DbAccount>().Where(x => x.Email.ToLower().Contains("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
         //var botNotificationsAdmins = await _unitOfWork.GetSet<DbExternalLogin>().Where(x => q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
 
@@ -50,14 +51,12 @@ public class CronController : ControllerBase
             await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
             {
                 Link = $"https://nexttripto.ru/TripRequest/{tr}",
-                LinkName = "Заказ",
-                ChatId = 0,
+                LinkName = "Заявка",
+                ChatId = -1001842218707,
                 NeedMenu = false,
                 Message = "На заказ от организации с VIP статусом отсутствуют отклики!"
             });
         }
-
-
 
         return Ok();
     }
