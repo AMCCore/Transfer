@@ -13,6 +13,7 @@ using Transfer.Common.Enums;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using System;
+using System.Text;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -48,24 +49,38 @@ public class CronController : ControllerBase
 
         var i = 0;
 
+        var sb = new StringBuilder();
+
         foreach(var tr in trs)
         {
-            await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
-            {
-                Link = $"https://nexttripto.ru/TripRequest/{tr.Id}",
-                LinkName = "Заявка",
-                ChatId = -1001842218707,
-                NeedMenu = false,
-                Message = $"На заказ ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!"
-            });
-            i++;
+            sb.Append($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявку</a> ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!</br>");
+            sb.Append($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a></br>");
+            sb.Append($"</br>");
 
-            if (i >= 5)
-            {
-                await Task.Delay(2000, token);
-                i = 0;
-            }
+
+            //await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
+            //{
+            //    Link = $"https://nexttripto.ru/TripRequest/{tr.Id}",
+            //    LinkName = "Заявка",
+            //    ChatId = -1001842218707,
+            //    NeedMenu = false,
+            //    Message = $"На заказ ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!"
+            //});
+            //i++;
+
+            //if (i >= 5)
+            //{
+            //    await Task.Delay(2000, token);
+            //    i = 0;
+            //}
         }
+
+        await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
+        {
+            ChatId = -1001842218707,
+            NeedMenu = false,
+            Message = sb.ToString()
+        });
 
         return Ok();
     }

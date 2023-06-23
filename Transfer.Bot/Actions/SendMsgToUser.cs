@@ -15,6 +15,7 @@ public static class SendMsgToUser
             return await bot.SendTextMessageAsync(
                 chatId: message.ChatId,
                 text: message.Message,
+                parseMode: message.IsHtmlLike ? Telegram.Bot.Types.Enums.ParseMode.Html : null,
                 replyMarkup: message.NeedMenu ? Menu.BaseMenu.backtomenu : null);
         }
 
@@ -23,6 +24,7 @@ public static class SendMsgToUser
         return await bot.SendTextMessageAsync(
             chatId: message.ChatId,
             text: message.Message,
+            parseMode: message.IsHtmlLike ? Telegram.Bot.Types.Enums.ParseMode.Html : null,
             replyMarkup: keyboard);
     }
 }

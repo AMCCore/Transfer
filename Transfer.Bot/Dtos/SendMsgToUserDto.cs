@@ -11,4 +11,6 @@ public class SendMsgToUserDto
     public string? LinkName { get; set; }
 
     public bool NeedMenu { get; set; } = true;
+
+    public bool IsHtmlLike { get; set; } = false;
 }
