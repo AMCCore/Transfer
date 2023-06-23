@@ -58,6 +58,18 @@ public class CronController : ControllerBase
             sb.Append($"</br>");
 
 
+            if(sb.Length >= 3072)
+            {
+                await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = -1001842218707,
+                    NeedMenu = false,
+                    Message = sb.ToString()
+                });
+                sb = new StringBuilder();
+            }
+
+
             //await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
             //{
             //    Link = $"https://nexttripto.ru/TripRequest/{tr.Id}",
@@ -75,12 +87,18 @@ public class CronController : ControllerBase
             //}
         }
 
-        await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
+        if (sb.Length > 0)
         {
-            ChatId = -1001842218707,
-            NeedMenu = false,
-            Message = sb.ToString()
-        });
+            if (sb.Length >= 3072)
+            {
+                await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = -1001842218707,
+                    NeedMenu = false,
+                    Message = sb.ToString()
+                });
+            }
+        }
 
         return Ok();
     }
