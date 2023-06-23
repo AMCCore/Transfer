@@ -62,7 +62,7 @@ public class CronController : ControllerBase
 
             if (i >= 5)
             {
-                Thread.Sleep(2000);
+                await Task.Delay(2000, token);
                 i = 0;
             }
         }
