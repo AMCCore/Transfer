@@ -42,7 +42,7 @@ public class CronController : ControllerBase
     {
         var dt = DateTime.Now.AddHours(-1);
         var dt2 = DateTime.Now.AddDays(1);
-        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => x.Id).ToListAsync(token);
+        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => new { x.Id, x.СhartererName, Identifier = x.Identifiers.Select(y =>  y.Identifier).FirstOrDefault() }).ToListAsync(token);
         //var q2 = _unitOfWork.GetSet<DbAccount>().Where(x => x.Email.ToLower().Contains("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
         //var botNotificationsAdmins = await _unitOfWork.GetSet<DbExternalLogin>().Where(x => q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
 
@@ -50,11 +50,11 @@ public class CronController : ControllerBase
         {
             await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
             {
-                Link = $"https://nexttripto.ru/TripRequest/{tr}",
+                Link = $"https://nexttripto.ru/TripRequest/{tr.Id}",
                 LinkName = "Заявка",
                 ChatId = -1001842218707,
                 NeedMenu = false,
-                Message = "На заказ от организации с VIP статусом отсутствуют отклики!"
+                Message = $"На заказ ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!"
             });
         }
 
