@@ -33,6 +33,8 @@ public class CronController : ControllerBase
         _mapper = mapper;
     }
 
+    //[FromServices] HandleUpdateService handleUpdateService,
+
     /// <summary>
     /// Оповещение менеджеров о заказе от VIP организации без отклика
     /// </summary>
@@ -53,9 +55,9 @@ public class CronController : ControllerBase
 
         foreach(var tr in trs)
         {
-            sb.Append($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявку</a> ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!</br>");
-            sb.Append($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a></br>");
-            sb.Append($"</br>");
+            sb.AppendLine($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявку</a> ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!");
+            //sb.Append($"<a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a></br>");
+            //sb.Append($"</br>");
 
 
             if(sb.Length >= 3072)
@@ -64,7 +66,7 @@ public class CronController : ControllerBase
                 {
                     ChatId = -1001842218707,
                     NeedMenu = false,
-                    IsHtmlLike = true, 
+                    IsHtmlLike = true,
                     Message = sb.ToString()
                 });
                 sb = new StringBuilder();
