@@ -64,6 +64,7 @@ public class CronController : ControllerBase
                 {
                     ChatId = -1001842218707,
                     NeedMenu = false,
+                    IsHtmlLike = true, 
                     Message = sb.ToString()
                 });
                 sb = new StringBuilder();
@@ -95,6 +96,7 @@ public class CronController : ControllerBase
                 {
                     ChatId = -1001842218707,
                     NeedMenu = false,
+                    IsHtmlLike = true,
                     Message = sb.ToString()
                 });
             }
