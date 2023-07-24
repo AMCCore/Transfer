@@ -33,8 +33,6 @@ public class CronController : ControllerBase
         _mapper = mapper;
     }
 
-    //[FromServices] HandleUpdateService handleUpdateService,
-
     /// <summary>
     /// Оповещение менеджеров о заказе от VIP организации без отклика
     /// </summary>
