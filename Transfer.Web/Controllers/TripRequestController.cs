@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,6 +21,7 @@ using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
 using Transfer.Common.Security;
 using Transfer.Common.Settings;
+using Transfer.Common.Utils;
 using Transfer.Dal.Entities;
 using Transfer.Web.Extensions;
 using Transfer.Web.Models;
@@ -278,21 +281,22 @@ public sealed class TripRequestController : BaseStateController
 
             var appropriateOrgIds = await appropriateOrgIdsq.Select(x => x.Id).ToListAsync(token);
 
+            var ll = new List<Task>();
+
             foreach (var orgId in appropriateOrgIds)
             {
-                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+                ll.Add(UnitOfWork.AddEntityAsync(new DbTripRequestReplay
                 {
                     TripRequestId = entity.Id,
                     CarrierId = orgId,
-                }, token: token);
+                }, token: token));
             }
+            ll.Add(UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку", token: token));
 
-            await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку", token: token);
+            await Task.WhenAll(ll);
             await UnitOfWork.CommitAsync(token);
 
-            await SendReplaysToUsers(entity.Id, token);
-            await SendReplaysToWatchers(entity.Id, token);
-            await SendReplaysToWatchersAboutVIP(entity.Id, token);
+            await Task.WhenAll(SendReplaysToUsers(entity.Id, token), SendReplaysToWatchers(entity.Id, token), SendReplaysToWatchersAboutVIP(entity.Id, token));
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
@@ -422,32 +426,10 @@ public sealed class TripRequestController : BaseStateController
 
     [AllowAnonymous]
     [HttpGet]
-    [Route("MakeOffer/Success")]
-    public IActionResult MakeOfferSuccess()
+    [Route("MakeOffer/{requestReplayId}")]
+    public async Task<IActionResult> MakeOffer(Guid requestReplayId, CancellationToken token = default)
     {
-        return View("Success");
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("MakeOffer/Error")]
-    public async Task<IActionResult> MakeOfferError()
-    {
-        var msg = TempData[errMsgName] as string;
-        if (string.IsNullOrWhiteSpace(msg))
-        {
-            return await RedirectToHomeAsync();
-        }
-        ViewBag.Message = msg;
-        return View("Error");
-    }
-
-    [AllowAnonymous]
-    [HttpGet]
-    [Route("MakeOffer/{requestId}")]
-    public async Task<IActionResult> MakeOffer(Guid requestId, CancellationToken token = default)
-    {
-        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestId, token);
+        var replay = await UnitOfWork.GetSet<DbTripRequestReplay>().Include(x => x.TripRequest).FirstOrDefaultAsync(x => x.Id == requestReplayId, token);
         if (replay == null || replay.TripRequest.State == TripRequestStateEnum.Archived.GetEnumGuid())
         {
             TempData[errMsgName] = "Поездка не найдена";
@@ -510,6 +492,55 @@ public sealed class TripRequestController : BaseStateController
         return View("MakeOffer", model);
     }
 
+    [HttpGet]
+    [Route("MakeRequestOffer2")]
+    [AllowAnonymous]
+    public async Task<IActionResult> MakeRequestOffer2([Required]string code, CancellationToken token = default)
+    {
+
+        TripRequestReplayDto dto = null;
+        try
+        {
+            var json = EncryptionHelper.DecryptString(code);
+            dto = JsonConvert.DeserializeObject<TripRequestReplayDto>(json);
+        }
+        catch
+        {
+            return NotFound();
+        }
+        if(dto == null || dto.OrganisationId == Guid.Empty || dto.TripRequestId == Guid.Empty)
+            return NotFound();
+
+        var tr = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == dto.TripRequestId, token);
+
+        if (tr.State == TripRequestStateEnum.Archived.GetEnumGuid())
+        {
+            TempData[errMsgName] = "Поездка не найдена";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (tr.TripDate <= DateTime.Now || tr.State == TripRequestStateEnum.Completed.GetEnumGuid())
+        {
+            TempData[errMsgName] = "Поездка уже прошла";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (tr.State != TripRequestStateEnum.Active.GetEnumGuid())
+        {
+            TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+        if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == tr.Id && x.CarrierId == dto.OrganisationId, token))
+        {
+            TempData[errMsgName] = "Ваше предложение уже учтено";
+            return RedirectToAction(nameof(MakeOfferError));
+        }
+
+        var model = Mapper.Map<TripRequestOfferDto>(tr);
+
+        model.CarrierId = dto.OrganisationId;
+        return View("MakeOffer", model);
+
+    }
+
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("MakeOffer/Save")]
@@ -539,6 +570,28 @@ public sealed class TripRequestController : BaseStateController
         await UnitOfWork.AddEntityAsync(offer);
 
         return RedirectToAction(nameof(MakeOfferSuccess));
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Success")]
+    public IActionResult MakeOfferSuccess()
+    {
+        return View("Success");
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("MakeOffer/Error")]
+    public async Task<IActionResult> MakeOfferError()
+    {
+        var msg = TempData[errMsgName] as string;
+        if (string.IsNullOrWhiteSpace(msg))
+        {
+            return await RedirectToHomeAsync();
+        }
+        ViewBag.Message = msg;
+        return View("Error");
     }
 
     #endregion
@@ -582,11 +635,43 @@ public sealed class TripRequestController : BaseStateController
                     {
                         ChatId = chatId,
                         Message = sb.ToString()
-                        //Message = $"Новый заказ на: {trip.TripDate:dd.MM.yyyy HH:mm}\nОткуда: {trip.AddressFrom}\nКуда:{trip.AddressTo}\nЧтобы откликнуться перейдите по ссылке\nhttps://nexttripto.ru/MakeOffer/{replay}",
-                        //Link = $"https://nexttripto.ru/MakeOffer/{replay}",
-                        //LinkName = "Откликнуться"
                     });
                 }
+            }
+        }
+    }
+
+    private async Task SendReplaysToUsers(Guid tripRequestId, Guid appropriateOrgId, CancellationToken token = default)
+    {
+        var trip = await UnitOfWork.GetSet<DbTripRequest>().FirstAsync(x => x.Id == tripRequestId, token);
+
+        var orgUsers = await UnitOfWork.GetSet<DbOrganisation>().Where(x => x.Id == appropriateOrgId).SelectMany(x => x.Accounts.Where(a => !a.Account.IsDeleted && a.AccountType == OrganisationAccountTypeEnum.Operator || a.AccountType == OrganisationAccountTypeEnum.Director).Select(a => a.Account))
+                .SelectMany(x => x.ExternalLogins.Where(a => !a.IsDeleted && a.LoginType == ExternalLoginTypeEnum.Telegram)).ToListAsync(token);
+
+        var dto = new TripRequestReplayDto { OrganisationId = appropriateOrgId, TripRequestId = tripRequestId };
+        var json = JsonConvert.SerializeObject(dto);
+
+        foreach (var orgUser in orgUsers.DistinctBy(x => x.Value).ToList())
+        {
+            if (long.TryParse(orgUser.Value, out long chatId))
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"Новый заказ №{trip.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
+                sb.AppendLine($"Заказчик: {(!trip.ChartererId.IsNullOrEmpty() ? trip.Charterer.Name : trip.СhartererName)}");
+                sb.AppendLine($"Дата отправления: {trip.TripDate:dd.MM.yyyy HH:mm}");
+                sb.AppendLine($"Место отправления: {trip.AddressFrom}");
+                sb.AppendLine($"Место прибытия: {trip.AddressTo}");
+                sb.AppendLine($"Кол-во пассажиров: {trip.Passengers}");
+                sb.AppendLine();
+                sb.AppendLine($"Чтобы откликнуться перейдите по <a href='https://nexttripto.ru/MakeRequestOffer2/?code={EncryptionHelper.EncryptString(json)}'>ссылке</a>");
+
+
+                _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
+                {
+                    ChatId = chatId,
+                    IsHtmlLike = true,
+                    Message = sb.ToString()
+                });
             }
         }
     }
