@@ -546,7 +546,7 @@ public sealed class TripRequestController : BaseStateController
     #region Telegram send
 
     /// <summary>
-    /// Уведомление о новом заказе в ситеме
+    /// Уведомление "пользователей" о новом заказе в ситеме
     /// </summary>
     /// <param name="tripRequestId"></param>
     /// <returns></returns>
@@ -592,7 +592,7 @@ public sealed class TripRequestController : BaseStateController
     }
 
     /// <summary>
-    /// Уведомление о новом заказе в ситеме
+    /// Уведомление "наблюдателей" о новом заказе в ситеме
     /// </summary>
     /// <param name="tripRequestId"></param>
     /// <returns></returns>
