@@ -45,20 +45,16 @@ public class CronController : ControllerBase
     {
         var dt = DateTime.Now.AddHours(-2);
         var dt2 = DateTime.Now.AddDays(1);
-        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => new { x.Id, x.СhartererName, Identifier = x.Identifiers.Select(y =>  y.Identifier).FirstOrDefault() }).ToListAsync(token);
+        var trs = await _unitOfWork.GetSet<DbTripRequest>().Where(x => (x.Charterer.IsVIP || x.OrgCreator.IsVIP) && !x.TripRequestOffers.Any() && x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.DateCreated < dt && x.TripDate >= dt2).OrderBy(x => x.DateCreated).Select(x => new { x.Id, x.СhartererName, x.ChartererId, Identifier = x.Identifiers.Select(y =>  y.Identifier).FirstOrDefault() }).ToListAsync(token);
         //var q2 = _unitOfWork.GetSet<DbAccount>().Where(x => x.Email.ToLower().Contains("@tktransfer.ru")).Select(x => x.Id).AsQueryable();
         //var botNotificationsAdmins = await _unitOfWork.GetSet<DbExternalLogin>().Where(x => q2.Contains(x.AccountId) && x.LoginType == ExternalLoginTypeEnum.Telegram).ToListAsync(token);
-
-        var i = 0;
 
         var sb = new StringBuilder();
 
         foreach(var tr in trs)
         {
-            sb.AppendLine($"На <a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявку</a> ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!");
-            sb.AppendLine($"<a href='https://nexttripto.ru/TripRequest/{tr.Id}'>заявка</a>");
+            sb.AppendLine($"Организацией с VIP статусом (<a href='https://nexttripto.ru/Carrier/{tr.ChartererId}'>{tr.СhartererName}</a>) создан новый заказ (<a href='https://nexttripto.ru/TripRequest/{tr.Id}'>{tr.Identifier}</a>)");
             sb.AppendLine();
-
 
             if(sb.Length >= 3072)
             {
@@ -71,37 +67,17 @@ public class CronController : ControllerBase
                 });
                 sb = new StringBuilder();
             }
-
-
-            //await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
-            //{
-            //    Link = $"https://nexttripto.ru/TripRequest/{tr.Id}",
-            //    LinkName = "Заявка",
-            //    ChatId = -1001842218707,
-            //    NeedMenu = false,
-            //    Message = $"На заказ ({tr.Identifier}) от организации ({tr.СhartererName}) с VIP статусом отсутствуют отклики!"
-            //});
-            //i++;
-
-            //if (i >= 5)
-            //{
-            //    await Task.Delay(2000, token);
-            //    i = 0;
-            //}
         }
 
         if (sb.Length > 0)
         {
-            if (sb.Length >= 3072)
+            await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
             {
-                await handleUpdateService.SendMessages(new Bot.Dtos.SendMsgToUserDto
-                {
-                    ChatId = -1001842218707,
-                    NeedMenu = false,
-                    IsHtmlLike = true,
-                    Message = sb.ToString()
-                });
-            }
+                ChatId = -1001842218707,
+                NeedMenu = false,
+                IsHtmlLike = true,
+                Message = sb.ToString()
+            });
         }
 
         return Ok();
