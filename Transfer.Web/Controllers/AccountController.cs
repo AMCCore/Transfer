@@ -77,6 +77,12 @@ public class AccountController : BaseController
                 return View("CarrierAccountSave", accountModel);
             }
 
+            if(!EMailValidator.IsValidEmail(accountModel.Email))
+            {
+                ViewBag.ErrorMsg = "Email введен не корректно";
+                return View("CarrierAccountSave", accountModel);
+            }
+
             var account = new DbAccount {
                 Id = Guid.NewGuid(),
                 IsDeleted = false,

@@ -58,7 +58,7 @@ internal class Program
     {
         System.Console.WriteLine("Hello World!");
 
-        if (true)
+        if (false)
         {
             string connectionString = @"Data Source=10.126.242.1;Initial Catalog=Metabase;Integrated Security=False;User Id=markinni;Password=DQNd27i6avwCW5Z;";
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -152,7 +152,7 @@ internal class Program
 
         uc.NotChangeLastUpdateTick = false;
 
-        if (false)
+        if(false)
         {
             var ee = uc.GetSet<DbDriver>().ToList();
             foreach(var e in ee)
@@ -165,16 +165,25 @@ internal class Program
         if(false)
         {
             var jopa = new Dictionary<Guid?, IList<Guid>>();
-            jopa.Add(Guid.Empty, new List<Guid> { Guid.Parse("65CAE23E-2057-40EA-8967-BEFE0CF8E41F"), Guid.Parse("C8567735-785F-4416-9509-AAEC72AFC2EB") });
-            //rop@tktransfer.ru
+            jopa.Add(Guid.Empty, new List<Guid> { Guid.Parse("C81A8E61-FE4D-40CF-8A44-1F1EF5C1EF6A") });
+            //t87654321@mail.ru
             uc.DoAddUpdateUser(new AddUser.AUser
             {
-                Id = Guid.Parse("4ee30e78-f8cd-43ab-bcc5-d11a7fd04608"),
-                FirstName = "Руководитель",
-                LastName = "Опраторов",
-                Password = "3SLtChUsLgT2yh&",
-                Email = "rop@tktransfer.ru",
+                Id = Guid.Parse("2A31E03B-1913-495C-9DC3-8C4BE81E7182"),
+                FirstName = "Пользователь",
+                LastName = "Пользователь",
+                Password = "PdquiL@DgR5cMX",
+                Email = "t87654321@mail.ru",
                 Rights = jopa,
+            });
+        }
+
+        if(true)
+        {
+            //sonarv@mail.ru
+            var aid = Guid.Parse("B00FEC18-510F-498C-8268-DE60A6FD6E69");
+            uc.AddOrUpdate(new DbAccount { Id = aid, Password = BCrypt.Net.BCrypt.HashString("38ktMex#3o6y6Fq!FM"), }, (source, destination) => {
+                source.Password = destination.Password;
             });
         }
 
