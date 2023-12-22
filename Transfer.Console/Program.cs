@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
@@ -54,7 +55,7 @@ internal class Program
         return Convert.ToInt32(res);
     }
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         System.Console.WriteLine("Hello World!");
 
@@ -152,6 +153,12 @@ internal class Program
 
         uc.NotChangeLastUpdateTick = false;
 
+        if(true)
+        {
+            //855694770
+            await Bot.Actions.RequestList.TestQuerys(5511154456, uc);
+        }
+
         if(false)
         {
             var ee = uc.GetSet<DbDriver>().ToList();
@@ -178,7 +185,7 @@ internal class Program
             });
         }
 
-        if(true)
+        if(false)
         {
             //sonarv@mail.ru
             var aid = Guid.Parse("B00FEC18-510F-498C-8268-DE60A6FD6E69");

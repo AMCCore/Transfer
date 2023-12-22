@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -12,36 +14,69 @@ using Transfer.Bot.Menu;
 using Transfer.Common;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
+using Transfer.Dal;
 using Transfer.Dal.Entities;
 
 namespace Transfer.Bot.Actions;
 
-internal static class RequestList
+public static class RequestList
 {
     public const string ActionName = "/requests";
     public const string ActionInlineName = "Requests";
 
-    public async static Task<Message> GetRequestList(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null)
+    public static async Task TestQuerys(long Sender, IUnitOfWork unitOfWork, CancellationToken token = default)
     {
-        //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
-        var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > DateTime.Now).OrderByDescending(x => x.DateCreated).Take(100);
-        var qMyOrgs = unitOfWork.GetSet<DbExternalLogin>()
+        var qMyOrgs = unitOfWork.Query<DbExternalLogin>()
             .Where(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && x.Value == Sender.ToString())
             .SelectMany(x => x.Account.Organisations).Select(x => x.Organisation);
 
+        var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync();
+        var myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
+
+
+
+        //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
+        var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > DateTime.Now)
+            .Where(x => myOrgRegionsIds.Contains(x.RegionFromId) || myOrgRegionsIds.Contains(x.RegionToId))
+            .OrderByDescending(x => x.DateCreated).Take(100);
+
         //var regionIds = await qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => x.RegionId).ToListAsync();
 
-        var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync();
 
         var requests = qRequests.Include(x => x.Identifiers).Include(x => x.TripRequestOffers).Include(x => x.TripRequestReplays);
-        if(!await requests.AnyAsync())
+
+        var r = await requests.ToListAsync();
+    }
+
+    public async static Task<Message> GetRequestList(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null, CancellationToken token = default)
+    {
+        //мои организации
+        var qMyOrgs = unitOfWork.Query<DbExternalLogin>()
+            .Where(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.Telegram && x.Value == Sender.ToString())
+            .SelectMany(x => x.Account.Organisations).Select(x => x.Organisation);
+
+        var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync(token);
+        var myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
+
+
+
+        //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
+        var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > DateTime.Now)
+            .Where(x => myOrgRegionsIds.Contains(x.RegionFromId) || myOrgRegionsIds.Contains(x.RegionToId))
+            .OrderByDescending(x => x.DateCreated).Take(100);
+
+        //var regionIds = await qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => x.RegionId).ToListAsync();
+
+
+        var requests = qRequests.Include(x => x.Identifiers).Include(x => x.TripRequestOffers).Include(x => x.TripRequestReplays);
+        if(!await requests.AnyAsync(token))
         {
             return await bot.SendTextMessageAsync(
                 chatId: Sender,
                 text: "Актуальных заказов не найдено",
                 replyMarkup: BaseMenu.backtomenu);
         }
-        foreach(var r in await requests.ToListAsync())
+        foreach(var r in await requests.ToListAsync(token))
         {
             var sb = new StringBuilder();
             sb.AppendLine($"Заказ №{r.Identifiers.Select(x => x.Identifier).FirstOrDefault()}");
