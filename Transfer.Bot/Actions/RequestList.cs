@@ -45,7 +45,7 @@ public static class RequestList
 
         var requests = qRequests.Include(x => x.Identifiers).Include(x => x.TripRequestOffers).Include(x => x.TripRequestReplays);
 
-        var r = await requests.ToListAsync();
+        var r = await requests.ToListAsync(token);
     }
 
     public async static Task<Message> GetRequestList(this ITelegramBotClient bot, long Sender, IUnitOfWork unitOfWork, ILogger Logger = null, CancellationToken token = default)
