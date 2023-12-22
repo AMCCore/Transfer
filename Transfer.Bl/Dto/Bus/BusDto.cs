@@ -48,6 +48,7 @@ namespace Transfer.Bl.Dto.Bus
         /// Кол-во посадочных мест
         /// </summary>
         [Required]
+        [Range(1, 1000)]
         public int PeopleCopacity { get; set; }
 
         /// <summary>
