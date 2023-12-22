@@ -31,7 +31,17 @@ public static class RequestList
             .SelectMany(x => x.Account.Organisations).Select(x => x.Organisation);
 
         var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync();
-        var myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
+        
+        IQueryable<Guid?> myOrgRegionsIds;
+
+        if (myOrgIds.Any())
+        {
+            myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
+        }
+        else
+        {
+            myOrgRegionsIds = unitOfWork.Query<DbRegion>().Select(x => (Guid?)x.Id).Distinct();
+        }
 
 
 
@@ -56,9 +66,17 @@ public static class RequestList
             .SelectMany(x => x.Account.Organisations).Select(x => x.Organisation);
 
         var myOrgIds = await qMyOrgs.Select(x => x.Id).ToListAsync(token);
-        var myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
 
+        IQueryable<Guid?> myOrgRegionsIds;
 
+        if(myOrgIds.Any())
+        {
+            myOrgRegionsIds = qMyOrgs.SelectMany(x => x.WorkingArea).Select(x => (Guid?)x.RegionId).Distinct();
+        }
+        else
+        {
+            myOrgRegionsIds = unitOfWork.Query<DbRegion>().Select(x => (Guid?)x.Id).Distinct();
+        }
 
         //var user = await unitOfWork.GetSet<DbAccount>().Where(x => x.ExternalLogins.Any(a => !a.IsDeleted && a.LoginType == Common.Enums.ExternalLoginEnum.Telegram && a.Value == message.Chat.Id.ToString())).Select(x => x.Id).FirstAsync();
         var qRequests = unitOfWork.GetSet<DbTripRequest>().Where(x => x.State == TripRequestStateEnum.Active.GetEnumGuid() && x.TripDate > DateTime.Now)
