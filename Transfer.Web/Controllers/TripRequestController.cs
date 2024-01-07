@@ -74,6 +74,16 @@ public sealed class TripRequestController : BaseStateController
 
         }
 
+        if (!string.IsNullOrWhiteSpace(filter.SearchText))
+        {
+            var txtArr = filter.SearchText.Split(' ');
+            foreach (var txt in txtArr)
+            {
+                query = query.Where(x => x.AddressFrom.ToLower().Contains(txt) || x.AddressTo.ToLower().Contains(txt) || x.Identifiers.Any(a => a.Identifier.ToString().Contains(txt)));
+            }
+        }
+
+
         //статусы
         if (filter.State == (int)TripRequestSearchStateEnum.StateNew)
         {

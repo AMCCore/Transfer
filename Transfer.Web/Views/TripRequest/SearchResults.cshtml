@@ -11,7 +11,14 @@
 @Html.HiddenFor(x => x.PageNumber)
 @Html.HiddenFor(x => x.MyRequests)
 <div class="row">
-    <div class="col-12 col-lg-4 t-col dark-text"></div>
+    <div class="t-col col-12 col-lg-4 dark-text">
+        <div class="input-group">
+            <span class="input-group-append input-group-icon">
+                <div class="input-group-text"><i class="fas fa-search fa-lg"></i></div>
+            </span>
+            <input asp-for="SearchText" class="form-control" placeholder="" />
+        </div>
+    </div>
     <div class="t-col col-12 col-md-6 col-lg-2 form-group">
         <input type="radio" asp-for="State" id="Option1" class="btn-check" value="1" checked="@(1 == Model?.State)" onchange="DisableCheckboxes(this)" />
         <label class="btn btn-default" for="Option1">Новые</label>

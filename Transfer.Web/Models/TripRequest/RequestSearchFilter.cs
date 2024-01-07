@@ -21,4 +21,5 @@ public class RequestSearchFilter : BaseFilterModel<TripRequestSearchResultItem>
 
     public bool MyRequests { get; set; } = false;
 
+    public string SearchText { get; set; }
 }
