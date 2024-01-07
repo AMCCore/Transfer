@@ -157,7 +157,7 @@ public class CarrierController : BaseController
 
         if (model.WorkingAreas?.All(string.IsNullOrWhiteSpace) ?? true)
         {
-            ViewBag.ErrorMsg = "Ошибка согласия перс данных";
+            ViewBag.ErrorMsg = "Необходимо указать регион(ы) работы";
             ViewBag.Regions = await GetRegionsAsync();
             return View("CarrierEdit", model);
         }
