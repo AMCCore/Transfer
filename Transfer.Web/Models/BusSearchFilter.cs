@@ -23,5 +23,8 @@ public class BusSearchFilter : BaseFilterModel<BusSearchItem>
 
     public string City { get; set; }
 
+    public IList<string> Makes { get; set; }
+
+    public IList<string> Models { get; set; }
 }
 

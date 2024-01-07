@@ -181,6 +181,10 @@ public class BusController : BaseController
     private async Task<BusSearchFilter> GetDataFromDb(BusSearchFilter filter = null)
     {
         filter ??= new BusSearchFilter(new List<BusSearchItem>(), TransferSettings.TablePageSize);
+
+        filter.Makes = await UnitOfWork.GetSet<DbBus>().Select(x => x.Make).Distinct().ToListAsync(CancellationToken.None);
+        filter.Models = await UnitOfWork.GetSet<DbBus>().Select(x => x.Model).Distinct().ToListAsync(CancellationToken.None);
+        
         var query = UnitOfWork.GetSet<DbBus>().Include(x => x.Organisation).Where(x => !x.IsDeleted && !x.Organisation.IsDeleted).AsQueryable();
         if (!string.IsNullOrWhiteSpace(filter.Model))
         {
@@ -198,7 +202,7 @@ public class BusController : BaseController
         }
         if (!string.IsNullOrWhiteSpace(filter.City))
         {
-            query = query.Where(x => x.Organisation.City.ToLower().Contains(filter.City.ToLower()));
+            query = query.Where(x => x.Organisation.City.ToLower().Contains(filter.City.ToLower()) || x.Organisation.Address.ToLower().Contains(filter.City.ToLower()) || x.Organisation.FactAddress.ToLower().Contains(filter.City.ToLower()));
         }
         if (filter.Year.HasValue && filter.Year > 1930)
         {
@@ -214,8 +218,11 @@ public class BusController : BaseController
             .Take(filter.PageSize).ToListAsync(CancellationToken.None);
 
         filter.Results = new CommonPagedList<BusSearchItem>(
-            entity.Select(ss => Mapper.Map<BusSearchItem>(ss)).ToList(),
+            entity.Select(Mapper.Map<BusSearchItem>).ToList(),
             filter.PageNumber, filter.PageSize, totalCount);
+
+        filter.Makes.Insert(0, string.Empty);
+        filter.Models.Insert(0, string.Empty);
 
         return filter;
     }

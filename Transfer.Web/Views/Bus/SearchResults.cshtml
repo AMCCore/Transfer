@@ -4,7 +4,7 @@
 
 @{
     var years = new List<SelectListItem>();
-    for (int i = (DateTime.Now.Year - 50); i <= DateTime.Now.Year; i++)
+    for (int i = 1980; i <= DateTime.Now.Year; i++)
     {
         years.Add(new SelectListItem
                 {
@@ -33,7 +33,7 @@
                         <span class="input-group-append input-group-icon">
                             <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
                         </span>
-                        <input asp-for="City" disabled="disabled" class="form-control" />
+                        <input asp-for="City" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -82,12 +82,7 @@
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
-                    <div class="input-group">
-                        <span class="input-group-append input-group-icon">
-                            <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
-                        </span>
-                        <input asp-for="Make" class="form-control" />
-                    </div>
+                    @Html.DropDownListFor(x => x.Make, Model.Makes.Select(i => new SelectListItem { Text = i, Value = i }), null, new { @class = "form-select form-select-sm form-select-trs1" })
                 </div>
             </div>
         </div>
@@ -99,12 +94,7 @@
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
-                    <div class="input-group">
-                        <span class="input-group-append input-group-icon">
-                            <div class="input-group-text"><i class="fas fa-pencil-alt fa-lg"></i></div>
-                        </span>
-                        <input asp-for="Model" class="form-control" />
-                    </div>
+                    @Html.DropDownListFor(x => x.Model, Model.Models.Select(i => new SelectListItem { Text = i, Value = i }), null, new { @class = "form-select form-select-sm form-select-trs1" })
                 </div>
             </div>
         </div>
@@ -116,7 +106,7 @@
             </div>
             <div class="row">
                 <div class="t-col col-12 form-group">
-                    @Html.DropDownListFor(x => x.Year, years, null, new { @class = "form-select form-select-sm" })
+                    @Html.DropDownListFor(x => x.Year, years, null, new { @class = "form-select form-select-sm form-select-trs1" })
                 </div>
             </div>
         </div>

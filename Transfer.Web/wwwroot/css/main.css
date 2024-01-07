@@ -635,3 +635,8 @@ a.dwn-link {
         background-color: #fff;
         border: solid 1px #007896;
     }
+
+select.form-select-trs1 {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+}
