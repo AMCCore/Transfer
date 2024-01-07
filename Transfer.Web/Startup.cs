@@ -59,7 +59,7 @@ public class Startup
         services.AddTransient<ICacheService, InMemoryCache>();
 
         services.AddHttpContextAccessor();
-        services.AddTransient<ISecurityService, SecurityService>();
+        services.AddTransient<IAdvancedSecurityService, SecurityService>();
         services.AddTransient<ITripRequestSecurityService, TripRequestSecurityService>();
 
         services.AddTransient<IMailModule, MailModule>();
@@ -143,7 +143,7 @@ public class Startup
 
         app.UseCookiePolicy(cookiePolicyOptions);
 
-        Security.Configure(app.ApplicationServices.GetRequiredService<ISecurityService>(),
+        Security.Configure(app.ApplicationServices.GetRequiredService<IAdvancedSecurityService>(),
             app.ApplicationServices.GetRequiredService<ICacheService>(),
             app.ApplicationServices.GetRequiredService<IConfiguration>());
     }

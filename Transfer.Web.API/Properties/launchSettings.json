@@ -4,16 +4,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:25167",
-      "sslPort": 44335
+      "applicationUrl": "http://localhost:57577",
+      "sslPort": 44336
     }
   },
   "profiles": {
-    "Transfer.Web": {
+    "Transfer.Web.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7276",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"

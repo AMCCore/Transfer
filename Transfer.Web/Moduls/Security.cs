@@ -14,18 +14,18 @@ namespace Transfer.Web.Moduls;
 
 public static class Security
 {
-    private static ISecurityService _securityService;
+    private static IAdvancedSecurityService _securityService;
     private static ICacheService _cacheService;
     private static IConfiguration _settings;
 
-    public static void Configure(ISecurityService securityService, ICacheService cacheService, IConfiguration configuration)
+    public static void Configure(IAdvancedSecurityService securityService, ICacheService cacheService, IConfiguration configuration)
     {
         _securityService = securityService;
         _cacheService = cacheService;
         _settings = configuration;
     }
 
-    public static ISecurityService Current
+    public static IAdvancedSecurityService Current
     {
         get
         {

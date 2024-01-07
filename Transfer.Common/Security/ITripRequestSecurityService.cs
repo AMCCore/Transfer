@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Transfer.Common.Security;
 
-public interface ITripRequestSecurityService : ISecurityService
+public interface ITripRequestSecurityService : IAdvancedSecurityService
 {
 }

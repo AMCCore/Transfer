@@ -31,5 +31,19 @@ namespace Transfer.Common.Enums
         [Description("Google")]
         [EnumGuid("5EC61BDB-CFCA-441B-AE0F-98F7C18D6C9D")]
         Google,
+
+        /// <summary>
+        /// AcceptCode
+        /// </summary>
+        [Description("AcceptCode")]
+        [EnumGuid("0fdb9fda-5161-4fe6-97dc-812bb8b6e054")]
+        AcceptCode,
+
+        /// <summary>
+        /// Devicetoken
+        /// </summary>
+        [Description("Devicetoken")]
+        [EnumGuid("bcdf133d-4655-48e0-bccf-1c28b2d839cf")]
+        Devicetoken,
     }
 }
