@@ -59,7 +59,7 @@ builder.Services.AddTransient<ICacheService, InMemoryCache>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<ITokenValidator, TokenValidator>();
-//builder.Services.AddTransient<ISecurityService, SecurityService>();
+builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 builder.Services.TransferBlConfigue();
