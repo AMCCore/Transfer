@@ -155,6 +155,13 @@ public class CarrierController : BaseController
             return View("CarrierEdit", model);
         }
 
+        if (model.WorkingAreas?.All(string.IsNullOrWhiteSpace) ?? true)
+        {
+            ViewBag.ErrorMsg = "Ошибка согласия перс данных";
+            ViewBag.Regions = await GetRegionsAsync();
+            return View("CarrierEdit", model);
+        }
+
         if (!string.IsNullOrWhiteSpace(model.INN) && await UnitOfWork.GetSet<DbOrganisation>().AnyAsync(x => x.Id != model.Id && !x.IsDeleted && x.INN.ToLower() == model.INN.ToLower()))
         {
             ViewBag.ErrorMsg = "Организация с таким ИНН уже существует";
@@ -229,7 +236,7 @@ public class CarrierController : BaseController
             await UnitOfWork.AddEntityAsync(br, token: CancellationToken.None);
         }
 
-        //лтцензия
+        //лицензия
         await SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License);
 
         //логотип
