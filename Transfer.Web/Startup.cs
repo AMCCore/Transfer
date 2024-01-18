@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Text;
 using Telegram.Bot;
 using Transfer.Bl;
 using Transfer.Common;
@@ -41,6 +44,29 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Transfer API", Version = "v1" });
             c.OperationFilter<SwaggerFileOperationFilter>();
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
         });
 
         //параметры приложения
@@ -61,6 +87,9 @@ public class Startup
         services.AddHttpContextAccessor();
         services.AddTransient<IAdvancedSecurityService, SecurityService>();
         services.AddTransient<ITripRequestSecurityService, TripRequestSecurityService>();
+        services.AddTransient<ITokenValidator, TokenValidator>();
+        services.AddTransient<ISecurityService, SecurityService>();
+        services.AddTransient<ITokenService, TokenService>();
 
         services.AddTransient<IMailModule, MailModule>();
 
@@ -76,7 +105,22 @@ public class Startup
                 x.ExpireTimeSpan = TimeSpan.FromHours(12);
             });
 
-        #if !DEBUG
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "MyAuthClient",
+                    ValidAudience = "MyAuthClient",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey))
+                };
+            });
+
+#if !DEBUG
 
         services.AddHostedService<ConfigureWebhook>();
 
@@ -86,7 +130,7 @@ public class Startup
 
         services.AddScoped<HandleUpdateService>();
 
-        #endif
+#endif
 
         services.AddControllers().AddNewtonsoftJson();
     }
@@ -120,10 +164,10 @@ public class Startup
 
             endpoints.MapSwagger();
 
-                //todo возможно придётся включить при тестировании авторизации
-                //endpoints.MapControllers();
-                //endpoints.MapRazorPages();
-            });
+            //todo возможно придётся включить при тестировании авторизации
+            //endpoints.MapControllers();
+            //endpoints.MapRazorPages();
+        });
 
         if (env.IsDevelopment())
         {
