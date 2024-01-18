@@ -25,10 +25,11 @@ public class AuthController : ControllerBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISecurityService _securityService;
 
-    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService)
+    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService)
     {
         _unitOfWork = unitOfWork;
         _securityService = securityService;
+        _tokenService = tokenService;
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

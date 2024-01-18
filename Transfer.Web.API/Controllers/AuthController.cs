@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Transfer.Common.Security;
-using Transfer.Common;
-using Transfer.Bl.Dto;
-using Microsoft.AspNetCore.Authorization;
-using Transfer.Dal.Entities;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Transfer.Bl.Dto.API;
-using Transfer.Common.Extensions;
 using Newtonsoft.Json;
-using System.Security.Principal;
+using Transfer.Bl.Dto.API;
+using Transfer.Common;
+using Transfer.Common.Security;
+using Transfer.Dal.Entities;
 
 namespace Transfer.Web.API.Controllers;
 
@@ -23,10 +20,11 @@ public class AuthController : ControllerBase
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISecurityService _securityService;
 
-    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService)
+    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService)
     {
         _unitOfWork = unitOfWork;
         _securityService = securityService;
+        _tokenService = tokenService;
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
