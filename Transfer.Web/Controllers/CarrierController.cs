@@ -18,6 +18,7 @@ using Transfer.Bl.Dto;
 using Transfer.Common.Extensions;
 using Transfer.Common.Settings;
 using Transfer.Web.Moduls;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace Transfer.Web.Controllers;
 
@@ -51,6 +52,10 @@ public class CarrierController : BaseController
             query = query.Where(x => !x.WorkingArea.Any() || x.WorkingArea.Any(x => x.Region.Name.ToLower().Contains(filter.City.ToLower())));
         }
 
+        if (filter.ActiveOnly)
+        {
+            query = query.Where(x => !x.IsInactive);
+        }
 
         if (filter.OrderByName)
         {

@@ -22,4 +22,6 @@ public class CarrierSearchFilter : BaseFilterModel<CarrierSearchResultItem>
     public bool OrderByRating { get; set; }
 
     public bool OrderByChecked { get; set; }
+
+    public bool ActiveOnly { get; set; } = true;
 }

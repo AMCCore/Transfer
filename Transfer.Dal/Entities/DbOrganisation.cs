@@ -148,4 +148,12 @@ public class DbOrganisation : IEntityBase, ISoftDeleteEntity, IEntityWithDateCre
     [Required]
     [DefaultValue(false)]
     public bool Agregator { get; set; } = false;
+
+    /// <summary>
+    ///     Признак активности перевозчика (Перевозчик активен нет/да)
+    /// </summary>
+    [Required]
+    [DefaultValue(false)]
+    public bool IsInactive { get; set; } = false;
+
 }

@@ -288,11 +288,16 @@
     <div class="row blank-row"></div>
     <div class="row form-row">
         <div class="t-col col-12 chk-label form-group">
+            <input id="IsInactive" asp-for="IsInactive" class="form-check-input" />
+            <label for="IsInactive">Не активный перевозчик</label>
+        </div>
+    </div>
+    <div class="row form-row">
+        <div class="t-col col-12 chk-label form-group">
             <input id="Agreement" asp-for="Agreement" class="form-check-input" />
             <label for="Agreement">Согласие с условиями обработки персональных данных</label> <label>(<a href="#" target="_blank">Полные условия оферты</a>)</label>
         </div>
     </div>
-    <div class="row blank-row"></div>
     <div class="row form-row">
         <div class="t-col the-error col-6 col-md-10">
             @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMsg))

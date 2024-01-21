@@ -4,7 +4,7 @@
 @using X.PagedList.Mvc.Core;
 @using X.PagedList.Web.Common
 
-<div class="search-filter carrier-filter">
+<div class="search-filter carrier-filter filter-options-buttons">
     <div class="container">
         <div class="row blank-row"></div>
         <div class="row blank-row"></div>
@@ -38,7 +38,12 @@
         </div>
         <div class="row blank-row"></div>
         <div class="row">
-            <div class="text-center col-md-2 col-12 offset-md-10 t-col float-start">
+            <div class="text-center col-md-2 col-12 t-col float-start form-group">
+                <label class="btn btn-default btn-checbox-white">
+                    <input type="checkbox" asp-for="ActiveOnly" autocomplete="off"> Только активные
+                </label>
+            </div>
+            <div class="text-center col-md-2 col-12 offset-md-8 t-col float-start">
                 <button type="submit" class="button-one">Найти</button>
             </div>
         </div>
