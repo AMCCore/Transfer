@@ -470,7 +470,7 @@ public sealed class TripRequestController : BaseStateController
         }
         if (replay.TripRequest.State != TripRequestStateEnum.Active.GetEnumGuid())
         {
-            TempData[errMsgName] = "Исполнитель на данную поездку уже выбран";
+            TempData[errMsgName] = "Поездка завершена";
             return RedirectToAction(nameof(MakeOfferError));
         }
         if (await UnitOfWork.GetSet<DbTripRequestOffer>().AnyAsync(x => x.TripRequestId == replay.TripRequestId && x.CarrierId == replay.CarrierId, token))
