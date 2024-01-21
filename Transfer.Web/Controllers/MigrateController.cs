@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Transfer.Common;
 using Transfer.Dal;
 using Transfer.Dal.Seeds;
 
@@ -31,6 +29,6 @@ public class MigrateController : Controller
         uw.Context.Database.Migrate();
         uw.SeedData();
 
-        return Ok();
+        return Ok("Complete");
     }
 }
