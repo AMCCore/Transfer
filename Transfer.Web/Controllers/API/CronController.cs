@@ -2,18 +2,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Threading;
-using Transfer.Common;
-using Transfer.Web.Services;
-using Transfer.Dal.Entities;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Transfer.Common.Enums;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Transfer.Common;
 using Transfer.Common.Enums.States;
 using Transfer.Common.Extensions;
-using System;
-using System.Text;
+using Transfer.Dal.Entities;
+using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers.API;
 

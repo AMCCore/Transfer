@@ -73,8 +73,6 @@ public class SecurityService : IAdvancedSecurityService
             .ToArray();
     }
 
-    private IDictionary<Guid, IList<Guid>> _rights;
-
     public IDictionary<Guid, IList<Guid>> Rights
     {
         get

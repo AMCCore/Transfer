@@ -34,25 +34,25 @@ public class FIASController : ControllerBase
         return new JsonResult(result);
 
 
-        var req = new FIASRequest()
-        {
-            Query = Query,
-            Count = 20,
-            LocationsBoost = new FIASRequestLocation[1] { new FIASRequestLocation { Region = "Москва" } }
-        };
-        using (var httpClient = new HttpClient())
-        {
-            var jsonRequest = JsonConvert.SerializeObject(req);
-            using (var requestMessage = CreateHttpRequestMessage(HttpMethod.Post, new Uri($"{BasicUrl}/searchHome"), jsonRequest))
-            {
-                using (var response = await httpClient.SendAsync(requestMessage))
-                {
-                    var responseData = await response.Content.ReadAsStringAsync();
-                    var json = JObject.Parse(responseData);
-                    return Ok(json);
-                }
-            }
-        }
+        //var req = new FIASRequest()
+        //{
+        //    Query = Query,
+        //    Count = 20,
+        //    LocationsBoost = new FIASRequestLocation[1] { new FIASRequestLocation { Region = "Москва" } }
+        //};
+        //using (var httpClient = new HttpClient())
+        //{
+        //    var jsonRequest = JsonConvert.SerializeObject(req);
+        //    using (var requestMessage = CreateHttpRequestMessage(HttpMethod.Post, new Uri($"{BasicUrl}/searchHome"), jsonRequest))
+        //    {
+        //        using (var response = await httpClient.SendAsync(requestMessage))
+        //        {
+        //            var responseData = await response.Content.ReadAsStringAsync();
+        //            var json = JObject.Parse(responseData);
+        //            return Ok(json);
+        //        }
+        //    }
+        //}
     }
 
     /// <summary>
