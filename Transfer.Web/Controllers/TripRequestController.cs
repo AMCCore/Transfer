@@ -4,13 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
+using Telegram.Bot.Types;
 using Transfer.Bl.Dto;
+using Transfer.Bl.Dto.API.Geotree;
 using Transfer.Bl.Dto.TripRequest;
 using Transfer.Common;
 using Transfer.Common.Enums;
@@ -24,6 +33,7 @@ using Transfer.Web.Extensions;
 using Transfer.Web.Models;
 using Transfer.Web.Models.Enums;
 using Transfer.Web.Models.TripRequest;
+using Transfer.Web.Moduls;
 using Transfer.Web.Services;
 
 namespace Transfer.Web.Controllers;
@@ -249,6 +259,12 @@ public sealed class TripRequestController : BaseStateController
             await UnitOfWork.BeginTransactionAsync(token);
 
             model.Id = Guid.NewGuid();
+
+            var regFrom = GetOrCreateRegion(model.RegionFromName, token);
+            var coordFrom = GetAddressCoordinates(model.AddressFrom, token);
+            var regTo = GetOrCreateRegion(model.RegionToName, token);
+            var coordTo = GetAddressCoordinates(model.AddressTo, token);
+
             var entity = Mapper.Map<DbTripRequest>(model);
 
             entity.StateEnum = TripRequestStateEnum.Active;
@@ -258,14 +274,25 @@ public sealed class TripRequestController : BaseStateController
                 entity.ContactFio = entity.СhartererName;
             }
 
-            entity.OrgCreatorId = await UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
+            var orgCId = UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
 
-            entity.RegionFromId = (await GetOrCreateRegion(model.RegionFromName, token))?.Id;
-            entity.RegionToId = (await GetOrCreateRegion(model.RegionToName, token))?.Id;
+            await Task.WhenAll(regFrom, coordFrom, regTo, coordTo, orgCId);
+
+            entity.OrgCreatorId = await orgCId;
+            entity.RegionFromId = (await regFrom)?.Id;
+            entity.RegionToId = (await regTo)?.Id;
+            entity.AddressFromLatitude = (await coordFrom)?.Latitude;
+            entity.AddressFromLongitude = (await coordFrom)?.Longitude;
+            entity.AddressToLatitude = (await coordTo)?.Latitude;
+            entity.AddressToLongitude = (await coordTo).Longitude;
 
             entity = await UnitOfWork.AddEntityAsync(entity, token: token);
-            await UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier { TripRequestId = model.Id }, token: token);
-            await SetTripOptions(entity, model, token);
+
+            var operations = new List<Task>();
+
+
+            operations.Add(UnitOfWork.AddEntityAsync(new DbTripRequestIdentifier { TripRequestId = model.Id }, token: token));
+            operations.Add(SetTripOptions(entity, model, token));
 
 
             var appropriateOrgIdsq = UnitOfWork.GetSet<DbOrganisation>().AsQueryable();
@@ -288,19 +315,22 @@ public sealed class TripRequestController : BaseStateController
 
             foreach (var orgId in appropriateOrgIds)
             {
-                await UnitOfWork.AddEntityAsync(new DbTripRequestReplay
+                operations.Add(UnitOfWork.AddEntityAsync(new DbTripRequestReplay
                 {
                     TripRequestId = entity.Id,
                     CarrierId = orgId,
-                }, token: token);
+                }, token: token));
             }
 
-            await UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку", token: token);
+            operations.Add(UnitOfWork.AddToHistoryLog(entity, "Создание запроса на перевозку", token: token));
+            await Task.WhenAll(operations);
             await UnitOfWork.CommitAsync(token);
 
-            await SendReplaysToUsers(entity.Id, token);
-            await SendReplaysToWatchers(entity.Id, token);
-            await SendReplaysToWatchersAboutVIP(entity.Id, token);
+            await Task.WhenAll(
+                SendReplaysToUsers(entity.Id, token),
+                SendReplaysToWatchers(entity.Id, token),
+                SendReplaysToWatchersAboutVIP(entity.Id, token)
+            );
 
             return RedirectToAction(nameof(TripRequestShow), new { requestId = model.Id });
         }
@@ -333,69 +363,6 @@ public sealed class TripRequestController : BaseStateController
         return Unauthorized();
     }
 
-    private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
-    {
-        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(token))
-        {
-            await UnitOfWork.DeleteAsync(to, token);
-        }
-        if (model.ChildTrip)
-        {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
-            {
-                Id = Guid.NewGuid(),
-                TripRequestId = entity.Id,
-                TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
-            }, token: token);
-        }
-        if (model.StandTrip)
-        {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
-            {
-                Id = Guid.NewGuid(),
-                TripRequestId = entity.Id,
-                TripOptionId = TripOptionsEnum.IdleTrip.GetEnumGuid()
-            }, token: token);
-        }
-        if (model.PaymentType == (int)PaymentTypeEnum.Card)
-        {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
-            {
-                Id = Guid.NewGuid(),
-                TripRequestId = entity.Id,
-                TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
-            }, token: token);
-
-        }
-        else if (model.PaymentType == (int)PaymentTypeEnum.Cash)
-        {
-            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
-            {
-                Id = Guid.NewGuid(),
-                TripRequestId = entity.Id,
-                TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
-            }, token: token);
-        }
-    }
-
-    private async Task<DbRegion> GetOrCreateRegion(string regionName, CancellationToken token = default)
-    {
-        if (string.IsNullOrWhiteSpace(regionName))
-            return null;
-
-        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()) || ss.RegionAlias.Any(x => x.Name.ToLower().Contains(regionName.ToLower())), token);
-        if (reg == null)
-        {
-            await UnitOfWork.AddToHistoryLog(SystemEventEnum.UnknownRegionName.GetEnumGuid(), "Из ФИАСа пришел нераспознанный регион", $"{regionName}", token);
-            //reg = new DbRegion
-            //{
-            //    Name = regionName
-            //};
-            //await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
-        }
-        return reg;
-    }
-
     /// <summary>
     /// Выбрать перевозчика (победителя)
     /// </summary>
@@ -425,10 +392,6 @@ public sealed class TripRequestController : BaseStateController
 
         return Unauthorized();
     }
-
-    #region Make offer
-
-    #endregion
 
     #region Telegram send
 
@@ -717,4 +680,106 @@ public sealed class TripRequestController : BaseStateController
 
         model.NextStates = resp;
     }
+
+    private sealed record AddressCoordinates
+    {
+        public decimal Longitude { get; set; }
+
+        public decimal Latitude { get; set; }
+    }
+
+    private async Task SetTripOptions(DbTripRequest entity, TripRequestDto model, CancellationToken token = default)
+    {
+        foreach (var to in await UnitOfWork.GetSet<DbTripRequestOption>().Where(x => x.TripRequestId == entity.Id).ToListAsync(token))
+        {
+            await UnitOfWork.DeleteAsync(to, token);
+        }
+        if (model.ChildTrip)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptionsEnum.ChildTrip.GetEnumGuid()
+            }, token: token);
+        }
+        if (model.StandTrip)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptionsEnum.IdleTrip.GetEnumGuid()
+            }, token: token);
+        }
+        if (model.PaymentType == (int)PaymentTypeEnum.Card)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptionsEnum.CardPayment.GetEnumGuid()
+            }, token: token);
+
+        }
+        else if (model.PaymentType == (int)PaymentTypeEnum.Cash)
+        {
+            await UnitOfWork.AddEntityAsync(new DbTripRequestOption
+            {
+                Id = Guid.NewGuid(),
+                TripRequestId = entity.Id,
+                TripOptionId = TripOptionsEnum.CashPayment.GetEnumGuid()
+            }, token: token);
+        }
+    }
+
+    private async Task<DbRegion> GetOrCreateRegion(string regionName, CancellationToken token = default)
+    {
+        if (string.IsNullOrWhiteSpace(regionName))
+            return null;
+
+        var reg = await UnitOfWork.GetSet<DbRegion>().FirstOrDefaultAsync(ss => ss.Name.ToLower().Contains(regionName.ToLower()) || ss.RegionAlias.Any(x => x.Name.ToLower().Contains(regionName.ToLower())), token);
+        if (reg == null)
+        {
+            await UnitOfWork.AddToHistoryLog(SystemEventEnum.UnknownRegionName.GetEnumGuid(), "Из ФИАСа пришел нераспознанный регион", $"{regionName}", token);
+            //reg = new DbRegion
+            //{
+            //    Name = regionName
+            //};
+            //await UnitOfWork.AddEntityAsync(reg, CancellationToken.None);
+        }
+        return reg;
+    }
+
+    private static async Task<AddressCoordinates> GetAddressCoordinates(string address, CancellationToken token = default)
+    {
+        try
+        {
+            using var httpClient = new HttpClient();
+
+            var uriBuilder = new UriBuilder("https://api.geotree.ru/search.php");
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["level"] = "4";
+            query["term"] = address;
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
+            //requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ETPToken.Token);
+            using var response = await httpClient.SendAsync(requestMessage, token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync(token);
+                var result = (JsonConvert.DeserializeObject<GeotreeSearchAnswerDto[]>(responseData)).FirstOrDefault();
+                return new AddressCoordinates {
+                    Longitude = result.GeoCenter.Lon,
+                    Latitude = result.GeoCenter.Lat
+                };
+            }
+        }
+        catch
+        {
+        }
+
+        return null;
+    }
+
 }

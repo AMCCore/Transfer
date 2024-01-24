@@ -23,8 +23,17 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
     [MaxLength(1000)]
     public string AddressFrom { get; set; }
 
+    public decimal? AddressFromLongitude { get; set; }
+
+    public decimal? AddressFromLatitude { get; set; }
+
     [MaxLength(1000)]
     public string AddressTo { get; set; }
+
+    public decimal? AddressToLongitude { get; set; }
+
+    public decimal? AddressToLatitude { get; set; }
+
 
     public DateTime TripDate { get; set; }
 
