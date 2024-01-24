@@ -97,5 +97,10 @@ public class OrganisationDto : StateMachineDto
 
     [Required]
     public override Guid State { get; set; }
+
+    /// <summary>
+    /// Признак активности перевозчика (Перевозчик активен нет/да)
+    /// </summary>
+    public bool IsInactive { get; set; } = false;
 }
 

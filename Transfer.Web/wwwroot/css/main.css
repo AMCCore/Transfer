@@ -615,6 +615,10 @@ a.dwn-link {
         color: #000 !important;
     }
 
+.filter-options-buttons .btn-checbox-white {
+    background-color: #fff;
+}
+
 .filter-options-buttons .form-select {
     color: #0f4c71;
     border: solid 1px #007896;
