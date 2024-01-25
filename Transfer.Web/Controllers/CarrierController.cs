@@ -144,7 +144,7 @@ public class CarrierController : BaseController
     [ValidateAntiForgeryToken]
     [HttpPost]
     [Route("Carrier/Save")]
-    public async Task<IActionResult> Save([FromForm] CarrierDto model)
+    public async Task<IActionResult> Save([FromForm] CarrierDto model, CancellationToken token = default)
     {
         if (!ModelState.IsValid)
         {
@@ -167,14 +167,14 @@ public class CarrierController : BaseController
             return View("CarrierEdit", model);
         }
 
-        if (!string.IsNullOrWhiteSpace(model.INN) && await UnitOfWork.GetSet<DbOrganisation>().AnyAsync(x => x.Id != model.Id && !x.IsDeleted && x.INN.ToLower() == model.INN.ToLower()))
+        if (!string.IsNullOrWhiteSpace(model.INN) && await UnitOfWork.GetSet<DbOrganisation>().AnyAsync(x => x.Id != model.Id && !x.IsDeleted && x.INN.ToLower() == model.INN.ToLower(), token))
         {
             ViewBag.ErrorMsg = "Организация с таким ИНН уже существует";
             ViewBag.Regions = await GetRegionsAsync();
             return View("CarrierEdit", model);
         }
 
-        await UnitOfWork.BeginTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync(token);
 
         if (model.Id.IsNullOrEmpty())
         {
@@ -197,17 +197,19 @@ public class CarrierController : BaseController
                 org.DirectorPosition = " ";
             }
 
-            await UnitOfWork.AddEntityAsync(org, token: CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(org, token: token);
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
             br.OrganisationId = org.Id;
-            await UnitOfWork.AddEntityAsync(br, token: CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(br, token: token);
         }
         else
         {
-            var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == model.Id);
+            var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == model.Id, token);
             if (org == null)
-                throw new KeyNotFoundException();
+            {
+                NotFound();
+            }
             Mapper.Map(model, org);
 
             //временно разрешить организации без email
@@ -226,31 +228,31 @@ public class CarrierController : BaseController
                 org.DirectorPosition = " ";
             }
 
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.SaveChangesAsync(token);
 
-            var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(CancellationToken.None);
+            var brd = await UnitOfWork.GetSet<DbBankDetails>().Where(x => !x.IsDeleted && x.OrganisationId == org.Id).ToListAsync(token);
             foreach (var b in brd)
             {
                 b.IsDeleted = true;
             }
-            await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+            await UnitOfWork.SaveChangesAsync(token);
 
             var br = Mapper.Map<DbBankDetails>(model);
             br.Id = Guid.NewGuid();
             br.OrganisationId = org.Id;
-            await UnitOfWork.AddEntityAsync(br, token: CancellationToken.None);
+            await UnitOfWork.AddEntityAsync(br, token: token);
         }
 
-        //лицензия
-        await SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License);
+        await Task.WhenAll(
+            //лицензия
+            SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License, token),
+            //логотип
+            SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileTypeEnum.Logo, token),
+            //регионы работы
+            SetCarrierWorkingArea(model.Id, model.WorkingAreas, token)
+        );
 
-        //логотип
-        await SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileTypeEnum.Logo);
-
-        //регионы работы
-        await SetCarrierWorkingArea(model.Id, model.WorkingAreas);
-
-        await UnitOfWork.CommitAsync();
+        await UnitOfWork.CommitAsync(token);
 
         return RedirectToAction(nameof(CarrierItem), new { carrierId = model.Id });
     }
@@ -311,26 +313,27 @@ public class CarrierController : BaseController
         return PartialView("/Views/Carrier/Assets.cshtml", result);
     }
 
-    private async Task SetCarrierFile(Guid carrierId, Guid? fileId, Common.Enums.OrganisationFileTypeEnum fileType)
+    private async Task SetCarrierFile(Guid carrierId, Guid? fileId, Common.Enums.OrganisationFileTypeEnum fileType, CancellationToken token = default)
     {
-        var files = await UnitOfWork.GetSet<DbOrganisationFile>().Where(x => x.OrganisationId == carrierId && !x.IsDeleted && x.FileType == fileType).ToListAsync(CancellationToken.None);
+        var files = await UnitOfWork.GetSet<DbOrganisationFile>().Where(x => x.OrganisationId == carrierId && !x.IsDeleted && x.FileType == fileType).ToListAsync(token);
+        var tsks = new List<Task>();
         if (files.All(x => x.FileId != fileId))
         {
-            await UnitOfWork.DeleteListAsync(files, CancellationToken.None);
+            tsks.Add(UnitOfWork.DeleteListAsync(files, token));
 
             if (!fileId.IsNullOrEmpty())
             {
-                await UnitOfWork.AddEntityAsync(new DbOrganisationFile
+                tsks.Add(UnitOfWork.AddEntityAsync(new DbOrganisationFile
                 {
                     OrganisationId = carrierId,
                     FileId = fileId.Value,
                     IsDeleted = false,
                     FileType = fileType,
                     UploaderId = Security.CurrentAccountId
-                }, token: CancellationToken.None);
-
-            }
+                }, token: token));
+;            }
         }
+        await Task.WhenAll(tsks);
 
     }
 
@@ -339,10 +342,10 @@ public class CarrierController : BaseController
         return await UnitOfWork.GetSet<DbRegion>().ToDictionaryAsync(x => x.Id, y => y.Name, CancellationToken.None);
     }
 
-    private async Task SetCarrierWorkingArea(Guid carrierId, params string[] regions)
+    private async Task SetCarrierWorkingArea(Guid carrierId, IEnumerable<string> regions, CancellationToken token = default)
     {
-        var eRegions = await UnitOfWork.GetSet<DbOrganisationWorkingArea>().Where(x => x.OrganisationId == carrierId).ToListAsync(CancellationToken.None);
-        await UnitOfWork.DeleteListAsync(eRegions, CancellationToken.None);
+        var eRegions = await UnitOfWork.GetSet<DbOrganisationWorkingArea>().Where(x => x.OrganisationId == carrierId).ToListAsync(token);
+        await UnitOfWork.DeleteListAsync(eRegions, token);
 
         foreach (var region in regions)
         {
@@ -351,7 +354,7 @@ public class CarrierController : BaseController
                 await UnitOfWork.AddEntityAsync(new DbOrganisationWorkingArea { 
                     RegionId = regId,
                     OrganisationId = carrierId
-                });
+                }, token: token);
             }
         }
     }
