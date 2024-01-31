@@ -16,6 +16,7 @@ namespace Transfer.Web.Controllers.API;
 
 [ApiController]
 [Authorize]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     const int passLength = 4;
@@ -82,7 +83,7 @@ public class AuthController : ControllerBase
 #if DEBUG
             return Problem($"Exception: {e.Message}; {e.StackTrace};");
 #endif
-            return Problem($"Some problem {nameof(SendAcceptCode)}");
+            return Problem($"Some problem {nameof(AcceptCodeSend)}");
         }
     }
 
@@ -120,7 +121,7 @@ public class AuthController : ControllerBase
 #if DEBUG
             return Problem($"Exception: {e.Message}; {e.StackTrace};");
 #endif
-            return Problem($"Some problem {nameof(CheckAcceptCode)}");
+            return Problem($"Some problem {nameof(AcceptCodeCheck)}");
         }
     }
 

@@ -4,7 +4,7 @@ using Transfer.Common.Attributes;
 
 namespace Transfer.Bl.Dto.TripRequest
 {
-    public class TripRequestDto : StateMachineDto
+    public class TripRequestDto : StateMachineDto, ITripRequest
     {
         public Guid Id { get; set; }
 
