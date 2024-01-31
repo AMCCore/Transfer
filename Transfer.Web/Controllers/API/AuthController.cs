@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
     [HttpPost]
     [AllowAnonymous]
     [Route("sendAcceptCode")]
-    public async Task<IActionResult> SendAcceptCode([FromBody] SendAcceptCodeDto model, CancellationToken token = default)
+    public async Task<IActionResult> AcceptCodeSend([FromBody] SendAcceptCodeDto model, CancellationToken token = default)
     {
         try
         {
@@ -92,7 +92,7 @@ public class AuthController : ControllerBase
     [HttpPost]
     [AllowAnonymous]
     [Route("checkAcceptCode")]
-    public async Task<IActionResult> CheckAcceptCode([FromBody] CheckAcceptCodeDto model, CancellationToken token = default)
+    public async Task<IActionResult> AcceptCodeCheck([FromBody] CheckAcceptCodeDto model, CancellationToken token = default)
     {
         try
         {
