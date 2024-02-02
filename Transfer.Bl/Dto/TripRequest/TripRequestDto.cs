@@ -16,9 +16,17 @@ namespace Transfer.Bl.Dto.TripRequest
 
         public string? AddressFromFias { get; set; }
 
+        public string? AddressFromFiasLongitude { get; set; }
+
+        public string? AddressFromFiasLatitude { get; set; }
+
         public string AddressTo { get; set; }
 
         public string? AddressToFias { get; set; }
+
+        public string? AddressToFiasLongitude { get; set; }
+
+        public string? AddressToFiasLatitude { get; set; }
 
         public string? ContactFio { get; set; }
 

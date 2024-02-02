@@ -21,7 +21,9 @@ $(function () {
                         result.push({
                             id: data.suggestions[i].data.fias_id,
                             text: data.suggestions[i].value,
-                            region: data.suggestions[i].data.region
+                            region: data.suggestions[i].data.region,
+                            longitude: data.suggestions[i].data.geo_lon,
+                            latitude: data.suggestions[i].data.geo_lat
                         });
                     }
                 }
@@ -36,6 +38,8 @@ $(function () {
         $(this).closest(".form-group").find(".r1").val('');
         $(this).closest(".form-group").find(".r2").val(edata.region);
         $(this).closest(".form-group").find(".r3").val(edata.text);
+        $(this).closest(".form-group").find(".r4").val(edata.longitude);
+        $(this).closest(".form-group").find(".r5").val(edata.latitude);
     });
 });
 //# sourceMappingURL=Save.js.map

@@ -34,7 +34,6 @@ public class DbTripRequest : IEntityBase, ISoftDeleteEntity, IEntityWithDateCrea
 
     public decimal? AddressToLatitude { get; set; }
 
-
     public DateTime TripDate { get; set; }
 
     public int Passengers { get; set; }

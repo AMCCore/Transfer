@@ -181,25 +181,25 @@ public class AccountController : BaseController
 
     [HttpGet]
     [Route("Carrier/{carrierId}/Account/{accountId}/Delete")]
-    public async Task<IActionResult> CarrierAccountItemDelete([Required] Guid carrierId, [Required] Guid accountId)
+    public async Task<IActionResult> CarrierAccountItemDelete([Required] Guid carrierId, [Required] Guid accountId, CancellationToken token = default)
     {
-        var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, CancellationToken.None);
+        var org = await UnitOfWork.GetSet<DbOrganisation>().FirstOrDefaultAsync(ss => ss.Id == carrierId, token);
         if (org == null)
             return NotFound();
 
-        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == org.Id) && ss.Id == accountId, CancellationToken.None);
+        var entity = await UnitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(ss => ss.Organisations.Any(x => x.OrganisationId == org.Id) && ss.Id == accountId, token);
         if (entity == null)
             return NotFound();
 
-        await UnitOfWork.BeginTransactionAsync(CancellationToken.None);
+        await UnitOfWork.BeginTransactionAsync(token);
 
         entity.IsDeleted = true;
-        await UnitOfWork.SaveChangesAsync(CancellationToken.None);
+        await UnitOfWork.SaveChangesAsync(token);
 
-        var els = await entity.ExternalLogins.ToListAsync(CancellationToken.None);
-        await UnitOfWork.DeleteListAsync(els, CancellationToken.None);
+        var els = entity.ExternalLogins.ToList();
+        await UnitOfWork.DeleteListAsync(els, token);
 
-        await UnitOfWork.CommitAsync(CancellationToken.None);
+        await UnitOfWork.CommitAsync(token);
 
         return RedirectToAction(nameof(CarrierController.CarrierItem), typeof(CarrierController).ControllerName(), new { carrierId = org.Id });
     }

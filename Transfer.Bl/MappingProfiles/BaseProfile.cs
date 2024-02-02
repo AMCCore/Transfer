@@ -96,6 +96,10 @@ public class BaseProfile : Profile
             .ForMember(x => x.State, opt => opt.MapFrom(o => o.State))
             .ForMember(x => x.RegionFromId, opt => opt.Ignore())
             .ForMember(x => x.RegionToId, opt => opt.Ignore())
+            .ForMember(x => x.AddressFromLatitude, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.AddressFromFiasLatitude) ? (decimal?)null : Convert.ToDecimal(o.AddressFromFiasLatitude.Replace(".", ","))))
+            .ForMember(x => x.AddressFromLongitude, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.AddressFromFiasLongitude) ? (decimal?)null : Convert.ToDecimal(o.AddressFromFiasLongitude.Replace(".", ","))))
+            .ForMember(x => x.AddressToLatitude, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.AddressToFiasLatitude) ? (decimal?)null : Convert.ToDecimal(o.AddressToFiasLatitude.Replace(".", ","))))
+            .ForMember(x => x.AddressToLongitude, opt => opt.MapFrom(o => string.IsNullOrWhiteSpace(o.AddressToFiasLongitude) ? (decimal?)null : Convert.ToDecimal(o.AddressToFiasLongitude.Replace(".", ","))))
             .ForMember(x => x.TripOptions, opt => opt.Ignore());
 
         CreateMap<DbTripRequestOffer, TripRequestOfferSearchResultItem>()

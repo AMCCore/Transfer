@@ -254,6 +254,8 @@ public sealed class TripRequestController : BaseStateController
             return View("Save", model);
         }
 
+        decimal? zuzu = !string.IsNullOrWhiteSpace(model.AddressFromFiasLatitude) ? Convert.ToDecimal(model.AddressFromFiasLatitude.Replace(".", ",")) : null;
+
         if (model.Id.IsNullOrEmpty())
         {
             await UnitOfWork.BeginTransactionAsync(token);
@@ -261,9 +263,9 @@ public sealed class TripRequestController : BaseStateController
             model.Id = Guid.NewGuid();
 
             var regFrom = GetOrCreateRegion(model.RegionFromName, token);
-            var coordFrom = GetAddressCoordinates(model.AddressFrom, token);
+            //var coordFrom = GetAddressCoordinates(model.AddressFrom, token);
             var regTo = GetOrCreateRegion(model.RegionToName, token);
-            var coordTo = GetAddressCoordinates(model.AddressTo, token);
+            //var coordTo = GetAddressCoordinates(model.AddressTo, token);
 
             var entity = Mapper.Map<DbTripRequest>(model);
 
@@ -276,15 +278,15 @@ public sealed class TripRequestController : BaseStateController
 
             var orgCId = UnitOfWork.GetSet<DbAccount>().Where(x => x.Id == _securityService.CurrentAccountId).SelectMany(x => x.Organisations).Select(x => x.OrganisationId).FirstOrDefaultAsync(token);
 
-            await Task.WhenAll(regFrom, coordFrom, regTo, coordTo, orgCId);
+            await Task.WhenAll(regFrom, regTo, orgCId);
 
             entity.OrgCreatorId = await orgCId;
             entity.RegionFromId = (await regFrom)?.Id;
             entity.RegionToId = (await regTo)?.Id;
-            entity.AddressFromLatitude = (await coordFrom)?.Latitude;
-            entity.AddressFromLongitude = (await coordFrom)?.Longitude;
-            entity.AddressToLatitude = (await coordTo)?.Latitude;
-            entity.AddressToLongitude = (await coordTo).Longitude;
+            //entity.AddressFromLatitude = (await coordFrom)?.Latitude;
+            //entity.AddressFromLongitude = (await coordFrom)?.Longitude;
+            //entity.AddressToLatitude = (await coordTo)?.Latitude;
+            //entity.AddressToLongitude = (await coordTo).Longitude;
 
             entity = await UnitOfWork.AddEntityAsync(entity, token: token);
 
