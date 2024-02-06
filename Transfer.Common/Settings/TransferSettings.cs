@@ -15,4 +15,10 @@ public class TransferSettings
     public int TablePageSize { get; set; } = 50;
 
     public string FileStoragePath { get; set; } = "/Files";
+
+    public string PlusofonBaseApiUrl { get; set; }
+
+    public string PlusofonToken { get; set; }
+
+    public string PlusofonClientId { get; set; }
 }

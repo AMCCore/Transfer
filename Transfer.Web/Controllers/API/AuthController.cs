@@ -11,6 +11,9 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Transfer.Common.Settings;
+using Microsoft.Extensions.Options;
+using Transfer.Web.Moduls;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -25,12 +28,14 @@ public class AuthController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISecurityService _securityService;
+    private readonly TransferSettings _transferSettings;
 
-    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService)
+    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService, IOptions<TransferSettings> transferSettings)
     {
         _unitOfWork = unitOfWork;
         _securityService = securityService;
         _tokenService = tokenService;
+        _transferSettings = transferSettings.Value;
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -51,7 +56,7 @@ public class AuthController : ControllerBase
 
             var vc = user.ExternalLogins.FirstOrDefault(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.AcceptCode);
 
-            var verificationCode = new int[4];
+            var verificationCode = new int[passLength];
             var random = new Random();
 
             // generates verification code
@@ -73,7 +78,8 @@ public class AuthController : ControllerBase
                 await _unitOfWork.UpdateAsync(vc, token);
             }
 
-            //-- взаимодействие с API отправки СМС
+            var p = new Plusofon(_transferSettings);
+            await p.FlashCallSend(user.Phone, code);
 
 
             return Ok("AcceptCode send");
