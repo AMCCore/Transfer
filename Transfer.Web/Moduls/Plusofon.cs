@@ -31,11 +31,12 @@ public class Plusofon
                 requestMessage.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
                 using (var response = await httpClient.SendAsync(requestMessage))
                 {
+                    var responseData = await response.Content.ReadAsStringAsync();
                     if (!response.IsSuccessStatusCode)
                     {
                         throw new Exception("Some problem with Plusofon FlashCall API Send");
                     }
-                    var responseData = await response.Content.ReadAsStringAsync();
+                    
                 }
             }
         }

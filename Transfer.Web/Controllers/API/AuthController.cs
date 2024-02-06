@@ -69,7 +69,7 @@ public class AuthController : ControllerBase
 
             if (vc == null)
             {
-                await _unitOfWork.AddEntityAsync(new DbExternalLogin { LoginType = Common.Enums.ExternalLoginTypeEnum.AcceptCode, Value = code, SubValue = DateTime.Now.AddMinutes(codeLifetime).Ticks.ToString() }, true, token);
+                await _unitOfWork.AddEntityAsync(new DbExternalLogin { AccountId = user.Id, LoginType = Common.Enums.ExternalLoginTypeEnum.AcceptCode, Value = code, SubValue = DateTime.Now.AddMinutes(codeLifetime).Ticks.ToString() }, true, token);
             }
             else
             {
