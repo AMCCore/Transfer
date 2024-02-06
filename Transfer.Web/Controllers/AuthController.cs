@@ -41,7 +41,7 @@ public class AuthController : BaseController
         if (!string.IsNullOrWhiteSpace(objLoginModel.UserName) && !string.IsNullOrWhiteSpace(objLoginModel.Password))
         {
             var account = await UnitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights)
-                .Where(x => !x.IsDeleted && x.Email == objLoginModel.UserName)
+                .Where(x => !x.IsDeleted && (x.Email == objLoginModel.UserName || x.Phone == objLoginModel.UserName))
                 .FirstOrDefaultAsync(CancellationToken.None);
 
             if (account != null)
