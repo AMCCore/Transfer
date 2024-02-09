@@ -23,10 +23,11 @@ public class Plusofon
     {
         using (var httpClient = new HttpClient())
         {
-            var jsonRequest = JsonConvert.SerializeObject(new { phone  = PhoneNumber, pin = Code});
+            var jsonRequest = JsonConvert.SerializeObject(new { phone = PhoneNumber.Replace("+7", "7"), pin = Code});
             using (var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"{_transferSettings.PlusofonBaseApiUrl}/api/v1/flash-call/send"))
             {
                 requestMessage.Headers.Add("Client", _transferSettings.PlusofonClientId);
+                requestMessage.Headers.Add("Accept", "application/json");
                 requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _transferSettings.PlusofonToken);
                 requestMessage.Content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
                 using (var response = await httpClient.SendAsync(requestMessage))
