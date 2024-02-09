@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Transfer.Bl.Dto.API;
 
-public record SendAcceptCodeDto
+public class SendAcceptCodeDto
 {
     [Required]
     [JsonProperty("phoneNumber")]

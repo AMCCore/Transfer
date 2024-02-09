@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto.API;
 
-public record CheckAcceptCodeDto
+public class CheckAcceptCodeDto
 {
     [Required]
     [JsonProperty("phoneNumber")]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto;
 
-public sealed record EntityParametrDto
+public sealed class EntityParametrDto
 {
     public string Name { get; set; }
 

@@ -1,16 +1,14 @@
-﻿using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Net.Http;
+﻿using Newtonsoft.Json;
 using System;
-using System.Threading.Tasks;
+using System.Net.Http;
 using System.Net.Http.Headers;
-using Transfer.Common.Settings;
 using System.Text;
-using Dadata.Model;
+using System.Threading.Tasks;
+using Transfer.Common.Settings;
 
 namespace Transfer.Web.Moduls;
 
-public class Plusofon
+public sealed class Plusofon
 {
     private readonly TransferSettings _transferSettings;
 
