@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto;
 
-public record TripOption
+public class TripOption
 {
     public Guid Id { get; init; }
 

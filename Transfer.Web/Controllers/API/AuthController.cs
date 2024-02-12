@@ -11,6 +11,14 @@ using Transfer.Common;
 using Transfer.Dal.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Transfer.Common.Settings;
+using Microsoft.Extensions.Options;
+using Transfer.Web.Moduls;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Telegram.Bot.Types;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -25,12 +33,14 @@ public class AuthController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISecurityService _securityService;
+    private readonly TransferSettings _transferSettings;
 
-    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService)
+    public AuthController(IUnitOfWork unitOfWork, ISecurityService securityService, ITokenService tokenService, IOptions<TransferSettings> transferSettings)
     {
         _unitOfWork = unitOfWork;
         _securityService = securityService;
         _tokenService = tokenService;
+        _transferSettings = transferSettings.Value;
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -51,7 +61,7 @@ public class AuthController : ControllerBase
 
             var vc = user.ExternalLogins.FirstOrDefault(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.AcceptCode);
 
-            var verificationCode = new int[4];
+            var verificationCode = new int[passLength];
             var random = new Random();
 
             // generates verification code
@@ -64,7 +74,7 @@ public class AuthController : ControllerBase
 
             if (vc == null)
             {
-                await _unitOfWork.AddEntityAsync(new DbExternalLogin { LoginType = Common.Enums.ExternalLoginTypeEnum.AcceptCode, Value = code, SubValue = DateTime.Now.AddMinutes(codeLifetime).Ticks.ToString() }, true, token);
+                await _unitOfWork.AddEntityAsync(new DbExternalLogin { AccountId = user.Id, LoginType = Common.Enums.ExternalLoginTypeEnum.AcceptCode, Value = code, SubValue = DateTime.Now.AddMinutes(codeLifetime).Ticks.ToString() }, true, token);
             }
             else
             {
@@ -73,7 +83,8 @@ public class AuthController : ControllerBase
                 await _unitOfWork.UpdateAsync(vc, token);
             }
 
-            //-- взаимодействие с API отправки СМС
+            var p = new Plusofon(_transferSettings);
+            await p.FlashCallSend(user.Phone, code);
 
 
             return Ok("AcceptCode send");
@@ -134,11 +145,11 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route(nameof(Login))]
-    public async Task<IActionResult> Login(string login, string pass)
+    public async Task<IActionResult> Login(string login, string pass, CancellationToken token = default)
     {
         if (!string.IsNullOrWhiteSpace(login) && !string.IsNullOrWhiteSpace(pass))
         {
-            var account = await _unitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights).Where(x => x.Email == login).FirstOrDefaultAsync(CancellationToken.None);
+            var account = await _unitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights).Where(x => x.Email == login).FirstOrDefaultAsync(token);
             if (account != null && BCrypt.Net.BCrypt.Verify(pass, account?.Password))
             {
                 var generatedToken = _tokenService.BuildToken(account.Id);
@@ -147,5 +158,27 @@ public class AuthController : ControllerBase
             }
         }
         return Forbid();
+    }
+
+    /// <summary>
+    /// Авторизация
+    /// </summary>
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("getTempToken")]
+    public IActionResult GetTempToken([FromQuery] string AppName)
+    {
+        var claims = new[] {
+                new Claim(ClaimTypes.System, $"{AppName}-ForTransfer")
+        };
+
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new JwtSecurityToken("MyAuthClient", "MyAuthClient", claims,
+            expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
+        return Ok(new JwtSecurityTokenHandler().WriteToken(tokenDescriptor));
     }
 }

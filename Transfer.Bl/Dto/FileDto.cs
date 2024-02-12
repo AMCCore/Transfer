@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto
 {
-    public record FileDto
+    public class FileDto
     {
         public Guid Id { get; init; }
 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Transfer.Bl.Dto;
 
@@ -28,7 +24,7 @@ public class AccountDto
     /// <summary>
     /// Пол
     /// </summary>
-    public bool IsMale { get; set; }
+    public bool IsMale { get; set; } = true;
 
     /// <summary>
     /// Дата рождения
