@@ -24,7 +24,7 @@ public class AccountDto
     /// <summary>
     /// Пол
     /// </summary>
-    public bool IsMale { get; set; }
+    public bool IsMale { get; set; } = true;
 
     /// <summary>
     /// Дата рождения
