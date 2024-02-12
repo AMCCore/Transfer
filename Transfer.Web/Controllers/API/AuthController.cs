@@ -169,10 +169,10 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpGet]
     [Route("getTempToken")]
-    public async Task<IActionResult> GetTempToken([FromQuery] string AppName, CancellationToken token = default)
+    public IActionResult GetTempToken([FromQuery] string AppName)
     {
         var claims = new[] {
-                new Claim(ClaimTypes.System, AppName)
+                new Claim(ClaimTypes.System, $"{AppName}-ForTransfer")
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey));
