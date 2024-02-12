@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Transfer.Bl.Dto;
 using Transfer.Common;
 using Transfer.Common.Utils;
 using Transfer.Dal.Entities;
-using Transfer.Dal;
-using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -37,7 +36,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     [HttpPost]
     [Route(nameof(Register))]
-    private async Task<IActionResult> Register([FromBody] AccountWithPassAndPhoneDto model, CancellationToken token = default)
+    public async Task<IActionResult> Register([FromBody] AccountWithPassAndPhoneDto model, CancellationToken token = default)
     {
         if (
             string.IsNullOrEmpty(model.FirstName) ||
