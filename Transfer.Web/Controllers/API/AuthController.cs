@@ -14,6 +14,11 @@ using System.Linq;
 using Transfer.Common.Settings;
 using Microsoft.Extensions.Options;
 using Transfer.Web.Moduls;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Telegram.Bot.Types;
 
 namespace Transfer.Web.Controllers.API;
 
@@ -140,11 +145,11 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [HttpPost]
     [Route(nameof(Login))]
-    public async Task<IActionResult> Login(string login, string pass)
+    public async Task<IActionResult> Login(string login, string pass, CancellationToken token = default)
     {
         if (!string.IsNullOrWhiteSpace(login) && !string.IsNullOrWhiteSpace(pass))
         {
-            var account = await _unitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights).Where(x => x.Email == login).FirstOrDefaultAsync(CancellationToken.None);
+            var account = await _unitOfWork.GetSet<DbAccount>().Include(xx => xx.AccountRights).Where(x => x.Email == login).FirstOrDefaultAsync(token);
             if (account != null && BCrypt.Net.BCrypt.Verify(pass, account?.Password))
             {
                 var generatedToken = _tokenService.BuildToken(account.Id);
@@ -153,5 +158,27 @@ public class AuthController : ControllerBase
             }
         }
         return Forbid();
+    }
+
+    /// <summary>
+    /// Авторизация
+    /// </summary>
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
+    [HttpGet]
+    [Route("getTempToken")]
+    public async Task<IActionResult> GetTempToken([FromQuery] string AppName, CancellationToken token = default)
+    {
+        var claims = new[] {
+                new Claim(ClaimTypes.System, AppName)
+        };
+
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new JwtSecurityToken("MyAuthClient", "MyAuthClient", claims,
+            expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
+        return Ok(new JwtSecurityTokenHandler().WriteToken(tokenDescriptor));
     }
 }
