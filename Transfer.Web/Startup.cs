@@ -7,8 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Telegram.Bot;
 using Transfer.Bl;
@@ -25,6 +27,8 @@ namespace Transfer.Web;
 
 public class Startup
 {
+    private const string PolicySchemeName = "JWT_OR_COOKIE";
+
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -96,29 +100,40 @@ public class Startup
         services.TransferBlConfigue();
 
         //автлоризация через Cookie (Claims)
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, x =>
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = PolicySchemeName;
+            options.DefaultScheme = PolicySchemeName;
+            options.DefaultChallengeScheme = PolicySchemeName;
+        }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, x =>
+        {
+            x.Cookie.HttpOnly = false;
+            x.LoginPath = "/";
+            x.SlidingExpiration = true;
+            x.ExpireTimeSpan = TimeSpan.FromHours(12);
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                x.Cookie.HttpOnly = false;
-                x.LoginPath = "/";
-                x.SlidingExpiration = true;
-                x.ExpireTimeSpan = TimeSpan.FromHours(12);
-            });
-
-        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //    .AddJwtBearer(options =>
-        //    {
-        //        options.TokenValidationParameters = new TokenValidationParameters
-        //        {
-        //            ValidateIssuer = true,
-        //            ValidateAudience = true,
-        //            ValidateLifetime = true,
-        //            ValidateIssuerSigningKey = true,
-        //            ValidIssuer = "MyAuthClient",
-        //            ValidAudience = "MyAuthClient",
-        //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey))
-        //        };
-        //    });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = "MyAuthClient",
+                ValidAudience = "MyAuthClient",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey))
+            };
+        }).AddPolicyScheme(PolicySchemeName, PolicySchemeName, options => {
+            options.ForwardDefaultSelector = context =>
+            {
+                string authorization = context.Request.Headers[HeaderNames.Authorization];
+                if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith($"{JwtBearerDefaults.AuthenticationScheme} "))
+                {
+                    return JwtBearerDefaults.AuthenticationScheme;
+                }
+                return CookieAuthenticationDefaults.AuthenticationScheme;
+            };
+        });
 
 #if !DEBUG
 

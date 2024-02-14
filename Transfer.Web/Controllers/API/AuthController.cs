@@ -179,6 +179,8 @@ public class AuthController : ControllerBase
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new JwtSecurityToken("MyAuthClient", "MyAuthClient", claims,
             expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
-        return Ok(new JwtSecurityTokenHandler().WriteToken(tokenDescriptor));
+
+        var token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        return Ok(token);
     }
 }
