@@ -105,20 +105,20 @@ public class Startup
                 x.ExpireTimeSpan = TimeSpan.FromHours(12);
             });
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = "MyAuthClient",
-                    ValidAudience = "MyAuthClient",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey))
-                };
-            });
+        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //    .AddJwtBearer(options =>
+        //    {
+        //        options.TokenValidationParameters = new TokenValidationParameters
+        //        {
+        //            ValidateIssuer = true,
+        //            ValidateAudience = true,
+        //            ValidateLifetime = true,
+        //            ValidateIssuerSigningKey = true,
+        //            ValidIssuer = "MyAuthClient",
+        //            ValidAudience = "MyAuthClient",
+        //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenValidator.SecKey))
+        //        };
+        //    });
 
 #if !DEBUG
 

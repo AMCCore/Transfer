@@ -144,8 +144,8 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]
     [HttpPost]
-    [Route(nameof(Login))]
-    public async Task<IActionResult> Login(string login, string pass, CancellationToken token = default)
+    [Route("login")]
+    public async Task<IActionResult> LoginAPI(string login, string pass, CancellationToken token = default)
     {
         if (!string.IsNullOrWhiteSpace(login) && !string.IsNullOrWhiteSpace(pass))
         {
