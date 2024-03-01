@@ -243,14 +243,12 @@ public class CarrierController : BaseController
             await UnitOfWork.AddEntityAsync(br, token: token);
         }
 
-        await Task.WhenAll(
-            //лицензия
-            SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License, token),
-            //логотип
-            SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileTypeEnum.Logo, token),
-            //регионы работы
-            SetCarrierWorkingArea(model.Id, model.WorkingAreas, token)
-        );
+        //лицензия
+        await SetCarrierFile(model.Id, model.LicenceFileId, Common.Enums.OrganisationFileTypeEnum.License, token);
+        //логотип
+        await SetCarrierFile(model.Id, model.LogoFileId, Common.Enums.OrganisationFileTypeEnum.Logo, token);
+        //регионы работы
+        await SetCarrierWorkingArea(model.Id, model.WorkingAreas, token);
 
         await UnitOfWork.CommitAsync(token);
 
