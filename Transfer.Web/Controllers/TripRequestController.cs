@@ -683,7 +683,7 @@ public sealed class TripRequestController : BaseStateController
                 var sb = new StringBuilder();
                 sb.AppendLine($"Ранее Вы откликались на заказ №{tripId}");
                 sb.AppendLine($"Вы выбраны в качестве перевозчика на данный заказ");
-                sb.AppendLine($"Для оформления документов и уточнения деталей свяжитесь с менеджером по телефонам +79002944275 или +79002783868");
+                sb.AppendLine($"Для оформления документов и уточнения деталей свяжитесь с менеджером по телефону 88001006791");
 
                 _handleUpdateService?.SendMessages(new Bot.Dtos.SendMsgToUserDto
                 {

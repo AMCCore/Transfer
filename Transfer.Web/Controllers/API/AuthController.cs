@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     [HttpPost]
     [AllowAnonymous]
@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
             var user = await _unitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(x => x.Phone == model.PhoneNumber, token);
             if (user == null)
             {
-                return Forbid("Account not found");
+                return Unauthorized("Account not found");
             }
 
             var vc = user.ExternalLogins.FirstOrDefault(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.AcceptCode);
@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     [HttpPost]
     [AllowAnonymous]
@@ -111,13 +111,13 @@ public class AuthController : ControllerBase
             var user = await _unitOfWork.GetSet<DbAccount>().FirstOrDefaultAsync(x => x.Phone == model.PhoneNumber, token);
             if (user == null)
             {
-                return Forbid("Account not found");
+                return Unauthorized("Account not found");
             }
 
             var vc = user.ExternalLogins.FirstOrDefault(x => x.LoginType == Common.Enums.ExternalLoginTypeEnum.AcceptCode);
             if (vc == null)
             {
-                return Forbid("Wrong acceptc ode");
+                return Unauthorized("Wrong acceptc code");
             }
 
             if (vc.Value == model.AcceptCode && DateTime.Now.Ticks <= Convert.ToInt64(vc.SubValue))
@@ -125,7 +125,7 @@ public class AuthController : ControllerBase
                 return Ok(JsonConvert.SerializeObject(new { authToken = _tokenService.BuildToken(user.Id) }));
 
             }
-            return Forbid("Wrong acceptc ode");
+            return Unauthorized("Wrong acceptc code");
         }
         catch (Exception e)
         {
