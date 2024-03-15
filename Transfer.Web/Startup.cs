@@ -135,17 +135,17 @@ public class Startup
             };
         });
 
-#if !DEBUG
+//#if !DEBUG
 
-        services.AddHostedService<ConfigureWebhook>();
+//        services.AddHostedService<ConfigureWebhook>();
 
-        services.AddHttpClient("tgwebhook")
-        .AddTypedClient<ITelegramBotClient>(httpClient
-            => new TelegramBotClient(_transferSettings.TGBotToken, httpClient));
+//        services.AddHttpClient("tgwebhook")
+//        .AddTypedClient<ITelegramBotClient>(httpClient
+//            => new TelegramBotClient(_transferSettings.TGBotToken, httpClient));
 
-        services.AddScoped<HandleUpdateService>();
+//        services.AddScoped<HandleUpdateService>();
 
-#endif
+//#endif
 
         services.AddControllers().AddNewtonsoftJson();
     }
